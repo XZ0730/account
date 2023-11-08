@@ -20,5 +20,6 @@ func Register(r *server.Hertz) {
 	{
 		_api := root.Group("/api", _apiMw()...)
 		_api.POST("/goal", append(_goalcreateMw(), goal.GoalCreate)...)
+		_api.GET("/goal", append(_goallistgetMw(), goal.GoalListGet)...)
 	}
 }

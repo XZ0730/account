@@ -22,4 +22,5 @@ const (
 	// Goal
 	GoalTimeErrorCode   = 23001
 	GoalCreateErrorCode = 23002
+	GoalGetErrorCode    = 23003
 )

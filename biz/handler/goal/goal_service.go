@@ -33,3 +33,22 @@ func GoalCreate(ctx context.Context, c *app.RequestContext) {
 	pack.PackBase(resp, code, msg)
 	c.JSON(consts.StatusOK, resp)
 }
+
+// GoalListGet .
+// @router /api/goal [GET]
+func GoalListGet(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req goal.BaseRequest
+	resp := new(goal.GoalListGetResponse)
+
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	goal_list, code, msg := service.NewGoalService().GetGoals(claim.UserId)
+	pack.PackGoallist(resp, code, msg, goal_list)
+	c.JSON(consts.StatusOK, resp)
+}
