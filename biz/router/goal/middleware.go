@@ -43,3 +43,8 @@ func _goallistgetMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _goaldeleteMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

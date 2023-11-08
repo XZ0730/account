@@ -58,3 +58,11 @@ func (g *GoalService) GetGoals(user_id int64) (goal_list []*goal.GoalModel, code
 	}
 	return list, errno.StatusSuccessCode, errno.StatusSuccessMsg
 }
+
+func (g *GoalService) DelGoal(user_id int64, goal_id int64) (code int64, msg string) {
+	if err := db.DelGoal(user_id, goal_id); err != nil {
+		klog.Error("[goal] delete error:", err.Error())
+		return errno.GoalDelError.ErrorCode, errno.GoalDelError.ErrorMsg
+	}
+	return errno.StatusSuccessCode, errno.StatusSuccessMsg
+}

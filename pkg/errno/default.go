@@ -18,4 +18,5 @@ var (
 	GoalTimeError   = NewErrNo(GoalTimeErrorCode, "time set error")
 	GoalCreateError = NewErrNo(GoalCreateErrorCode, "goal create error")
 	GoalGetError    = NewErrNo(GoalGetErrorCode, "goal get error")
+	GoalDelError    = NewErrNo(GoalDelErrorCode, "goal del error")
 )

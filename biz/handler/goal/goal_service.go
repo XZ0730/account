@@ -45,10 +45,31 @@ func GoalListGet(ctx context.Context, c *app.RequestContext) {
 	claim, _ := utils.CheckToken(string(token_byte))
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.PackGoallist(resp, errno.ParamError.ErrorCode, errno.ParamError.ErrorMsg, nil)
+		c.JSON(consts.StatusOK, resp)
 		return
 	}
 	goal_list, code, msg := service.NewGoalService().GetGoals(claim.UserId)
 	pack.PackGoallist(resp, code, msg, goal_list)
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GoalDelete .
+// @router /api/goal [DELETE]
+func GoalDelete(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req goal.GoalDelRequest
+	resp := new(base.BaseResponse)
+
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		pack.PackBase(resp, errno.ParamError.ErrorCode, errno.ParamError.ErrorMsg)
+		c.JSON(consts.StatusOK, resp)
+		return
+	}
+	code, msg := service.NewGoalService().DelGoal(claim.UserId, req.GoalId)
+	pack.PackBase(resp, code, msg)
 	c.JSON(consts.StatusOK, resp)
 }

@@ -35,3 +35,7 @@ func GetGoalList(userid int64) ([]Goal, error) {
 	}
 	return goals, nil
 }
+
+func DelGoal(userid int64, goalid int64) error {
+	return DB.Table("t_goal").Where("user_id=? AND goal_id=?", userid, goalid).Unscoped().Delete(&Goal{}).Error
+}
