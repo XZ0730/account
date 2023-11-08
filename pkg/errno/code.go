@@ -18,4 +18,8 @@ const (
 	SensitiveWordsErrorCode    = 10006 // 敏感词
 	PwdErrorCode               = 10007 // 密码错误
 	UserNameAuthErrorCode      = 10008 //用户名错误
+
+	// Goal
+	GoalTimeErrorCode   = 23001
+	GoalCreateErrorCode = 23002
 )

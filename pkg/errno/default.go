@@ -13,4 +13,8 @@ var (
 	UserExistedError = NewErrNo(ParamErrorCode, "user existed")
 	UserNameError    = NewErrNo(UserNameAuthErrorCode, "user name is not exist")
 	PWDError         = NewErrNo(PwdErrorCode, "pwd not match")
+
+	// Goal
+	GoalTimeError   = NewErrNo(GoalTimeErrorCode, "time set error")
+	GoalCreateError = NewErrNo(GoalCreateErrorCode, "goal create error")
 )
