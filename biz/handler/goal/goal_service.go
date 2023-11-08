@@ -73,3 +73,23 @@ func GoalDelete(ctx context.Context, c *app.RequestContext) {
 	pack.PackBase(resp, code, msg)
 	c.JSON(consts.StatusOK, resp)
 }
+
+// GoalPut .
+// @router api/goal [PUT]
+func GoalPut(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req goal.GoalPutRequest
+	resp := new(base.BaseResponse)
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		pack.PackBase(resp, errno.ParamError.ErrorCode, errno.ParamError.ErrorMsg)
+		c.JSON(consts.StatusOK, resp)
+		return
+	}
+
+	code, msg := service.NewGoalService().UpdateGoal(claim.UserId, &req)
+	pack.PackBase(resp, code, msg)
+	c.JSON(consts.StatusOK, resp)
+}

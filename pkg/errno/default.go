@@ -15,8 +15,9 @@ var (
 	PWDError         = NewErrNo(PwdErrorCode, "pwd not match")
 
 	// Goal
-	GoalTimeError   = NewErrNo(GoalTimeErrorCode, "time set error")
+	TimeError       = NewErrNo(GoalTimeErrorCode, "time set error")
 	GoalCreateError = NewErrNo(GoalCreateErrorCode, "goal create error")
 	GoalGetError    = NewErrNo(GoalGetErrorCode, "goal get error")
 	GoalDelError    = NewErrNo(GoalDelErrorCode, "goal del error")
+	GoalUpdateError = NewErrNo(GoalUpdateErrorCode, "goal update error")
 )

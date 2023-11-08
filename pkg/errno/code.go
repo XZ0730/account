@@ -24,4 +24,5 @@ const (
 	GoalCreateErrorCode = 23002
 	GoalGetErrorCode    = 23003
 	GoalDelErrorCode    = 23004
+	GoalUpdateErrorCode = 23005
 )

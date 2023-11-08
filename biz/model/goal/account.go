@@ -1308,12 +1308,335 @@ func (p *GoalDelRequest) String() string {
 	return fmt.Sprintf("GoalDelRequest(%+v)", *p)
 }
 
+type GoalPutRequest struct {
+	GoalId     int64   `thrift:"goalId,1" form:"goalId" json:"goalId" query:"goalId"`
+	GoalName   string  `thrift:"goalName,2" form:"goalName" json:"goalName" query:"goalName"`
+	CreateDate string  `thrift:"create_date,3" form:"create_date" json:"create_date" query:"create_date"`
+	Deadline   string  `thrift:"deadline,4" form:"deadline" json:"deadline" query:"deadline"`
+	Money      float64 `thrift:"money,5" form:"money" json:"money" query:"money"`
+}
+
+func NewGoalPutRequest() *GoalPutRequest {
+	return &GoalPutRequest{}
+}
+
+func (p *GoalPutRequest) GetGoalId() (v int64) {
+	return p.GoalId
+}
+
+func (p *GoalPutRequest) GetGoalName() (v string) {
+	return p.GoalName
+}
+
+func (p *GoalPutRequest) GetCreateDate() (v string) {
+	return p.CreateDate
+}
+
+func (p *GoalPutRequest) GetDeadline() (v string) {
+	return p.Deadline
+}
+
+func (p *GoalPutRequest) GetMoney() (v float64) {
+	return p.Money
+}
+
+var fieldIDToName_GoalPutRequest = map[int16]string{
+	1: "goalId",
+	2: "goalName",
+	3: "create_date",
+	4: "deadline",
+	5: "money",
+}
+
+func (p *GoalPutRequest) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 3:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField3(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 4:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField4(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 5:
+			if fieldTypeId == thrift.DOUBLE {
+				if err = p.ReadField5(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GoalPutRequest[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *GoalPutRequest) ReadField1(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.GoalId = v
+	}
+	return nil
+}
+
+func (p *GoalPutRequest) ReadField2(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.GoalName = v
+	}
+	return nil
+}
+
+func (p *GoalPutRequest) ReadField3(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.CreateDate = v
+	}
+	return nil
+}
+
+func (p *GoalPutRequest) ReadField4(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.Deadline = v
+	}
+	return nil
+}
+
+func (p *GoalPutRequest) ReadField5(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadDouble(); err != nil {
+		return err
+	} else {
+		p.Money = v
+	}
+	return nil
+}
+
+func (p *GoalPutRequest) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GoalPutRequest"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
+			goto WriteFieldError
+		}
+		if err = p.writeField3(oprot); err != nil {
+			fieldId = 3
+			goto WriteFieldError
+		}
+		if err = p.writeField4(oprot); err != nil {
+			fieldId = 4
+			goto WriteFieldError
+		}
+		if err = p.writeField5(oprot); err != nil {
+			fieldId = 5
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *GoalPutRequest) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("goalId", thrift.I64, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.GoalId); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *GoalPutRequest) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("goalName", thrift.STRING, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.GoalName); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
+func (p *GoalPutRequest) writeField3(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("create_date", thrift.STRING, 3); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.CreateDate); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
+}
+
+func (p *GoalPutRequest) writeField4(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("deadline", thrift.STRING, 4); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.Deadline); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 4 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 4 end error: ", p), err)
+}
+
+func (p *GoalPutRequest) writeField5(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("money", thrift.DOUBLE, 5); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteDouble(p.Money); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 5 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 5 end error: ", p), err)
+}
+
+func (p *GoalPutRequest) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("GoalPutRequest(%+v)", *p)
+}
+
 type GoalService interface {
 	GoalCreate(ctx context.Context, req *GoalCreateRequest) (r *BaseResponse, err error)
 
 	GoalListGet(ctx context.Context, req *BaseRequest) (r *GoalListGetResponse, err error)
 
-	GoalDelete(ctx context.Context, rqe *GoalDelRequest) (r *BaseResponse, err error)
+	GoalDelete(ctx context.Context, req *GoalDelRequest) (r *BaseResponse, err error)
+
+	GoalPut(ctx context.Context, req *GoalPutRequest) (r *BaseResponse, err error)
 }
 
 type GoalServiceClient struct {
@@ -1360,11 +1683,20 @@ func (p *GoalServiceClient) GoalListGet(ctx context.Context, req *BaseRequest) (
 	}
 	return _result.GetSuccess(), nil
 }
-func (p *GoalServiceClient) GoalDelete(ctx context.Context, rqe *GoalDelRequest) (r *BaseResponse, err error) {
+func (p *GoalServiceClient) GoalDelete(ctx context.Context, req *GoalDelRequest) (r *BaseResponse, err error) {
 	var _args GoalServiceGoalDeleteArgs
-	_args.Rqe = rqe
+	_args.Req = req
 	var _result GoalServiceGoalDeleteResult
 	if err = p.Client_().Call(ctx, "GoalDelete", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+func (p *GoalServiceClient) GoalPut(ctx context.Context, req *GoalPutRequest) (r *BaseResponse, err error) {
+	var _args GoalServiceGoalPutArgs
+	_args.Req = req
+	var _result GoalServiceGoalPutResult
+	if err = p.Client_().Call(ctx, "GoalPut", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
@@ -1393,6 +1725,7 @@ func NewGoalServiceProcessor(handler GoalService) *GoalServiceProcessor {
 	self.AddToProcessorMap("GoalCreate", &goalServiceProcessorGoalCreate{handler: handler})
 	self.AddToProcessorMap("GoalListGet", &goalServiceProcessorGoalListGet{handler: handler})
 	self.AddToProcessorMap("GoalDelete", &goalServiceProcessorGoalDelete{handler: handler})
+	self.AddToProcessorMap("GoalPut", &goalServiceProcessorGoalPut{handler: handler})
 	return self
 }
 func (p *GoalServiceProcessor) Process(ctx context.Context, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
@@ -1529,7 +1862,7 @@ func (p *goalServiceProcessorGoalDelete) Process(ctx context.Context, seqId int3
 	var err2 error
 	result := GoalServiceGoalDeleteResult{}
 	var retval *BaseResponse
-	if retval, err2 = p.handler.GoalDelete(ctx, args.Rqe); err2 != nil {
+	if retval, err2 = p.handler.GoalDelete(ctx, args.Req); err2 != nil {
 		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing GoalDelete: "+err2.Error())
 		oprot.WriteMessageBegin("GoalDelete", thrift.EXCEPTION, seqId)
 		x.Write(oprot)
@@ -1540,6 +1873,54 @@ func (p *goalServiceProcessorGoalDelete) Process(ctx context.Context, seqId int3
 		result.Success = retval
 	}
 	if err2 = oprot.WriteMessageBegin("GoalDelete", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 = result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
+}
+
+type goalServiceProcessorGoalPut struct {
+	handler GoalService
+}
+
+func (p *goalServiceProcessorGoalPut) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := GoalServiceGoalPutArgs{}
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("GoalPut", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return false, err
+	}
+
+	iprot.ReadMessageEnd()
+	var err2 error
+	result := GoalServiceGoalPutResult{}
+	var retval *BaseResponse
+	if retval, err2 = p.handler.GoalPut(ctx, args.Req); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing GoalPut: "+err2.Error())
+		oprot.WriteMessageBegin("GoalPut", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return true, err2
+	} else {
+		result.Success = retval
+	}
+	if err2 = oprot.WriteMessageBegin("GoalPut", thrift.REPLY, seqId); err2 != nil {
 		err = err2
 	}
 	if err2 = result.Write(oprot); err == nil && err2 != nil {
@@ -2142,28 +2523,28 @@ func (p *GoalServiceGoalListGetResult) String() string {
 }
 
 type GoalServiceGoalDeleteArgs struct {
-	Rqe *GoalDelRequest `thrift:"rqe,1"`
+	Req *GoalDelRequest `thrift:"req,1"`
 }
 
 func NewGoalServiceGoalDeleteArgs() *GoalServiceGoalDeleteArgs {
 	return &GoalServiceGoalDeleteArgs{}
 }
 
-var GoalServiceGoalDeleteArgs_Rqe_DEFAULT *GoalDelRequest
+var GoalServiceGoalDeleteArgs_Req_DEFAULT *GoalDelRequest
 
-func (p *GoalServiceGoalDeleteArgs) GetRqe() (v *GoalDelRequest) {
-	if !p.IsSetRqe() {
-		return GoalServiceGoalDeleteArgs_Rqe_DEFAULT
+func (p *GoalServiceGoalDeleteArgs) GetReq() (v *GoalDelRequest) {
+	if !p.IsSetReq() {
+		return GoalServiceGoalDeleteArgs_Req_DEFAULT
 	}
-	return p.Rqe
+	return p.Req
 }
 
 var fieldIDToName_GoalServiceGoalDeleteArgs = map[int16]string{
-	1: "rqe",
+	1: "req",
 }
 
-func (p *GoalServiceGoalDeleteArgs) IsSetRqe() bool {
-	return p.Rqe != nil
+func (p *GoalServiceGoalDeleteArgs) IsSetReq() bool {
+	return p.Req != nil
 }
 
 func (p *GoalServiceGoalDeleteArgs) Read(iprot thrift.TProtocol) (err error) {
@@ -2226,8 +2607,8 @@ ReadStructEndError:
 }
 
 func (p *GoalServiceGoalDeleteArgs) ReadField1(iprot thrift.TProtocol) error {
-	p.Rqe = NewGoalDelRequest()
-	if err := p.Rqe.Read(iprot); err != nil {
+	p.Req = NewGoalDelRequest()
+	if err := p.Req.Read(iprot); err != nil {
 		return err
 	}
 	return nil
@@ -2263,10 +2644,10 @@ WriteStructEndError:
 }
 
 func (p *GoalServiceGoalDeleteArgs) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("rqe", thrift.STRUCT, 1); err != nil {
+	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := p.Rqe.Write(oprot); err != nil {
+	if err := p.Req.Write(oprot); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -2431,4 +2812,296 @@ func (p *GoalServiceGoalDeleteResult) String() string {
 		return "<nil>"
 	}
 	return fmt.Sprintf("GoalServiceGoalDeleteResult(%+v)", *p)
+}
+
+type GoalServiceGoalPutArgs struct {
+	Req *GoalPutRequest `thrift:"req,1"`
+}
+
+func NewGoalServiceGoalPutArgs() *GoalServiceGoalPutArgs {
+	return &GoalServiceGoalPutArgs{}
+}
+
+var GoalServiceGoalPutArgs_Req_DEFAULT *GoalPutRequest
+
+func (p *GoalServiceGoalPutArgs) GetReq() (v *GoalPutRequest) {
+	if !p.IsSetReq() {
+		return GoalServiceGoalPutArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+var fieldIDToName_GoalServiceGoalPutArgs = map[int16]string{
+	1: "req",
+}
+
+func (p *GoalServiceGoalPutArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *GoalServiceGoalPutArgs) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GoalServiceGoalPutArgs[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *GoalServiceGoalPutArgs) ReadField1(iprot thrift.TProtocol) error {
+	p.Req = NewGoalPutRequest()
+	if err := p.Req.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *GoalServiceGoalPutArgs) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GoalPut_args"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *GoalServiceGoalPutArgs) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := p.Req.Write(oprot); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *GoalServiceGoalPutArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("GoalServiceGoalPutArgs(%+v)", *p)
+}
+
+type GoalServiceGoalPutResult struct {
+	Success *BaseResponse `thrift:"success,0,optional"`
+}
+
+func NewGoalServiceGoalPutResult() *GoalServiceGoalPutResult {
+	return &GoalServiceGoalPutResult{}
+}
+
+var GoalServiceGoalPutResult_Success_DEFAULT *BaseResponse
+
+func (p *GoalServiceGoalPutResult) GetSuccess() (v *BaseResponse) {
+	if !p.IsSetSuccess() {
+		return GoalServiceGoalPutResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+var fieldIDToName_GoalServiceGoalPutResult = map[int16]string{
+	0: "success",
+}
+
+func (p *GoalServiceGoalPutResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *GoalServiceGoalPutResult) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField0(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GoalServiceGoalPutResult[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *GoalServiceGoalPutResult) ReadField0(iprot thrift.TProtocol) error {
+	p.Success = NewBaseResponse()
+	if err := p.Success.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *GoalServiceGoalPutResult) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GoalPut_result"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField0(oprot); err != nil {
+			fieldId = 0
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *GoalServiceGoalPutResult) writeField0(oprot thrift.TProtocol) (err error) {
+	if p.IsSetSuccess() {
+		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := p.Success.Write(oprot); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
+}
+
+func (p *GoalServiceGoalPutResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("GoalServiceGoalPutResult(%+v)", *p)
 }

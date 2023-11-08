@@ -32,8 +32,17 @@ struct GoalDelRequest{
     1: i64 goalId
 }
 
+struct GoalPutRequest{
+    1: i64 goalId
+    2: string goalName
+    3: string create_date
+    4: string deadline
+    5: double money
+}
+
 service GoalService{
     BaseResponse GoalCreate(1:GoalCreateRequest req)(api.post="/api/goal")
     GoalListGetResponse GoalListGet(1:BaseRequest req)(api.get="/api/goal")
-    BaseResponse GoalDelete(1:GoalDelRequest rqe)(api.delete="/api/goal")
+    BaseResponse GoalDelete(1:GoalDelRequest req)(api.delete="/api/goal")
+    BaseResponse GoalPut(1:GoalPutRequest req)(api.put="api/goal")
 }

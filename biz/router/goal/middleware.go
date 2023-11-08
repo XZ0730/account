@@ -22,6 +22,7 @@ func rootMw() []app.HandlerFunc {
 				resp := base.NewBaseResponse()
 				pack.PackBase(resp, errno.AuthorizationFailedErrCode, errno.AuthorizationFailedError.ErrorMsg)
 				ctx.JSON(consts.StatusOK, resp)
+				ctx.Abort()
 				return
 			}
 			ctx.Next(c)
@@ -45,6 +46,11 @@ func _goallistgetMw() []app.HandlerFunc {
 }
 
 func _goaldeleteMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _goalputMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }

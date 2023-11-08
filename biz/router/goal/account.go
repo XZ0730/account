@@ -22,5 +22,6 @@ func Register(r *server.Hertz) {
 		_api.POST("/goal", append(_goalcreateMw(), goal.GoalCreate)...)
 		_api.GET("/goal", append(_goallistgetMw(), goal.GoalListGet)...)
 		_api.DELETE("/goal", append(_goaldeleteMw(), goal.GoalDelete)...)
+		_api.PUT("/goal", append(_goalputMw(), goal.GoalPut)...)
 	}
 }

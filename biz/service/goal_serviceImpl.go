@@ -15,12 +15,12 @@ func (g *GoalService) CreateGoal(user_id int64, req *goal.GoalCreateRequest) (co
 	c_time, err := time.Parse(time.DateTime, req.GetCreateDate())
 	if err != nil {
 		klog.Error("[goal] error:", err.Error())
-		return errno.GoalTimeError.ErrorCode, errno.GoalTimeError.ErrorMsg
+		return errno.TimeError.ErrorCode, errno.TimeError.ErrorMsg
 	}
 	ddl, err := time.Parse(time.DateTime, req.GetDeadline())
 	if err != nil {
 		klog.Error("[goal] error:", err.Error())
-		return errno.GoalTimeError.ErrorCode, errno.GoalTimeError.ErrorMsg
+		return errno.TimeError.ErrorCode, errno.TimeError.ErrorMsg
 	}
 	goal := db.NewGoal(user_id, req.GetGoalName(), req.GetMoney(), c_time, ddl)
 	if err := db.CreateGoal(goal); err != nil {
@@ -64,5 +64,27 @@ func (g *GoalService) DelGoal(user_id int64, goal_id int64) (code int64, msg str
 		klog.Error("[goal] delete error:", err.Error())
 		return errno.GoalDelError.ErrorCode, errno.GoalDelError.ErrorMsg
 	}
+	return errno.StatusSuccessCode, errno.StatusSuccessMsg
+}
+
+func (g *GoalService) UpdateGoal(user_id int64, req *goal.GoalPutRequest) (code int64, msg string) {
+	klog.Info("c_time:", req.GetCreateDate())
+	c_time, err := time.Parse(time.DateTime, req.GetCreateDate())
+	if err != nil {
+		klog.Error("[goal] error:", err.Error())
+		return errno.TimeError.ErrorCode, errno.TimeError.ErrorMsg
+	}
+	ddl, err := time.Parse(time.DateTime, req.GetDeadline())
+	if err != nil {
+		klog.Error("[goal] error:", err.Error())
+		return errno.TimeError.ErrorCode, errno.TimeError.ErrorMsg
+	}
+	goal := db.NewGoal(user_id, req.GetGoalName(), req.GetMoney(), c_time, ddl)
+	goal.GoalId = req.GetGoalId()
+	if err = db.UpdateGoal(goal); err != nil {
+		klog.Error("[goal] update error:", err.Error())
+		return errno.GoalUpdateError.ErrorCode, errno.GoalUpdateError.ErrorMsg
+	}
+
 	return errno.StatusSuccessCode, errno.StatusSuccessMsg
 }
