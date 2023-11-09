@@ -20,4 +20,7 @@ var (
 	GoalGetError    = NewErrNo(GoalGetErrorCode, "goal get error")
 	GoalDelError    = NewErrNo(GoalDelErrorCode, "goal del error")
 	GoalUpdateError = NewErrNo(GoalUpdateErrorCode, "goal update error")
+
+	// Ledger
+	LedgerCreateError = NewErrNo(LedgerCreateErrorCode, "ledger create error")
 )

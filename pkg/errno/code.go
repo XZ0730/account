@@ -25,4 +25,7 @@ const (
 	GoalGetErrorCode    = 23003
 	GoalDelErrorCode    = 23004
 	GoalUpdateErrorCode = 23005
+
+	// Ledger
+	LedgerCreateErrorCode = 30001
 )
