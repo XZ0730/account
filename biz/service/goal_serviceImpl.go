@@ -25,7 +25,7 @@ func (g *GoalService) CreateGoal(user_id int64, req *goal.GoalCreateRequest) (co
 	goal := db.NewGoal(user_id, req.GetGoalName(), req.GetMoney(), c_time, ddl)
 	if err := db.CreateGoal(goal); err != nil {
 		klog.Error("[goal]create error:", err.Error())
-		return errno.GoalCreateError.ErrorCode, errno.GoalCreateError.ErrorMsg
+		return errno.CreateError.ErrorCode, errno.CreateError.ErrorMsg
 	}
 	return errno.StatusSuccessCode, errno.StatusSuccessMsg
 }
@@ -34,7 +34,7 @@ func (g *GoalService) GetGoals(user_id int64) (goal_list []*goal.GoalModel, code
 	goals, err := db.GetGoalList(user_id)
 	if err != nil {
 		klog.Info("[goal]get error:", err.Error())
-		return nil, errno.GoalGetError.ErrorCode, errno.GoalGetError.ErrorMsg
+		return nil, errno.GetError.ErrorCode, errno.GetError.ErrorMsg
 	}
 	var eg errgroup.Group
 	list := make([]*goal.GoalModel, 0)
@@ -54,7 +54,7 @@ func (g *GoalService) GetGoals(user_id int64) (goal_list []*goal.GoalModel, code
 	}
 	if err = eg.Wait(); err != nil {
 		klog.Info("[goal]get error:", err.Error())
-		return nil, errno.GoalGetError.ErrorCode, errno.GoalGetError.ErrorMsg
+		return nil, errno.GetError.ErrorCode, errno.GetError.ErrorMsg
 	}
 	return list, errno.StatusSuccessCode, errno.StatusSuccessMsg
 }
@@ -62,7 +62,7 @@ func (g *GoalService) GetGoals(user_id int64) (goal_list []*goal.GoalModel, code
 func (g *GoalService) DelGoal(user_id int64, goal_id int64) (code int64, msg string) {
 	if err := db.DelGoal(user_id, goal_id); err != nil {
 		klog.Error("[goal] delete error:", err.Error())
-		return errno.GoalDelError.ErrorCode, errno.GoalDelError.ErrorMsg
+		return errno.DelError.ErrorCode, errno.DelError.ErrorMsg
 	}
 	return errno.StatusSuccessCode, errno.StatusSuccessMsg
 }
@@ -83,7 +83,7 @@ func (g *GoalService) UpdateGoal(user_id int64, req *goal.GoalPutRequest) (code 
 	goal.GoalId = req.GetGoalId()
 	if err = db.UpdateGoal(goal); err != nil {
 		klog.Error("[goal] update error:", err.Error())
-		return errno.GoalUpdateError.ErrorCode, errno.GoalUpdateError.ErrorMsg
+		return errno.UpdateError.ErrorCode, errno.UpdateError.ErrorMsg
 	}
 
 	return errno.StatusSuccessCode, errno.StatusSuccessMsg

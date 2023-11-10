@@ -19,15 +19,10 @@ const (
 	PwdErrorCode               = 10007 // 密码错误
 	UserNameAuthErrorCode      = 10008 //用户名错误
 
-	// Goal
-	GoalTimeErrorCode   = 23001
-	GoalCreateErrorCode = 23002
-	GoalGetErrorCode    = 23003
-	GoalDelErrorCode    = 23004
-	GoalUpdateErrorCode = 23005
-
-	// Ledger
-	LedgerCreateErrorCode = 30001
-	LedgerDeleteErrorCode = 30002
-	ledgerGetErrorCode    = 30003
+	//
+	TimeErrorCode   = 23001
+	CreateErrorCode = 23002
+	GetErrorCode    = 23003
+	DelErrorCode    = 23004
+	UpdateErrorCode = 23005
 )
