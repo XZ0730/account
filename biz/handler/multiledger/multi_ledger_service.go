@@ -33,3 +33,22 @@ func CreateMultiledger(ctx context.Context, c *app.RequestContext) {
 	pack.PackBase(resp, code, msg)
 	c.JSON(consts.StatusOK, resp)
 }
+
+// JoinMultiledger .
+// @router /api/multiLedger/join [POST]
+func JoinMultiledger(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req multiledger.JoinMLRequest
+	resp := new(base.BaseResponse)
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		pack.PackBase(resp, errno.ParamError.ErrorCode, errno.ParamError.ErrorMsg)
+		c.JSON(consts.StatusOK, resp)
+		return
+	}
+	code, msg := service.NewMultiLedgerService().JoinMultiledger(claim.UserId, req.Password)
+	pack.PackBase(resp, code, msg)
+	c.JSON(consts.StatusOK, resp)
+}

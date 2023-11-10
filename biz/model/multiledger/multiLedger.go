@@ -516,70 +516,219 @@ func (p *CreateMLRequest) String() string {
 	return fmt.Sprintf("CreateMLRequest(%+v)", *p)
 }
 
-type MultiLedger interface {
-	CreateMultiledger(ctx context.Context, req *CreateMLRequest) (r *BaseResponse, err error)
+type JoinMLRequest struct {
+	Password string `thrift:"password,1" form:"password" json:"password" query:"password"`
 }
 
-type MultiLedgerClient struct {
+func NewJoinMLRequest() *JoinMLRequest {
+	return &JoinMLRequest{}
+}
+
+func (p *JoinMLRequest) GetPassword() (v string) {
+	return p.Password
+}
+
+var fieldIDToName_JoinMLRequest = map[int16]string{
+	1: "password",
+}
+
+func (p *JoinMLRequest) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_JoinMLRequest[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *JoinMLRequest) ReadField1(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.Password = v
+	}
+	return nil
+}
+
+func (p *JoinMLRequest) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("JoinMLRequest"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *JoinMLRequest) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("password", thrift.STRING, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.Password); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *JoinMLRequest) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("JoinMLRequest(%+v)", *p)
+}
+
+type MultiLedgerService interface {
+	CreateMultiledger(ctx context.Context, req *CreateMLRequest) (r *BaseResponse, err error)
+
+	JoinMultiledger(ctx context.Context, req *JoinMLRequest) (r *BaseResponse, err error)
+}
+
+type MultiLedgerServiceClient struct {
 	c thrift.TClient
 }
 
-func NewMultiLedgerClientFactory(t thrift.TTransport, f thrift.TProtocolFactory) *MultiLedgerClient {
-	return &MultiLedgerClient{
+func NewMultiLedgerServiceClientFactory(t thrift.TTransport, f thrift.TProtocolFactory) *MultiLedgerServiceClient {
+	return &MultiLedgerServiceClient{
 		c: thrift.NewTStandardClient(f.GetProtocol(t), f.GetProtocol(t)),
 	}
 }
 
-func NewMultiLedgerClientProtocol(t thrift.TTransport, iprot thrift.TProtocol, oprot thrift.TProtocol) *MultiLedgerClient {
-	return &MultiLedgerClient{
+func NewMultiLedgerServiceClientProtocol(t thrift.TTransport, iprot thrift.TProtocol, oprot thrift.TProtocol) *MultiLedgerServiceClient {
+	return &MultiLedgerServiceClient{
 		c: thrift.NewTStandardClient(iprot, oprot),
 	}
 }
 
-func NewMultiLedgerClient(c thrift.TClient) *MultiLedgerClient {
-	return &MultiLedgerClient{
+func NewMultiLedgerServiceClient(c thrift.TClient) *MultiLedgerServiceClient {
+	return &MultiLedgerServiceClient{
 		c: c,
 	}
 }
 
-func (p *MultiLedgerClient) Client_() thrift.TClient {
+func (p *MultiLedgerServiceClient) Client_() thrift.TClient {
 	return p.c
 }
 
-func (p *MultiLedgerClient) CreateMultiledger(ctx context.Context, req *CreateMLRequest) (r *BaseResponse, err error) {
-	var _args MultiLedgerCreateMultiledgerArgs
+func (p *MultiLedgerServiceClient) CreateMultiledger(ctx context.Context, req *CreateMLRequest) (r *BaseResponse, err error) {
+	var _args MultiLedgerServiceCreateMultiledgerArgs
 	_args.Req = req
-	var _result MultiLedgerCreateMultiledgerResult
+	var _result MultiLedgerServiceCreateMultiledgerResult
 	if err = p.Client_().Call(ctx, "CreateMultiledger", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
 }
-
-type MultiLedgerProcessor struct {
-	processorMap map[string]thrift.TProcessorFunction
-	handler      MultiLedger
+func (p *MultiLedgerServiceClient) JoinMultiledger(ctx context.Context, req *JoinMLRequest) (r *BaseResponse, err error) {
+	var _args MultiLedgerServiceJoinMultiledgerArgs
+	_args.Req = req
+	var _result MultiLedgerServiceJoinMultiledgerResult
+	if err = p.Client_().Call(ctx, "JoinMultiledger", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
 }
 
-func (p *MultiLedgerProcessor) AddToProcessorMap(key string, processor thrift.TProcessorFunction) {
+type MultiLedgerServiceProcessor struct {
+	processorMap map[string]thrift.TProcessorFunction
+	handler      MultiLedgerService
+}
+
+func (p *MultiLedgerServiceProcessor) AddToProcessorMap(key string, processor thrift.TProcessorFunction) {
 	p.processorMap[key] = processor
 }
 
-func (p *MultiLedgerProcessor) GetProcessorFunction(key string) (processor thrift.TProcessorFunction, ok bool) {
+func (p *MultiLedgerServiceProcessor) GetProcessorFunction(key string) (processor thrift.TProcessorFunction, ok bool) {
 	processor, ok = p.processorMap[key]
 	return processor, ok
 }
 
-func (p *MultiLedgerProcessor) ProcessorMap() map[string]thrift.TProcessorFunction {
+func (p *MultiLedgerServiceProcessor) ProcessorMap() map[string]thrift.TProcessorFunction {
 	return p.processorMap
 }
 
-func NewMultiLedgerProcessor(handler MultiLedger) *MultiLedgerProcessor {
-	self := &MultiLedgerProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
-	self.AddToProcessorMap("CreateMultiledger", &multiLedgerProcessorCreateMultiledger{handler: handler})
+func NewMultiLedgerServiceProcessor(handler MultiLedgerService) *MultiLedgerServiceProcessor {
+	self := &MultiLedgerServiceProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
+	self.AddToProcessorMap("CreateMultiledger", &multiLedgerServiceProcessorCreateMultiledger{handler: handler})
+	self.AddToProcessorMap("JoinMultiledger", &multiLedgerServiceProcessorJoinMultiledger{handler: handler})
 	return self
 }
-func (p *MultiLedgerProcessor) Process(ctx context.Context, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+func (p *MultiLedgerServiceProcessor) Process(ctx context.Context, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
 	name, _, seqId, err := iprot.ReadMessageBegin()
 	if err != nil {
 		return false, err
@@ -597,12 +746,12 @@ func (p *MultiLedgerProcessor) Process(ctx context.Context, iprot, oprot thrift.
 	return false, x
 }
 
-type multiLedgerProcessorCreateMultiledger struct {
-	handler MultiLedger
+type multiLedgerServiceProcessorCreateMultiledger struct {
+	handler MultiLedgerService
 }
 
-func (p *multiLedgerProcessorCreateMultiledger) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
-	args := MultiLedgerCreateMultiledgerArgs{}
+func (p *multiLedgerServiceProcessorCreateMultiledger) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := MultiLedgerServiceCreateMultiledgerArgs{}
 	if err = args.Read(iprot); err != nil {
 		iprot.ReadMessageEnd()
 		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
@@ -615,7 +764,7 @@ func (p *multiLedgerProcessorCreateMultiledger) Process(ctx context.Context, seq
 
 	iprot.ReadMessageEnd()
 	var err2 error
-	result := MultiLedgerCreateMultiledgerResult{}
+	result := MultiLedgerServiceCreateMultiledgerResult{}
 	var retval *BaseResponse
 	if retval, err2 = p.handler.CreateMultiledger(ctx, args.Req); err2 != nil {
 		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing CreateMultiledger: "+err2.Error())
@@ -645,32 +794,80 @@ func (p *multiLedgerProcessorCreateMultiledger) Process(ctx context.Context, seq
 	return true, err
 }
 
-type MultiLedgerCreateMultiledgerArgs struct {
+type multiLedgerServiceProcessorJoinMultiledger struct {
+	handler MultiLedgerService
+}
+
+func (p *multiLedgerServiceProcessorJoinMultiledger) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := MultiLedgerServiceJoinMultiledgerArgs{}
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("JoinMultiledger", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return false, err
+	}
+
+	iprot.ReadMessageEnd()
+	var err2 error
+	result := MultiLedgerServiceJoinMultiledgerResult{}
+	var retval *BaseResponse
+	if retval, err2 = p.handler.JoinMultiledger(ctx, args.Req); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing JoinMultiledger: "+err2.Error())
+		oprot.WriteMessageBegin("JoinMultiledger", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return true, err2
+	} else {
+		result.Success = retval
+	}
+	if err2 = oprot.WriteMessageBegin("JoinMultiledger", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 = result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
+}
+
+type MultiLedgerServiceCreateMultiledgerArgs struct {
 	Req *CreateMLRequest `thrift:"req,1"`
 }
 
-func NewMultiLedgerCreateMultiledgerArgs() *MultiLedgerCreateMultiledgerArgs {
-	return &MultiLedgerCreateMultiledgerArgs{}
+func NewMultiLedgerServiceCreateMultiledgerArgs() *MultiLedgerServiceCreateMultiledgerArgs {
+	return &MultiLedgerServiceCreateMultiledgerArgs{}
 }
 
-var MultiLedgerCreateMultiledgerArgs_Req_DEFAULT *CreateMLRequest
+var MultiLedgerServiceCreateMultiledgerArgs_Req_DEFAULT *CreateMLRequest
 
-func (p *MultiLedgerCreateMultiledgerArgs) GetReq() (v *CreateMLRequest) {
+func (p *MultiLedgerServiceCreateMultiledgerArgs) GetReq() (v *CreateMLRequest) {
 	if !p.IsSetReq() {
-		return MultiLedgerCreateMultiledgerArgs_Req_DEFAULT
+		return MultiLedgerServiceCreateMultiledgerArgs_Req_DEFAULT
 	}
 	return p.Req
 }
 
-var fieldIDToName_MultiLedgerCreateMultiledgerArgs = map[int16]string{
+var fieldIDToName_MultiLedgerServiceCreateMultiledgerArgs = map[int16]string{
 	1: "req",
 }
 
-func (p *MultiLedgerCreateMultiledgerArgs) IsSetReq() bool {
+func (p *MultiLedgerServiceCreateMultiledgerArgs) IsSetReq() bool {
 	return p.Req != nil
 }
 
-func (p *MultiLedgerCreateMultiledgerArgs) Read(iprot thrift.TProtocol) (err error) {
+func (p *MultiLedgerServiceCreateMultiledgerArgs) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -719,7 +916,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_MultiLedgerCreateMultiledgerArgs[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_MultiLedgerServiceCreateMultiledgerArgs[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -729,7 +926,7 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *MultiLedgerCreateMultiledgerArgs) ReadField1(iprot thrift.TProtocol) error {
+func (p *MultiLedgerServiceCreateMultiledgerArgs) ReadField1(iprot thrift.TProtocol) error {
 	p.Req = NewCreateMLRequest()
 	if err := p.Req.Read(iprot); err != nil {
 		return err
@@ -737,7 +934,7 @@ func (p *MultiLedgerCreateMultiledgerArgs) ReadField1(iprot thrift.TProtocol) er
 	return nil
 }
 
-func (p *MultiLedgerCreateMultiledgerArgs) Write(oprot thrift.TProtocol) (err error) {
+func (p *MultiLedgerServiceCreateMultiledgerArgs) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("CreateMultiledger_args"); err != nil {
 		goto WriteStructBeginError
@@ -766,7 +963,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *MultiLedgerCreateMultiledgerArgs) writeField1(oprot thrift.TProtocol) (err error) {
+func (p *MultiLedgerServiceCreateMultiledgerArgs) writeField1(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -783,39 +980,39 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *MultiLedgerCreateMultiledgerArgs) String() string {
+func (p *MultiLedgerServiceCreateMultiledgerArgs) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("MultiLedgerCreateMultiledgerArgs(%+v)", *p)
+	return fmt.Sprintf("MultiLedgerServiceCreateMultiledgerArgs(%+v)", *p)
 }
 
-type MultiLedgerCreateMultiledgerResult struct {
+type MultiLedgerServiceCreateMultiledgerResult struct {
 	Success *BaseResponse `thrift:"success,0,optional"`
 }
 
-func NewMultiLedgerCreateMultiledgerResult() *MultiLedgerCreateMultiledgerResult {
-	return &MultiLedgerCreateMultiledgerResult{}
+func NewMultiLedgerServiceCreateMultiledgerResult() *MultiLedgerServiceCreateMultiledgerResult {
+	return &MultiLedgerServiceCreateMultiledgerResult{}
 }
 
-var MultiLedgerCreateMultiledgerResult_Success_DEFAULT *BaseResponse
+var MultiLedgerServiceCreateMultiledgerResult_Success_DEFAULT *BaseResponse
 
-func (p *MultiLedgerCreateMultiledgerResult) GetSuccess() (v *BaseResponse) {
+func (p *MultiLedgerServiceCreateMultiledgerResult) GetSuccess() (v *BaseResponse) {
 	if !p.IsSetSuccess() {
-		return MultiLedgerCreateMultiledgerResult_Success_DEFAULT
+		return MultiLedgerServiceCreateMultiledgerResult_Success_DEFAULT
 	}
 	return p.Success
 }
 
-var fieldIDToName_MultiLedgerCreateMultiledgerResult = map[int16]string{
+var fieldIDToName_MultiLedgerServiceCreateMultiledgerResult = map[int16]string{
 	0: "success",
 }
 
-func (p *MultiLedgerCreateMultiledgerResult) IsSetSuccess() bool {
+func (p *MultiLedgerServiceCreateMultiledgerResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
-func (p *MultiLedgerCreateMultiledgerResult) Read(iprot thrift.TProtocol) (err error) {
+func (p *MultiLedgerServiceCreateMultiledgerResult) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -864,7 +1061,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_MultiLedgerCreateMultiledgerResult[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_MultiLedgerServiceCreateMultiledgerResult[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -874,7 +1071,7 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *MultiLedgerCreateMultiledgerResult) ReadField0(iprot thrift.TProtocol) error {
+func (p *MultiLedgerServiceCreateMultiledgerResult) ReadField0(iprot thrift.TProtocol) error {
 	p.Success = NewBaseResponse()
 	if err := p.Success.Read(iprot); err != nil {
 		return err
@@ -882,7 +1079,7 @@ func (p *MultiLedgerCreateMultiledgerResult) ReadField0(iprot thrift.TProtocol) 
 	return nil
 }
 
-func (p *MultiLedgerCreateMultiledgerResult) Write(oprot thrift.TProtocol) (err error) {
+func (p *MultiLedgerServiceCreateMultiledgerResult) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("CreateMultiledger_result"); err != nil {
 		goto WriteStructBeginError
@@ -911,7 +1108,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *MultiLedgerCreateMultiledgerResult) writeField0(oprot thrift.TProtocol) (err error) {
+func (p *MultiLedgerServiceCreateMultiledgerResult) writeField0(oprot thrift.TProtocol) (err error) {
 	if p.IsSetSuccess() {
 		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
 			goto WriteFieldBeginError
@@ -930,9 +1127,301 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
 }
 
-func (p *MultiLedgerCreateMultiledgerResult) String() string {
+func (p *MultiLedgerServiceCreateMultiledgerResult) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("MultiLedgerCreateMultiledgerResult(%+v)", *p)
+	return fmt.Sprintf("MultiLedgerServiceCreateMultiledgerResult(%+v)", *p)
+}
+
+type MultiLedgerServiceJoinMultiledgerArgs struct {
+	Req *JoinMLRequest `thrift:"req,1"`
+}
+
+func NewMultiLedgerServiceJoinMultiledgerArgs() *MultiLedgerServiceJoinMultiledgerArgs {
+	return &MultiLedgerServiceJoinMultiledgerArgs{}
+}
+
+var MultiLedgerServiceJoinMultiledgerArgs_Req_DEFAULT *JoinMLRequest
+
+func (p *MultiLedgerServiceJoinMultiledgerArgs) GetReq() (v *JoinMLRequest) {
+	if !p.IsSetReq() {
+		return MultiLedgerServiceJoinMultiledgerArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+var fieldIDToName_MultiLedgerServiceJoinMultiledgerArgs = map[int16]string{
+	1: "req",
+}
+
+func (p *MultiLedgerServiceJoinMultiledgerArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *MultiLedgerServiceJoinMultiledgerArgs) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_MultiLedgerServiceJoinMultiledgerArgs[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *MultiLedgerServiceJoinMultiledgerArgs) ReadField1(iprot thrift.TProtocol) error {
+	p.Req = NewJoinMLRequest()
+	if err := p.Req.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *MultiLedgerServiceJoinMultiledgerArgs) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("JoinMultiledger_args"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *MultiLedgerServiceJoinMultiledgerArgs) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := p.Req.Write(oprot); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *MultiLedgerServiceJoinMultiledgerArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("MultiLedgerServiceJoinMultiledgerArgs(%+v)", *p)
+}
+
+type MultiLedgerServiceJoinMultiledgerResult struct {
+	Success *BaseResponse `thrift:"success,0,optional"`
+}
+
+func NewMultiLedgerServiceJoinMultiledgerResult() *MultiLedgerServiceJoinMultiledgerResult {
+	return &MultiLedgerServiceJoinMultiledgerResult{}
+}
+
+var MultiLedgerServiceJoinMultiledgerResult_Success_DEFAULT *BaseResponse
+
+func (p *MultiLedgerServiceJoinMultiledgerResult) GetSuccess() (v *BaseResponse) {
+	if !p.IsSetSuccess() {
+		return MultiLedgerServiceJoinMultiledgerResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+var fieldIDToName_MultiLedgerServiceJoinMultiledgerResult = map[int16]string{
+	0: "success",
+}
+
+func (p *MultiLedgerServiceJoinMultiledgerResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *MultiLedgerServiceJoinMultiledgerResult) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField0(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_MultiLedgerServiceJoinMultiledgerResult[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *MultiLedgerServiceJoinMultiledgerResult) ReadField0(iprot thrift.TProtocol) error {
+	p.Success = NewBaseResponse()
+	if err := p.Success.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *MultiLedgerServiceJoinMultiledgerResult) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("JoinMultiledger_result"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField0(oprot); err != nil {
+			fieldId = 0
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *MultiLedgerServiceJoinMultiledgerResult) writeField0(oprot thrift.TProtocol) (err error) {
+	if p.IsSetSuccess() {
+		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := p.Success.Write(oprot); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
+}
+
+func (p *MultiLedgerServiceJoinMultiledgerResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("MultiLedgerServiceJoinMultiledgerResult(%+v)", *p)
 }

@@ -29,7 +29,7 @@ func main() {
 	config.Init(*path, "config.yaml", "runnerFzu")
 	dal.Init()
 	r := server.New(
-		server.WithHostPorts("0.0.0.0:8899"),
+		server.WithHostPorts("0.0.0.0:8087"),
 		server.WithHandleMethodNotAllowed(true),
 		server.WithMaxRequestBodySize(1<<31),
 	)
