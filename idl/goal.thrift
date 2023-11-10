@@ -44,5 +44,5 @@ service GoalService{
     BaseResponse GoalCreate(1:GoalCreateRequest req)(api.post="/api/goal")
     GoalListGetResponse GoalListGet(1:BaseRequest req)(api.get="/api/goal")
     BaseResponse GoalDelete(1:GoalDelRequest req)(api.delete="/api/goal")
-    BaseResponse GoalPut(1:GoalPutRequest req)(api.put="api/goal")
+    BaseResponse GoalPut(1:GoalPutRequest req)(api.put="/api/goal")
 }
