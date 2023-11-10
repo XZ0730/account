@@ -15,7 +15,8 @@ new:
 .PHONY: gen
 gen:
 	hz update -idl ./idl/api.thrift
-	hz update -idl ./idl/account.thrift
+	hz update -idl ./idl/goal.thrift
+	hz update -idl ./idl/multiLedger.thrift
 
 .PHONY: server
 server:

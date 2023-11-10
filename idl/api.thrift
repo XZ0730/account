@@ -26,6 +26,6 @@ struct RegisterReq{
 service BaseService {
     BaseResponse Ping(1:BaseRequest req)(api.get="/ping")
 
-    BaseResponse Register(1:RegisterReq req)(api.post="/auth/register/pwd")
+    BaseResponse Register(1:RegisterReq req)(api.get="/auth/register/pwd")
     LoginResponse Login(1:LoginRequest req)(api.post="/auth/login/pwd")
 }

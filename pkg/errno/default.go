@@ -14,10 +14,10 @@ var (
 	UserNameError    = NewErrNo(UserNameAuthErrorCode, "user name is not exist")
 	PWDError         = NewErrNo(PwdErrorCode, "pwd not match")
 
-	// Goal
-	TimeError       = NewErrNo(GoalTimeErrorCode, "time set error")
-	GoalCreateError = NewErrNo(GoalCreateErrorCode, "goal create error")
-	GoalGetError    = NewErrNo(GoalGetErrorCode, "goal get error")
-	GoalDelError    = NewErrNo(GoalDelErrorCode, "goal del error")
-	GoalUpdateError = NewErrNo(GoalUpdateErrorCode, "goal update error")
+	//
+	TimeError   = NewErrNo(TimeErrorCode, "time set error")
+	CreateError = NewErrNo(CreateErrorCode, "  create error")
+	GetError    = NewErrNo(GetErrorCode, "  get error")
+	DelError    = NewErrNo(DelErrorCode, "  del error")
+	UpdateError = NewErrNo(UpdateErrorCode, "  update error")
 )
