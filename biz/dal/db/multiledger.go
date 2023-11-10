@@ -1,10 +1,11 @@
 package db
 
-import "time"
+import (
+	"time"
+)
 
 type MultiLedger struct {
-	Id              int64
-	MultiLedgerId   int64
+	MultiLedgerId   int64 `gorm:"primary_key"`
 	MultiLedgerName string
 	Description     string
 	Password        string
@@ -36,7 +37,19 @@ func CreateMultiLedger(ml *MultiLedger) error {
 	return DB.Table("t_multi_ledger").Create(&ml).Error
 }
 
+func GetMultiLedgerByPassword(password string) (id int64, err error) {
+	ml := new(MultiLedger)
+	err = DB.Table("t_multi_ledger").Where("password=?", password).First(&ml).Error
+	id = ml.MultiLedgerId
+	return
+}
+
 func CreateM_user(mid, uid int64) error {
 	m_user := NewM_User(mid, uid)
 	return DB.Table("t_multi_ledger_user").Create(&m_user).Error
+}
+
+func JudgeM_user(mid, uid int64) error {
+	ml := new(MultiLedger)
+	return DB.Table("t_multi_ledger_user").Where("multi_ledger_id=? AND user_id=?", mid, uid).First(ml).Error
 }

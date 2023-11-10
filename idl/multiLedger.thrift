@@ -14,8 +14,11 @@ struct CreateMLRequest{
     3:string multiLedgerName
 }
 
+struct JoinMLRequest{
+    1:string password
+}
 
-
-service MultiLedger{
+service MultiLedgerService{
     BaseResponse CreateMultiledger(1:CreateMLRequest req)(api.post="/api/multiLedger")
+    BaseResponse JoinMultiledger(1:JoinMLRequest req)(api.post="/api/multiLedger/join")   
 }

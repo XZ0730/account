@@ -39,3 +39,13 @@ func _createmultiledgerMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _multiledgerMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _joinmultiledgerMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
