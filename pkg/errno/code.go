@@ -25,7 +25,4 @@ const (
 	GetErrorCode    = 23003
 	DelErrorCode    = 23004
 	UpdateErrorCode = 23005
-
-	// Ledger
-	LedgerCreateErrorCode = 30001
 )

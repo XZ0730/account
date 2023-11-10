@@ -15,11 +15,11 @@ new:
 .PHONY: gen
 gen:
 	hz update -idl ./idl/api.thrift
-	hz update -idl ./idl/goal.thrift
-	hz update -idl ./idl/multiLedger.thrift
+	hz update -idl ./idl/account.thrift
 	hz update -idl ./idl/ledger.thrift
 
 .PHONY: server
 server:
 	make build
+	sed -i 's/\r//' ./output/bootstrap.sh
 	cd output && sh bootstrap.sh
