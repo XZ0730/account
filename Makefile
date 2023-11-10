@@ -21,4 +21,5 @@ gen:
 .PHONY: server
 server:
 	make build
+	sed -i 's/\r//' ./output/bootstrap.sh
 	cd output && sh bootstrap.sh

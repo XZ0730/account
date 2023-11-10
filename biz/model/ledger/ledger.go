@@ -291,7 +291,7 @@ type LedgerModel struct {
 	LedgerId   int32  `thrift:"ledgerId,1" form:"ledgerId" json:"ledgerId" query:"ledgerId"`
 	UserId     int64  `thrift:"userId,2" form:"userId" json:"userId" query:"userId"`
 	LedgerName string `thrift:"ledgerName,3" form:"ledgerName" json:"ledgerName" query:"ledgerName"`
-	Cover      string `thrift:"cover,4" form:"cover" json:"cover" query:"cover"`
+	CoverMsg   string `thrift:"coverMsg,4" form:"coverMsg" json:"coverMsg" query:"coverMsg"`
 	CreateTime string `thrift:"createTime,5" form:"createTime" json:"createTime" query:"createTime"`
 	UpdateTime string `thrift:"updateTime,6" form:"updateTime" json:"updateTime" query:"updateTime"`
 }
@@ -312,8 +312,8 @@ func (p *LedgerModel) GetLedgerName() (v string) {
 	return p.LedgerName
 }
 
-func (p *LedgerModel) GetCover() (v string) {
-	return p.Cover
+func (p *LedgerModel) GetCoverMsg() (v string) {
+	return p.CoverMsg
 }
 
 func (p *LedgerModel) GetCreateTime() (v string) {
@@ -328,7 +328,7 @@ var fieldIDToName_LedgerModel = map[int16]string{
 	1: "ledgerId",
 	2: "userId",
 	3: "ledgerName",
-	4: "cover",
+	4: "coverMsg",
 	5: "createTime",
 	6: "updateTime",
 }
@@ -473,7 +473,7 @@ func (p *LedgerModel) ReadField4(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
-		p.Cover = v
+		p.CoverMsg = v
 	}
 	return nil
 }
@@ -597,10 +597,10 @@ WriteFieldEndError:
 }
 
 func (p *LedgerModel) writeField4(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("cover", thrift.STRING, 4); err != nil {
+	if err = oprot.WriteFieldBegin("coverMsg", thrift.STRING, 4); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteString(p.Cover); err != nil {
+	if err := oprot.WriteString(p.CoverMsg); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -892,7 +892,7 @@ func (p *LedgerCreateResponse) String() string {
 }
 
 type LedgerService interface {
-	LedgerCreate(ctx context.Context, req *BaseRequest) (r *LedgerCreateResponse, err error)
+	LedgerCreate(ctx context.Context, req *LedgerModel) (r *LedgerCreateResponse, err error)
 }
 
 type LedgerServiceClient struct {
@@ -921,7 +921,7 @@ func (p *LedgerServiceClient) Client_() thrift.TClient {
 	return p.c
 }
 
-func (p *LedgerServiceClient) LedgerCreate(ctx context.Context, req *BaseRequest) (r *LedgerCreateResponse, err error) {
+func (p *LedgerServiceClient) LedgerCreate(ctx context.Context, req *LedgerModel) (r *LedgerCreateResponse, err error) {
 	var _args LedgerServiceLedgerCreateArgs
 	_args.Req = req
 	var _result LedgerServiceLedgerCreateResult
@@ -1021,16 +1021,16 @@ func (p *ledgerServiceProcessorLedgerCreate) Process(ctx context.Context, seqId 
 }
 
 type LedgerServiceLedgerCreateArgs struct {
-	Req *BaseRequest `thrift:"req,1"`
+	Req *LedgerModel `thrift:"req,1"`
 }
 
 func NewLedgerServiceLedgerCreateArgs() *LedgerServiceLedgerCreateArgs {
 	return &LedgerServiceLedgerCreateArgs{}
 }
 
-var LedgerServiceLedgerCreateArgs_Req_DEFAULT *BaseRequest
+var LedgerServiceLedgerCreateArgs_Req_DEFAULT *LedgerModel
 
-func (p *LedgerServiceLedgerCreateArgs) GetReq() (v *BaseRequest) {
+func (p *LedgerServiceLedgerCreateArgs) GetReq() (v *LedgerModel) {
 	if !p.IsSetReq() {
 		return LedgerServiceLedgerCreateArgs_Req_DEFAULT
 	}
@@ -1105,7 +1105,7 @@ ReadStructEndError:
 }
 
 func (p *LedgerServiceLedgerCreateArgs) ReadField1(iprot thrift.TProtocol) error {
-	p.Req = NewBaseRequest()
+	p.Req = NewLedgerModel()
 	if err := p.Req.Read(iprot); err != nil {
 		return err
 	}
