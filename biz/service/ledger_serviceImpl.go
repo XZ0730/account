@@ -32,7 +32,7 @@ func (l *LedgerService) CreateLedger(user_id int64, req *ledger.LedgerModel) (co
 		return errno.TimeError.ErrorCode, errno.TimeError.ErrorMsg
 	}
 
-	newLedger := db.NewLedger(req.GetLedgerId(), req.GetUserId(), req.GetLedgerName(), req.GetCover(), c_time, u_time)
+	newLedger := db.NewLedger(req.GetLedgerId(), user_id, req.GetLedgerName(), req.GetCover(), c_time, u_time)
 	if err := db.CreateLedger(newLedger); err != nil {
 		klog.Error("[newLedger]create error:", err.Error())
 		return errno.LedgerCreateError.ErrorCode, errno.LedgerCreateError.ErrorMsg

@@ -26,6 +26,9 @@ func LedgerCreate(ctx context.Context, c *app.RequestContext) {
 	token_byte := c.GetHeader("token")
 	claim, _ := utils.CheckToken(string(token_byte))
 	err = c.BindAndValidate(&req)
+
+	req.UserId = claim.UserId
+
 	if err != nil {
 		pack.PackBase(baseResp, errno.ParamErrorCode, errno.ParamError.ErrorMsg)
 		c.JSON(consts.StatusOK, resp)
