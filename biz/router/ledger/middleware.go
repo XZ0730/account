@@ -20,3 +20,8 @@ func _ledgercreateMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _ledgerdeleteMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

@@ -1,6 +1,7 @@
 package db
 
 import (
+	"github.com/cloudwego/kitex/pkg/klog"
 	"time"
 )
 
@@ -19,4 +20,9 @@ func NewLedger(ledgerId int32, userId int64, ledgerName string, cover string, cr
 
 func CreateLedger(ledger *Ledger) error {
 	return DB.Table("t_ledger").Create(&ledger).Error
+}
+
+func DeleteLedger(ledger *Ledger) error {
+	klog.Info("ledger", ledger)
+	return DB.Table("t_ledger").Where("user_id = ? and ledger_id = ?", ledger.UserId, ledger.LedgerId).Delete(&ledger).Error
 }

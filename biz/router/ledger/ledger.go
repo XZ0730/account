@@ -19,6 +19,7 @@ func Register(r *server.Hertz) {
 	root := r.Group("/", rootMw()...)
 	{
 		_api := root.Group("/api", _apiMw()...)
+		_api.DELETE("/ledger", append(_ledgerdeleteMw(), ledger.LedgerDelete)...)
 		_api.POST("/ledger", append(_ledgercreateMw(), ledger.LedgerCreate)...)
 	}
 }

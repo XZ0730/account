@@ -892,6 +892,8 @@ func (p *LedgerCreateResponse) String() string {
 }
 
 type LedgerService interface {
+	LedgerDelete(ctx context.Context, req *LedgerModel) (r *BaseResponse, err error)
+
 	LedgerCreate(ctx context.Context, req *LedgerModel) (r *LedgerCreateResponse, err error)
 }
 
@@ -921,6 +923,15 @@ func (p *LedgerServiceClient) Client_() thrift.TClient {
 	return p.c
 }
 
+func (p *LedgerServiceClient) LedgerDelete(ctx context.Context, req *LedgerModel) (r *BaseResponse, err error) {
+	var _args LedgerServiceLedgerDeleteArgs
+	_args.Req = req
+	var _result LedgerServiceLedgerDeleteResult
+	if err = p.Client_().Call(ctx, "LedgerDelete", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
 func (p *LedgerServiceClient) LedgerCreate(ctx context.Context, req *LedgerModel) (r *LedgerCreateResponse, err error) {
 	var _args LedgerServiceLedgerCreateArgs
 	_args.Req = req
@@ -951,6 +962,7 @@ func (p *LedgerServiceProcessor) ProcessorMap() map[string]thrift.TProcessorFunc
 
 func NewLedgerServiceProcessor(handler LedgerService) *LedgerServiceProcessor {
 	self := &LedgerServiceProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
+	self.AddToProcessorMap("LedgerDelete", &ledgerServiceProcessorLedgerDelete{handler: handler})
 	self.AddToProcessorMap("LedgerCreate", &ledgerServiceProcessorLedgerCreate{handler: handler})
 	return self
 }
@@ -970,6 +982,54 @@ func (p *LedgerServiceProcessor) Process(ctx context.Context, iprot, oprot thrif
 	oprot.WriteMessageEnd()
 	oprot.Flush(ctx)
 	return false, x
+}
+
+type ledgerServiceProcessorLedgerDelete struct {
+	handler LedgerService
+}
+
+func (p *ledgerServiceProcessorLedgerDelete) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := LedgerServiceLedgerDeleteArgs{}
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("LedgerDelete", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return false, err
+	}
+
+	iprot.ReadMessageEnd()
+	var err2 error
+	result := LedgerServiceLedgerDeleteResult{}
+	var retval *BaseResponse
+	if retval, err2 = p.handler.LedgerDelete(ctx, args.Req); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing LedgerDelete: "+err2.Error())
+		oprot.WriteMessageBegin("LedgerDelete", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return true, err2
+	} else {
+		result.Success = retval
+	}
+	if err2 = oprot.WriteMessageBegin("LedgerDelete", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 = result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
 }
 
 type ledgerServiceProcessorLedgerCreate struct {
@@ -1018,6 +1078,298 @@ func (p *ledgerServiceProcessorLedgerCreate) Process(ctx context.Context, seqId 
 		return
 	}
 	return true, err
+}
+
+type LedgerServiceLedgerDeleteArgs struct {
+	Req *LedgerModel `thrift:"req,1"`
+}
+
+func NewLedgerServiceLedgerDeleteArgs() *LedgerServiceLedgerDeleteArgs {
+	return &LedgerServiceLedgerDeleteArgs{}
+}
+
+var LedgerServiceLedgerDeleteArgs_Req_DEFAULT *LedgerModel
+
+func (p *LedgerServiceLedgerDeleteArgs) GetReq() (v *LedgerModel) {
+	if !p.IsSetReq() {
+		return LedgerServiceLedgerDeleteArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+var fieldIDToName_LedgerServiceLedgerDeleteArgs = map[int16]string{
+	1: "req",
+}
+
+func (p *LedgerServiceLedgerDeleteArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *LedgerServiceLedgerDeleteArgs) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_LedgerServiceLedgerDeleteArgs[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *LedgerServiceLedgerDeleteArgs) ReadField1(iprot thrift.TProtocol) error {
+	p.Req = NewLedgerModel()
+	if err := p.Req.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *LedgerServiceLedgerDeleteArgs) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("LedgerDelete_args"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *LedgerServiceLedgerDeleteArgs) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := p.Req.Write(oprot); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *LedgerServiceLedgerDeleteArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("LedgerServiceLedgerDeleteArgs(%+v)", *p)
+}
+
+type LedgerServiceLedgerDeleteResult struct {
+	Success *BaseResponse `thrift:"success,0,optional"`
+}
+
+func NewLedgerServiceLedgerDeleteResult() *LedgerServiceLedgerDeleteResult {
+	return &LedgerServiceLedgerDeleteResult{}
+}
+
+var LedgerServiceLedgerDeleteResult_Success_DEFAULT *BaseResponse
+
+func (p *LedgerServiceLedgerDeleteResult) GetSuccess() (v *BaseResponse) {
+	if !p.IsSetSuccess() {
+		return LedgerServiceLedgerDeleteResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+var fieldIDToName_LedgerServiceLedgerDeleteResult = map[int16]string{
+	0: "success",
+}
+
+func (p *LedgerServiceLedgerDeleteResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *LedgerServiceLedgerDeleteResult) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField0(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_LedgerServiceLedgerDeleteResult[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *LedgerServiceLedgerDeleteResult) ReadField0(iprot thrift.TProtocol) error {
+	p.Success = NewBaseResponse()
+	if err := p.Success.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *LedgerServiceLedgerDeleteResult) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("LedgerDelete_result"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField0(oprot); err != nil {
+			fieldId = 0
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *LedgerServiceLedgerDeleteResult) writeField0(oprot thrift.TProtocol) (err error) {
+	if p.IsSetSuccess() {
+		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := p.Success.Write(oprot); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
+}
+
+func (p *LedgerServiceLedgerDeleteResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("LedgerServiceLedgerDeleteResult(%+v)", *p)
 }
 
 type LedgerServiceLedgerCreateArgs struct {

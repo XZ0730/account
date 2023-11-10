@@ -28,4 +28,5 @@ const (
 
 	// Ledger
 	LedgerCreateErrorCode = 30001
+	LedgerDeleteErrorCode = 30002
 )

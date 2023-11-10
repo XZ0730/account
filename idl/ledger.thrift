@@ -25,5 +25,6 @@ struct LedgerCreateResponse{
 
 
 service LedgerService{
+    BaseResponse LedgerDelete(1:LedgerModel req)(api.delete = "/api/ledger")
     LedgerCreateResponse LedgerCreate(1:LedgerModel req)(api.post="/api/ledger")
 }

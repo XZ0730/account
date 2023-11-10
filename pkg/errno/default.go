@@ -23,4 +23,5 @@ var (
 
 	// Ledger
 	LedgerCreateError = NewErrNo(LedgerCreateErrorCode, "ledger create error")
+	LedgerDeleteError = NewErrNo(LedgerDeleteErrorCode, "ledger delete error")
 )

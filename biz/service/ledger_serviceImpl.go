@@ -14,18 +14,8 @@ func (l *LedgerService) CreateLedger(user_id int64, req *ledger.LedgerModel) (co
 		klog.Error("[newLedger] error:", err.Error())
 		return errno.TimeError.ErrorCode, errno.TimeError.ErrorMsg
 	}
-	_, err = time.Parse(time.DateTime, req.GetCreateTime())
-	if err != nil {
-		klog.Error("[newLedger] error:", err.Error())
-		return errno.TimeError.ErrorCode, errno.TimeError.ErrorMsg
-	}
 
-	u_time, err := time.Parse(time.DateTime, req.GetCreateTime())
-	if err != nil {
-		klog.Error("[newLedger] error:", err.Error())
-		return errno.TimeError.ErrorCode, errno.TimeError.ErrorMsg
-	}
-	_, err = time.Parse(time.DateTime, req.GetCreateTime())
+	u_time, err := time.Parse(time.DateTime, req.GetUpdateTime())
 	if err != nil {
 		klog.Error("[newLedger] error:", err.Error())
 		return errno.TimeError.ErrorCode, errno.TimeError.ErrorMsg
@@ -35,6 +25,26 @@ func (l *LedgerService) CreateLedger(user_id int64, req *ledger.LedgerModel) (co
 	if err := db.CreateLedger(newLedger); err != nil {
 		klog.Error("[newLedger]create error:", err.Error())
 		return errno.LedgerCreateError.ErrorCode, errno.LedgerCreateError.ErrorMsg
+	}
+	return errno.StatusSuccessCode, errno.StatusSuccessMsg
+}
+
+func (l *LedgerService) DeleteLedger(user_id int64, req *ledger.LedgerModel) (code int64, msg string) {
+	c_time, err := time.Parse(time.DateTime, req.GetCreateTime())
+	if err != nil {
+		klog.Error("[newLedger] error:", err.Error())
+		return errno.TimeError.ErrorCode, errno.TimeError.ErrorMsg
+	}
+	u_time, err := time.Parse(time.DateTime, req.GetCreateTime())
+	if err != nil {
+		klog.Error("[newLedger] error:", err.Error())
+		return errno.TimeError.ErrorCode, errno.TimeError.ErrorMsg
+	}
+
+	newLedger := db.NewLedger(req.GetLedgerId(), user_id, req.GetLedgerName(), req.GetCoverMsg(), c_time, u_time)
+	if err := db.DeleteLedger(newLedger); err != nil {
+		klog.Error("[newLedger]delete error:", err.Error())
+		return errno.LedgerDeleteError.ErrorCode, errno.LedgerDeleteError.ErrorMsg
 	}
 	return errno.StatusSuccessCode, errno.StatusSuccessMsg
 }
