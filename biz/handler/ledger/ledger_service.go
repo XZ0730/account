@@ -61,3 +61,43 @@ func LedgerDelete(ctx context.Context, c *app.RequestContext) {
 	pack.PackBase(baseResp, code, msg)
 	c.JSON(consts.StatusOK, baseResp)
 }
+
+// LedgerUpdate .
+// @router /api/ledger [PUT]
+func LedgerUpdate(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req ledger.LedgerModel
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(ledger.LedgerCreateResponse)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// LedgerList .
+// @router /api/ledger [GET]
+func LedgerList(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req ledger.LedgerModel
+	resp := new(ledger.LedgerListResponse)
+	baseResp := new(base.BaseResponse)
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	err = c.BindAndValidate(&req)
+
+	req.UserId = claim.UserId
+
+	if err != nil {
+		pack.PackBase(baseResp, errno.ParamErrorCode, errno.ParamError.ErrorMsg)
+		c.JSON(consts.StatusOK, baseResp)
+		return
+	}
+
+	ledgers, code, msg := service.NewLedgerService().ListLedgers(claim.UserId)
+	pack.PackLedgerList(resp, code, msg, ledgers)
+	c.JSON(consts.StatusOK, resp)
+}

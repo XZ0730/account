@@ -23,8 +23,15 @@ struct LedgerCreateResponse{
     3: LedgerModel data
 }
 
+struct LedgerListResponse{
+    1: i64 code,
+    2: string msg,
+    3: map<string, list<LedgerModel>> data
+}
 
 service LedgerService{
+    LedgerCreateResponse LedgerUpdate(1:LedgerModel req)(api.put = "/api/ledger")
+    LedgerListResponse LedgerList(1:BaseRequest req)(api.get = "/api/ledger")
     BaseResponse LedgerDelete(1:LedgerModel req)(api.delete = "/api/ledger")
     LedgerCreateResponse LedgerCreate(1:LedgerModel req)(api.post="/api/ledger")
 }

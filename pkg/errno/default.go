@@ -14,14 +14,15 @@ var (
 	UserNameError    = NewErrNo(UserNameAuthErrorCode, "user name is not exist")
 	PWDError         = NewErrNo(PwdErrorCode, "pwd not match")
 
-	//
-	TimeError   = NewErrNo(TimeErrorCode, "time set error")
-	CreateError = NewErrNo(CreateErrorCode, "  create error")
-	GetError    = NewErrNo(GetErrorCode, "  get error")
-	DelError    = NewErrNo(DelErrorCode, "  del error")
-	UpdateError = NewErrNo(UpdateErrorCode, "  update error")
+	// Goal
+	TimeError       = NewErrNo(GoalTimeErrorCode, "time set error")
+	GoalCreateError = NewErrNo(GoalCreateErrorCode, "goal create error")
+	GoalGetError    = NewErrNo(GoalGetErrorCode, "goal get error")
+	GoalDelError    = NewErrNo(GoalDelErrorCode, "goal del error")
+	GoalUpdateError = NewErrNo(GoalUpdateErrorCode, "goal update error")
 
 	// Ledger
 	LedgerCreateError = NewErrNo(LedgerCreateErrorCode, "ledger create error")
 	LedgerDeleteError = NewErrNo(LedgerDeleteErrorCode, "ledger delete error")
+	LedgerGetError    = NewErrNo(ledgerGetErrorCode, "ledger get error")
 )

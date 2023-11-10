@@ -9,3 +9,10 @@ func PackLedgerCreate(resp *ledger.LedgerCreateResponse, code int64, msg string,
 	resp.Msg = msg
 	resp.Data = &model
 }
+
+func PackLedgerList(resp *ledger.LedgerListResponse, code int64, msg string, ledgers []*ledger.LedgerModel) {
+	resp.Code = code
+	resp.Msg = msg
+	resp.Data = make(map[string][]*ledger.LedgerModel)
+	resp.Data["list"] = ledgers
+}

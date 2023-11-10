@@ -5,6 +5,7 @@ import (
 	"github.com/XZ0730/runFzu/biz/model/ledger"
 	"github.com/XZ0730/runFzu/pkg/errno"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"golang.org/x/sync/errgroup"
 	"time"
 )
 
@@ -47,4 +48,34 @@ func (l *LedgerService) DeleteLedger(user_id int64, req *ledger.LedgerModel) (co
 		return errno.LedgerDeleteError.ErrorCode, errno.LedgerDeleteError.ErrorMsg
 	}
 	return errno.StatusSuccessCode, errno.StatusSuccessMsg
+}
+
+func (l *LedgerService) ListLedgers(user_id int64) (ledgerList []*ledger.LedgerModel, code int64, msg string) {
+	ledgers, err := db.ListLedgers(user_id)
+	if err != nil {
+		klog.Info("[ledger]get error:", err.Error())
+		return nil, errno.LedgerGetError.ErrorCode, errno.LedgerGetError.ErrorMsg
+	}
+	var eg errgroup.Group
+	list := make([]*ledger.LedgerModel, 0)
+
+	for _, val := range ledgers {
+		tmp := val
+		eg.Go(func() error {
+			vo_g := new(ledger.LedgerModel)
+			vo_g.LedgerId = tmp.LedgerId
+			vo_g.LedgerName = tmp.LedgerName
+			vo_g.CoverMsg = tmp.CoverMsg
+			vo_g.UserId = tmp.UserId
+			vo_g.CreateTime = tmp.CreateTime.Format(time.DateTime)
+			vo_g.UpdateTime = tmp.UpdateTime.Format(time.DateTime)
+			list = append(list, vo_g)
+			return nil
+		})
+	}
+	if err = eg.Wait(); err != nil {
+		klog.Info("[goal]get error:", err.Error())
+		return nil, errno.GoalGetError.ErrorCode, errno.GoalGetError.ErrorMsg
+	}
+	return list, errno.StatusSuccessCode, errno.StatusSuccessMsg
 }

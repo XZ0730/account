@@ -26,3 +26,11 @@ func DeleteLedger(ledger *Ledger) error {
 	klog.Info("ledger", ledger)
 	return DB.Table("t_ledger").Where("user_id = ? and ledger_id = ?", ledger.UserId, ledger.LedgerId).Delete(&ledger).Error
 }
+func ListLedgers(userId int64) ([]Ledger, error) {
+	ledgers := make([]Ledger, 0)
+	err := DB.Table("t_ledger").Where("user_id=?", userId).Find(&ledgers).Error
+	if err != nil {
+		return nil, err
+	}
+	return ledgers, nil
+}
