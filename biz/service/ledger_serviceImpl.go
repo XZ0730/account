@@ -102,3 +102,13 @@ func (l *LedgerService) UpdateLedger(model *ledger.LedgerModel) (code int64, msg
 
 	return errno.StatusSuccessCode, errno.StatusSuccessMsg
 }
+
+func (l *LedgerService) CreateLedgerConsumption(ledgerId int32, consumptionId int64) (code int64, msg string) {
+	rel := db.NewLedgerConsumptionRel(ledgerId, consumptionId)
+	if err := db.CreateLedgerConsumptionRel(rel); err != nil {
+		klog.Error("[LedgerConsumptionRel] create error:", err.Error())
+		return errno.CreateError.ErrorCode, errno.CreateError.ErrorMsg
+	}
+
+	return errno.StatusSuccessCode, errno.StatusSuccessMsg
+}

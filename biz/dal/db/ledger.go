@@ -38,3 +38,11 @@ func UpdateLedger(ledger *Ledger) error {
 		Updates(&Ledger{LedgerName: ledger.LedgerName, CreateTime: ledger.CreateTime, UpdateTime: ledger.UpdateTime,
 			CoverMsg: ledger.CoverMsg}).Error
 }
+
+func CheckUserLedger(userId int64, ledgerId int64) bool {
+	ledger := Ledger{}
+	err := DB.Table("t_ledger").Where("user_id = ? and ledger_id = ?", userId, ledgerId).
+		First(&ledger).Error
+
+	return err == nil
+}
