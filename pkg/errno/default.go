@@ -20,4 +20,8 @@ var (
 	GetError    = NewErrNo(GetErrorCode, "  get error")
 	DelError    = NewErrNo(DelErrorCode, "  del error")
 	UpdateError = NewErrNo(UpdateErrorCode, "  update error")
+
+	//
+	NotExistError = NewErrNo(NotExistErrorCode, "record not exist")
+	ExistError    = NewErrNo(ExistErrorCode, "record have existed")
 )
