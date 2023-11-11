@@ -35,3 +35,33 @@ func _ledgerlistMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _ledgerMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _ledgeraddconsumptionMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _ledgerdeleteconsumptionMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _ledger0Mw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _ledgerbalanceMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _ledgerconsumptionlistMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

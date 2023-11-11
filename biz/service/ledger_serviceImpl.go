@@ -17,7 +17,7 @@ func (l *LedgerService) CreateLedger(user_id int64, req *ledger.LedgerModel) (co
 		return errno.TimeError.ErrorCode, errno.TimeError.ErrorMsg
 	}
 
-	u_time, err := time.Parse(time.DateTime, req.GetCreateTime())
+	u_time, err := time.Parse(time.DateTime, req.GetUpdateTime())
 	if err != nil {
 		klog.Error("[newLedger] error:", err.Error())
 		return errno.TimeError.ErrorCode, errno.TimeError.ErrorMsg
@@ -79,4 +79,36 @@ func (l *LedgerService) ListLedgers(user_id int64) (ledgerList []*ledger.LedgerM
 		return nil, errno.GetError.ErrorCode, errno.GetError.ErrorMsg
 	}
 	return list, errno.StatusSuccessCode, errno.StatusSuccessMsg
+}
+
+func (l *LedgerService) UpdateLedger(model *ledger.LedgerModel) (code int64, msg string) {
+	c_time, err := time.Parse(time.DateTime, model.GetCreateTime())
+	if err != nil {
+		klog.Error("[ledger] error:", err.Error())
+		return errno.TimeError.ErrorCode, errno.TimeError.ErrorMsg
+	}
+	u_time, err := time.Parse(time.DateTime, model.GetUpdateTime())
+	if err != nil {
+		klog.Error("[ledger] error:", err.Error())
+		return errno.TimeError.ErrorCode, errno.TimeError.ErrorMsg
+	}
+	ledger := db.NewLedger(model.GetLedgerId(), model.GetUserId(), model.GetLedgerName(), model.GetCoverMsg(), c_time,
+		u_time)
+
+	if err = db.UpdateLedger(ledger); err != nil {
+		klog.Error("[ledger] update error:", err.Error())
+		return errno.UpdateError.ErrorCode, errno.UpdateError.ErrorMsg
+	}
+
+	return errno.StatusSuccessCode, errno.StatusSuccessMsg
+}
+
+func (l *LedgerService) CreateLedgerConsumption(ledgerId int32, consumptionId int64) (code int64, msg string) {
+	rel := db.NewLedgerConsumptionRel(ledgerId, consumptionId)
+	if err := db.CreateLedgerConsumptionRel(rel); err != nil {
+		klog.Error("[LedgerConsumptionRel] create error:", err.Error())
+		return errno.CreateError.ErrorCode, errno.CreateError.ErrorMsg
+	}
+
+	return errno.StatusSuccessCode, errno.StatusSuccessMsg
 }

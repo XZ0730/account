@@ -4,6 +4,7 @@ package ledger
 
 import (
 	"context"
+	"github.com/XZ0730/runFzu/biz/dal/db"
 	"github.com/XZ0730/runFzu/biz/model/base"
 	ledger "github.com/XZ0730/runFzu/biz/model/ledger"
 	"github.com/XZ0730/runFzu/biz/pack"
@@ -12,6 +13,7 @@ import (
 	"github.com/XZ0730/runFzu/pkg/utils"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"strconv"
 )
 
 // LedgerCreate .
@@ -67,14 +69,22 @@ func LedgerDelete(ctx context.Context, c *app.RequestContext) {
 func LedgerUpdate(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req ledger.LedgerModel
+	resp := new(ledger.LedgerCreateResponse)
+	baseResp := new(base.BaseResponse)
+
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
 	err = c.BindAndValidate(&req)
+
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.PackBase(baseResp, errno.ParamErrorCode, errno.ParamError.ErrorMsg)
+		c.JSON(consts.StatusOK, baseResp)
 		return
 	}
 
-	resp := new(ledger.LedgerCreateResponse)
-
+	req.UserId = claim.UserId
+	code, msg := service.NewLedgerService().UpdateLedger(&req)
+	pack.PackLedgerCreate(resp, code, msg, req)
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -99,5 +109,93 @@ func LedgerList(ctx context.Context, c *app.RequestContext) {
 
 	ledgers, code, msg := service.NewLedgerService().ListLedgers(claim.UserId)
 	pack.PackLedgerList(resp, code, msg, ledgers)
+	c.JSON(consts.StatusOK, resp)
+}
+
+// LedgerBalance .
+// @router /api/ledger/balance [GET]
+func LedgerBalance(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req ledger.BaseRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(ledger.LedgerBalanceResponse)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// LedgerConsumptionList .
+// @router /api/ledger/consumption [GET]
+func LedgerConsumptionList(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req ledger.BaseRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(ledger.LedgerConsumptionListResponse)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// LedgerAddConsumption .
+// @router /api/ledger/consumption [POST]
+func LedgerAddConsumption(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req ledger.BaseRequest
+	baseResp := new(base.BaseResponse)
+	ledgerId, err := strconv.Atoi(c.Query("ledgerId"))
+	if err != nil {
+		pack.PackBase(baseResp, errno.ParamErrorCode, errno.ParamError.ErrorMsg)
+		c.JSON(consts.StatusOK, baseResp)
+		return
+	}
+	consumptionId, err := strconv.Atoi(c.Query("consumptionId"))
+	if err != nil {
+		pack.PackBase(baseResp, errno.ParamErrorCode, errno.ParamError.ErrorMsg)
+		c.JSON(consts.StatusOK, baseResp)
+		return
+	}
+
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		pack.PackBase(baseResp, errno.ParamErrorCode, errno.ParamError.ErrorMsg)
+		c.JSON(consts.StatusOK, baseResp)
+		return
+	}
+
+	if !db.CheckUserLedger(claim.UserId, int64(ledgerId)) {
+		pack.PackBase(baseResp, errno.AuthorizationFailedErrCode, errno.AuthorizationFailedError.ErrorMsg)
+		c.JSON(consts.StatusOK, baseResp)
+		return
+	}
+
+	resp := new(base.BaseResponse)
+	code, msg := service.NewLedgerService().CreateLedgerConsumption(int32(ledgerId), int64(consumptionId))
+	pack.PackBase(resp, code, msg)
+	c.JSON(consts.StatusOK, resp)
+}
+
+// LedgerDeleteConsumption .
+// @router /api/ledger/consumption [DELETE]
+func LedgerDeleteConsumption(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req ledger.BaseRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(ledger.BaseResponse)
+
 	c.JSON(consts.StatusOK, resp)
 }

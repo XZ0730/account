@@ -20,8 +20,16 @@ func Register(r *server.Hertz) {
 	{
 		_api := root.Group("/api", _apiMw()...)
 		_api.PUT("/ledger", append(_ledgerupdateMw(), ledger.LedgerUpdate)...)
+		_ledger := _api.Group("/ledger", _ledgerMw()...)
+		_ledger.POST("/consumption", append(_ledgeraddconsumptionMw(), ledger.LedgerAddConsumption)...)
+		_ledger.DELETE("/consumption", append(_ledgerdeleteconsumptionMw(), ledger.LedgerDeleteConsumption)...)
 		_api.GET("/ledger", append(_ledgerlistMw(), ledger.LedgerList)...)
 		_api.DELETE("/ledger", append(_ledgerdeleteMw(), ledger.LedgerDelete)...)
 		_api.POST("/ledger", append(_ledgercreateMw(), ledger.LedgerCreate)...)
+		{
+			_ledger0 := _api.Group("/ledger", _ledger0Mw()...)
+			_ledger0.GET("/balance", append(_ledgerbalanceMw(), ledger.LedgerBalance)...)
+			_ledger0.GET("/consumption", append(_ledgerconsumptionlistMw(), ledger.LedgerConsumptionList)...)
+		}
 	}
 }
