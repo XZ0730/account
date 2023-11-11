@@ -67,14 +67,22 @@ func LedgerDelete(ctx context.Context, c *app.RequestContext) {
 func LedgerUpdate(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req ledger.LedgerModel
+	resp := new(ledger.LedgerCreateResponse)
+	baseResp := new(base.BaseResponse)
+
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
 	err = c.BindAndValidate(&req)
+
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.PackBase(baseResp, errno.ParamErrorCode, errno.ParamError.ErrorMsg)
+		c.JSON(consts.StatusOK, baseResp)
 		return
 	}
 
-	resp := new(ledger.LedgerCreateResponse)
-
+	req.UserId = claim.UserId
+	code, msg := service.NewLedgerService().UpdateLedger(&req)
+	pack.PackLedgerCreate(resp, code, msg, req)
 	c.JSON(consts.StatusOK, resp)
 }
 

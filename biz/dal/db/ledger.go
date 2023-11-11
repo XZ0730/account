@@ -1,7 +1,6 @@
 package db
 
 import (
-	"github.com/cloudwego/kitex/pkg/klog"
 	"time"
 )
 
@@ -23,7 +22,6 @@ func CreateLedger(ledger *Ledger) error {
 }
 
 func DeleteLedger(ledger *Ledger) error {
-	klog.Info("ledger", ledger)
 	return DB.Table("t_ledger").Where("user_id = ? and ledger_id = ?", ledger.UserId, ledger.LedgerId).Delete(&ledger).Error
 }
 func ListLedgers(userId int64) ([]Ledger, error) {
@@ -33,4 +31,10 @@ func ListLedgers(userId int64) ([]Ledger, error) {
 		return nil, err
 	}
 	return ledgers, nil
+}
+
+func UpdateLedger(ledger *Ledger) error {
+	return DB.Table("t_ledger").Where("ledger_id=? AND user_id=?", ledger.LedgerId, ledger.UserId).
+		Updates(&Ledger{LedgerName: ledger.LedgerName, CreateTime: ledger.CreateTime, UpdateTime: ledger.UpdateTime,
+			CoverMsg: ledger.CoverMsg}).Error
 }
