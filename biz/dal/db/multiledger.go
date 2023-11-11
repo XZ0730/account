@@ -17,6 +17,12 @@ type M_User struct {
 	UserId        int64
 }
 
+type M_Consumption struct {
+	MultiLedgerId int64
+	ConsumptionId int64
+	UserId        int64
+}
+
 func NewMultiLedger(name string, desc string, pwd string) *MultiLedger {
 	return &MultiLedger{
 		MultiLedgerName: name,
@@ -29,6 +35,14 @@ func NewM_User(mid, uid int64) *M_User {
 	return &M_User{
 		MultiLedgerId: mid,
 		UserId:        uid,
+	}
+}
+
+func NewM_Consumption(mid, uid, cid int64) *M_Consumption {
+	return &M_Consumption{
+		UserId:        uid,
+		MultiLedgerId: mid,
+		ConsumptionId: cid,
 	}
 }
 
@@ -52,4 +66,18 @@ func CreateM_user(mid, uid int64) error {
 func JudgeM_user(mid, uid int64) error {
 	ml := new(MultiLedger)
 	return DB.Table("t_multi_ledger_user").Where("multi_ledger_id=? AND user_id=?", mid, uid).First(ml).Error
+}
+
+func CreateM_Consumption(mid, uid, cid int64) error {
+	return DB.Table("t_multi_ledger_consumption").Create(NewM_Consumption(mid, uid, cid)).Error
+}
+
+func JudgeM_consumption(mid, uid, cid int64) error {
+	return DB.Table("t_multi_ledger_consumption").Where("multi_ledger_id=? AND consumption_id=? AND user_id=?", mid, cid, uid).First(NewM_Consumption(mid, uid, cid)).Error
+}
+
+func GetMl_Consumption(mid int64) ([]*Consumption, error) {
+	clist := make([]*Consumption, 0)
+	err := DB.Table("t_consumption").Joins("JOIN t_multi_ledger_consumption ON t_multi_ledger_consumption.consumption_id=t_consumption.consumption_id AND t_multi_ledger_consumption.multi_ledger_id=?", mid).Find(&clist).Error
+	return clist, err
 }

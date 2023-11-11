@@ -52,3 +52,39 @@ func JoinMultiledger(ctx context.Context, c *app.RequestContext) {
 	pack.PackBase(resp, code, msg)
 	c.JSON(consts.StatusOK, resp)
 }
+
+// InsertMlConsumption .
+// @router /api/multiLedger/consumption [POST]
+func InsertMlConsumption(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req multiledger.InsertMlConsumReq
+	resp := new(base.BaseResponse)
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		pack.PackBase(resp, errno.ParamError.ErrorCode, errno.ParamError.ErrorMsg)
+		c.JSON(consts.StatusOK, resp)
+		return
+	}
+	code, msg := service.NewMultiLedgerService().InsertMlConsumption(claim.UserId, &req)
+	pack.PackBase(resp, code, msg)
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetMulConsumption .
+// @router /api/multiLedger/consumption [GET]
+func GetMulConsumption(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req multiledger.GetMulConsumptionReq
+	resp := new(multiledger.GetMulConsumptionResp)
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		pack.PackML_GetConsumption(resp, errno.ParamError.ErrorCode, errno.ParamError.ErrorMsg, nil)
+		c.JSON(consts.StatusOK, resp)
+		return
+	}
+	cm, code, msg := service.NewMultiLedgerService().GetMulConsumption(req.GetMultiLedgerId())
+	pack.PackML_GetConsumption(resp, code, msg, cm)
+	c.JSON(consts.StatusOK, resp)
+}

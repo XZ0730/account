@@ -20,9 +20,11 @@ const (
 	UserNameAuthErrorCode      = 10008 //用户名错误
 
 	//
-	TimeErrorCode   = 23001
-	CreateErrorCode = 23002
-	GetErrorCode    = 23003
-	DelErrorCode    = 23004
-	UpdateErrorCode = 23005
+	TimeErrorCode     = 23001
+	CreateErrorCode   = 23002
+	GetErrorCode      = 23003
+	DelErrorCode      = 23004
+	UpdateErrorCode   = 23005
+	NotExistErrorCode = 23006
+	ExistErrorCode    = 23007
 )

@@ -49,3 +49,13 @@ func _joinmultiledgerMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _insertmlconsumptionMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getmulconsumptionMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
