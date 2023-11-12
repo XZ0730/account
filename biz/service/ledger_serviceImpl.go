@@ -75,7 +75,7 @@ func (l *LedgerService) ListLedgers(user_id int64) (ledgerList []*ledger.LedgerM
 		})
 	}
 	if err = eg.Wait(); err != nil {
-		klog.Info("[goal]get error:", err.Error())
+		klog.Info("[ledger]get error:", err.Error())
 		return nil, errno.GetError.ErrorCode, errno.GetError.ErrorMsg
 	}
 	return list, errno.StatusSuccessCode, errno.StatusSuccessMsg
@@ -110,5 +110,45 @@ func (l *LedgerService) CreateLedgerConsumption(ledgerId int32, consumptionId in
 		return errno.CreateError.ErrorCode, errno.CreateError.ErrorMsg
 	}
 
+	return errno.StatusSuccessCode, errno.StatusSuccessMsg
+}
+
+func (l *LedgerService) LedgerConsumptionList(ledgerId int32) (consumptionList []*ledger.ConsumptionModel, code int64, msg string) {
+	cm := make([]*ledger.ConsumptionModel, 0)
+	cl, err := db.ConsumptionList(ledgerId)
+
+	if err != nil {
+		klog.Error("[ledger_consumption]error:", err.Error())
+		return nil, errno.GetError.ErrorCode, errno.GetError.ErrorMsg
+	}
+	var eg errgroup.Group
+	for _, val := range cl {
+		tmp := val
+		eg.Go(func() error {
+			vo_g := new(ledger.ConsumptionModel)
+			vo_g.ConsumptionId = tmp.ConsumptionId
+			vo_g.ConsumptionName = tmp.ConsumptionName
+			vo_g.Description = tmp.Description
+			vo_g.Amount = tmp.Amount
+			vo_g.TypeId = tmp.TypeId
+			vo_g.Store = tmp.Store
+			vo_g.ConsumeTime = tmp.ConsumeTime.Format(time.DateTime)
+			vo_g.Credential = tmp.Credential
+			cm = append(cm, vo_g)
+			return nil
+		})
+	}
+	if err = eg.Wait(); err != nil {
+		klog.Info("[ledger_consumption] get error:", err.Error())
+		return nil, errno.GetError.ErrorCode, errno.GetError.ErrorMsg
+	}
+	return cm, errno.StatusSuccessCode, errno.StatusSuccessMsg
+}
+
+func (l *LedgerService) DeleteLedgerConsumption(ledgerId int32, consumptionId int64) (code int64, msg string) {
+	if err := db.DeleteLedgerConsumption(ledgerId, consumptionId); err != nil {
+		klog.Info("[ledger_consumption] delete error:", err.Error())
+		return errno.DelErrorCode, errno.DelError.ErrorMsg
+	}
 	return errno.StatusSuccessCode, errno.StatusSuccessMsg
 }

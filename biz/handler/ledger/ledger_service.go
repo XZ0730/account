@@ -133,14 +133,32 @@ func LedgerBalance(ctx context.Context, c *app.RequestContext) {
 func LedgerConsumptionList(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req ledger.BaseRequest
+	baseResp := new(base.BaseResponse)
+	ledgerId, err := strconv.Atoi(c.Query("ledgerId"))
+	if err != nil {
+		pack.PackBase(baseResp, errno.ParamErrorCode, errno.ParamError.ErrorMsg)
+		c.JSON(consts.StatusOK, baseResp)
+		return
+	}
+
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.PackBase(baseResp, errno.ParamErrorCode, errno.ParamError.ErrorMsg)
+		c.JSON(consts.StatusOK, baseResp)
+		return
+	}
+
+	if !db.CheckUserLedger(claim.UserId, int64(ledgerId)) {
+		pack.PackBase(baseResp, errno.AuthorizationFailedErrCode, errno.AuthorizationFailedError.ErrorMsg)
+		c.JSON(consts.StatusOK, baseResp)
 		return
 	}
 
 	resp := new(ledger.LedgerConsumptionListResponse)
-
+	consumptions, code, msg := service.NewLedgerService().LedgerConsumptionList(int32(ledgerId))
+	pack.PackConsumptionList(resp, code, msg, consumptions)
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -189,13 +207,37 @@ func LedgerAddConsumption(ctx context.Context, c *app.RequestContext) {
 func LedgerDeleteConsumption(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req ledger.BaseRequest
-	err = c.BindAndValidate(&req)
+	baseResp := new(base.BaseResponse)
+	ledgerId, err := strconv.Atoi(c.Query("ledgerId"))
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.PackBase(baseResp, errno.ParamErrorCode, errno.ParamError.ErrorMsg)
+		c.JSON(consts.StatusOK, baseResp)
+		return
+	}
+	consumptionId, err := strconv.Atoi(c.Query("consumptionId"))
+	if err != nil {
+		pack.PackBase(baseResp, errno.ParamErrorCode, errno.ParamError.ErrorMsg)
+		c.JSON(consts.StatusOK, baseResp)
 		return
 	}
 
-	resp := new(ledger.BaseResponse)
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		pack.PackBase(baseResp, errno.ParamErrorCode, errno.ParamError.ErrorMsg)
+		c.JSON(consts.StatusOK, baseResp)
+		return
+	}
 
+	if !db.CheckUserLedger(claim.UserId, int64(ledgerId)) {
+		pack.PackBase(baseResp, errno.AuthorizationFailedErrCode, errno.AuthorizationFailedError.ErrorMsg)
+		c.JSON(consts.StatusOK, baseResp)
+		return
+	}
+
+	resp := new(base.BaseResponse)
+	code, msg := service.NewLedgerService().DeleteLedgerConsumption(int32(ledgerId), int64(consumptionId))
+	pack.PackBase(resp, code, msg)
 	c.JSON(consts.StatusOK, resp)
 }
