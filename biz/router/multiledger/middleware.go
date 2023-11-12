@@ -64,3 +64,8 @@ func _getmultiledgerlistMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _delmultiledgerMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

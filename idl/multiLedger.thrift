@@ -60,6 +60,10 @@ struct GetMultiLedgerListResp{
     2: map<string,list<MultiledgerModel>> data
 }
 
+struct DelMultiLedgerReq{
+    1: i64  multiLedgerId
+}
+
 service MultiLedgerService{
     BaseResponse CreateMultiledger(1:CreateMLRequest req)(api.post="/api/multiLedger")
     BaseResponse JoinMultiledger(1:JoinMLRequest req)(api.post="/api/multiLedger/join") 
@@ -67,4 +71,6 @@ service MultiLedgerService{
 
     GetMulConsumptionResp GetMulConsumption(1:GetMulConsumptionReq req)(api.get="/api/multiLedger/consumption")
     GetMultiLedgerListResp GetMultiLedgerList(1:BaseRequest req)(api.get="/api/multiLedger")
+
+    BaseResponse DelMultiLedger(1:DelMultiLedgerReq req)(api.delete="/api/multiLedger")
 }

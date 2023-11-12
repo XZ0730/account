@@ -87,3 +87,19 @@ func GetMltiledgerList(uid int64) ([]*MultiLedger, error) {
 	err := DB.Table("t_multi_ledger").Joins("JOIN t_multi_ledger_user ON t_multi_ledger_user.multi_ledger_id = t_multi_ledger.multi_ledger_id AND t_multi_ledger_user.user_id=?", uid).Find(&mlist).Error
 	return mlist, err
 }
+
+func DelMultiLedger(mid int64) error {
+	return DB.Table("t_multi_ledger").Where("multi_ledger_id=?", mid).Unscoped().Delete(&MultiLedger{MultiLedgerId: mid}).Error
+}
+
+func DelMultiLedgerConsumption(mid int64) error {
+	clist := make([]*Consumption, 0)
+	DB.Table("t_consumption").Joins("JOIN t_multi_ledger_consumption ON t_multi_ledger_consumption.consumption_id = t_consumption.consumption_id AND t_multi_ledger_consumption.multi_ledger_id=?", mid).Find(&clist)
+	for _, v := range clist {
+		err := DB.Table("t_consumption").Where("consumption_id=?", v.ConsumptionId).Unscoped().Delete(v).Error
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}

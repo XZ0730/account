@@ -121,3 +121,21 @@ func (m *MultiLedgerService) GetMultiLedgerList(uid int64) ([]*multiledger.Multi
 
 	return mm, errno.StatusSuccessCode, errno.StatusSuccessMsg
 }
+
+func (m *MultiLedgerService) DelMultiLedger(uid, mid int64) (code int64, msg string) {
+
+	if err := db.JudgeM_user(mid, uid); err != nil {
+		klog.Error("[multi_ledger]error:", err.Error())
+		return errno.NotExistError.ErrorCode, errno.NotExistError.ErrorMsg
+	}
+	if err := db.DelMultiLedger(mid); err != nil {
+		klog.Error("[multi_ledger]error:", err.Error())
+		return errno.DelError.ErrorCode, errno.DelError.ErrorMsg
+	}
+	if err := db.DelMultiLedgerConsumption(mid); err != nil {
+		klog.Error("[multi_ledger]error:", err.Error())
+		return errno.DelError.ErrorCode, errno.DelError.ErrorMsg
+	}
+
+	return errno.StatusSuccessCode, errno.StatusSuccessMsg
+}
