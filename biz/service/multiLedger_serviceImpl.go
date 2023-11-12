@@ -92,3 +92,32 @@ func (m *MultiLedgerService) GetMulConsumption(mid int64) ([]*multiledger.Consum
 	}
 	return cm, errno.StatusSuccessCode, errno.StatusSuccessMsg
 }
+
+func (m *MultiLedgerService) GetMultiLedgerList(uid int64) ([]*multiledger.MultiledgerModel, int64, string) {
+	mm := make([]*multiledger.MultiledgerModel, 0)
+	ml, err := db.GetMltiledgerList(uid)
+	if err != nil {
+		klog.Error("[multi_ledger]error:", err.Error())
+		return nil, errno.GetError.ErrorCode, errno.GetError.ErrorMsg
+	}
+	var eg errgroup.Group
+	for _, v := range ml {
+		tmp := v
+		eg.Go(func() error {
+			vo_g := new(multiledger.MultiledgerModel)
+			vo_g.MultiLedgerId = tmp.MultiLedgerId
+			vo_g.Description = tmp.Description
+			vo_g.ModifyTime = tmp.ModifyTime.Format(time.DateTime)
+			vo_g.MultiLedgerName = tmp.MultiLedgerName
+			vo_g.Password = tmp.Password
+			mm = append(mm, vo_g)
+			return nil
+		})
+	}
+	if err := eg.Wait(); err != nil {
+		klog.Error("[multi_ledger]error:", err.Error())
+		return nil, errno.CreateError.ErrorCode, errno.CreateError.ErrorMsg
+	}
+
+	return mm, errno.StatusSuccessCode, errno.StatusSuccessMsg
+}

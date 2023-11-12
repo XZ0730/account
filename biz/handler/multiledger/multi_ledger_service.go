@@ -88,3 +88,22 @@ func GetMulConsumption(ctx context.Context, c *app.RequestContext) {
 	pack.PackML_GetConsumption(resp, code, msg, cm)
 	c.JSON(consts.StatusOK, resp)
 }
+
+// GetMultiLedgerList .
+// @router /api/multiLedger [POST]
+func GetMultiLedgerList(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req multiledger.BaseRequest
+	resp := new(multiledger.GetMultiLedgerListResp)
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		pack.PackML_GetMLlist(resp, errno.ParamError.ErrorCode, errno.ParamError.ErrorMsg, nil)
+		c.JSON(consts.StatusOK, resp)
+		return
+	}
+	mm, code, msg := service.NewMultiLedgerService().GetMultiLedgerList(claim.UserId)
+	pack.PackML_GetMLlist(resp, code, msg, mm)
+	c.JSON(consts.StatusOK, resp)
+}

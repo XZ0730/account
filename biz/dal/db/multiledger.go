@@ -81,3 +81,9 @@ func GetMl_Consumption(mid int64) ([]*Consumption, error) {
 	err := DB.Table("t_consumption").Joins("JOIN t_multi_ledger_consumption ON t_multi_ledger_consumption.consumption_id=t_consumption.consumption_id AND t_multi_ledger_consumption.multi_ledger_id=?", mid).Find(&clist).Error
 	return clist, err
 }
+
+func GetMltiledgerList(uid int64) ([]*MultiLedger, error) {
+	mlist := make([]*MultiLedger, 0)
+	err := DB.Table("t_multi_ledger").Joins("JOIN t_multi_ledger_user ON t_multi_ledger_user.multi_ledger_id = t_multi_ledger.multi_ledger_id AND t_multi_ledger_user.user_id=?", uid).Find(&mlist).Error
+	return mlist, err
+}

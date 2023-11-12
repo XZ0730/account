@@ -23,14 +23,6 @@ struct InsertMlConsumReq{
     2: i64 multiLedgerId
 }
 
-# ConsumptionId
-# Amount
-# ConsumptionName
-# Description
-# TypeId
-# Store
-# ConsumeTime
-# Credential
 struct ConsumptionModel{
     1: i64 consumptionId
     2: string consumptionName
@@ -40,6 +32,18 @@ struct ConsumptionModel{
     6: string store
     7: string consumeTime
     8: string credential
+}
+# MultiLedgerId
+# MultiLedgerName
+# Description
+# Password
+# ModifyTime
+struct MultiledgerModel{
+    1: i64 multiLedgerId
+    2: string multiLedgerName
+    3: string description
+    4: string password
+    5: string modifyTime
 }
 
 struct GetMulConsumptionReq{
@@ -51,10 +55,16 @@ struct GetMulConsumptionResp{
     2: map<string,list<ConsumptionModel>> data
 }
 
+struct GetMultiLedgerListResp{
+    1: BaseResponse  base
+    2: map<string,list<MultiledgerModel>> data
+}
+
 service MultiLedgerService{
     BaseResponse CreateMultiledger(1:CreateMLRequest req)(api.post="/api/multiLedger")
     BaseResponse JoinMultiledger(1:JoinMLRequest req)(api.post="/api/multiLedger/join") 
     BaseResponse InsertMlConsumption(1:InsertMlConsumReq req)(api.post="/api/multiLedger/consumption")
 
     GetMulConsumptionResp GetMulConsumption(1:GetMulConsumptionReq req)(api.get="/api/multiLedger/consumption")
+    GetMultiLedgerListResp GetMultiLedgerList(1:BaseRequest req)(api.get="/api/multiLedger")
 }

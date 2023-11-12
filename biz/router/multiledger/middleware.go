@@ -59,3 +59,8 @@ func _getmulconsumptionMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _getmultiledgerlistMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
