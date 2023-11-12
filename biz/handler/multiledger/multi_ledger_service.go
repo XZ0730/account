@@ -107,3 +107,22 @@ func GetMultiLedgerList(ctx context.Context, c *app.RequestContext) {
 	pack.PackML_GetMLlist(resp, code, msg, mm)
 	c.JSON(consts.StatusOK, resp)
 }
+
+// DelMultiLedger .
+// @router /api/multiLedger [DELETE]
+func DelMultiLedger(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req multiledger.DelMultiLedgerReq
+	resp := new(base.BaseResponse)
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		pack.PackBase(resp, errno.ParamError.ErrorCode, errno.ParamError.ErrorMsg)
+		c.JSON(consts.StatusOK, resp)
+		return
+	}
+	code, msg := service.NewMultiLedgerService().DelMultiLedger(claim.UserId, req.GetMultiLedgerId())
+	pack.PackBase(resp, code, msg)
+	c.JSON(consts.StatusOK, resp)
+}
