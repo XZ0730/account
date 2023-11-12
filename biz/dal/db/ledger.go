@@ -46,3 +46,20 @@ func CheckUserLedger(userId int64, ledgerId int64) bool {
 
 	return err == nil
 }
+
+func ConsumptionList(ledgerId int32) ([]*Consumption, error) {
+	consumptions := make([]*Consumption, 0)
+	err := DB.Table("t_consumption").
+		Joins("JOIN t_ledger_consumption ON t_ledger_consumption.consumption_id=t_consumption.consumption_id AND t_ledger_consumption.ledger_id=?", ledgerId).
+		Find(&consumptions).
+		Error
+
+	return consumptions, err
+}
+
+func DeleteLedgerConsumption(ledgerId int32, consumptionId int64) error {
+	return DB.Table("t_ledger_consumption").
+		Where("ledger_id = ? and consumption_id = ?", ledgerId, consumptionId).
+		Delete(&Ledger{}).
+		Error
+}

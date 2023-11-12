@@ -16,3 +16,10 @@ func PackLedgerList(resp *ledger.LedgerListResponse, code int64, msg string, led
 	resp.Data = make(map[string][]*ledger.LedgerModel)
 	resp.Data["list"] = ledgers
 }
+
+func PackConsumptionList(resp *ledger.LedgerConsumptionListResponse, code int64, msg string, list []*ledger.ConsumptionModel) {
+	resp.Code = code
+	resp.Msg = msg
+	resp.Data = make(map[string][]*ledger.ConsumptionModel)
+	resp.Data["list"] = list
+}
