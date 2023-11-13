@@ -64,6 +64,18 @@ struct DelMultiLedgerReq{
     1: i64  multiLedgerId
 }
 
+struct PutMultiLedgerReq{
+    1: i64 multiLedgerId
+    2: string multiLedgerName
+    3: string description
+    4: string password
+}
+
+struct DelMulConsumptionReq{
+    1: i64 consId
+    2: i64 multiLedgerId
+}
+
 service MultiLedgerService{
     BaseResponse CreateMultiledger(1:CreateMLRequest req)(api.post="/api/multiLedger")
     BaseResponse JoinMultiledger(1:JoinMLRequest req)(api.post="/api/multiLedger/join") 
@@ -73,4 +85,6 @@ service MultiLedgerService{
     GetMultiLedgerListResp GetMultiLedgerList(1:BaseRequest req)(api.get="/api/multiLedger")
 
     BaseResponse DelMultiLedger(1:DelMultiLedgerReq req)(api.delete="/api/multiLedger")
+    BaseResponse PutMultiLedger(1:PutMultiLedgerReq req)(api.put="/api/multiLedger")
+    BaseResponse DelMulConsumption(1:DelMulConsumptionReq req)(api.delete="/api/multiLedger/consumption")
 }

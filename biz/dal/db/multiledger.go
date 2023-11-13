@@ -103,3 +103,7 @@ func DelMultiLedgerConsumption(mid int64) error {
 	}
 	return nil
 }
+
+func UpdateMultiLedger(ml *MultiLedger) error {
+	return DB.Table("t_multi_ledger").Where("multi_ledger_id=?", ml.MultiLedgerId).Updates(&ml).Error
+}

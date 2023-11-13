@@ -69,3 +69,18 @@ func _delmultiledgerMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _putmultiledgerMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _delmulconsumptionMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _multiledger0Mw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

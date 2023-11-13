@@ -139,3 +139,19 @@ func (m *MultiLedgerService) DelMultiLedger(uid, mid int64) (code int64, msg str
 
 	return errno.StatusSuccessCode, errno.StatusSuccessMsg
 }
+
+func (m *MultiLedgerService) PutMultiLedger(uid int64, req *multiledger.PutMultiLedgerReq) (code int64, msg string) {
+	if err := db.JudgeM_user(req.GetMultiLedgerId(), uid); err != nil {
+		klog.Error("[multi_ledger]error:", err.Error())
+		return errno.NotExistError.ErrorCode, errno.NotExistError.ErrorMsg
+	}
+	ml := db.NewMultiLedger(req.GetMultiLedgerName(), req.GetDescription(), req.GetPassword())
+	ml.ModifyTime = time.Now()
+	ml.MultiLedgerId = req.GetMultiLedgerId()
+	if err := db.UpdateMultiLedger(ml); err != nil {
+		klog.Error("[multi_ledger]error:", err.Error())
+		return errno.UpdateError.ErrorCode, errno.UpdateError.ErrorMsg
+	}
+
+	return errno.StatusSuccessCode, errno.StatusSuccessMsg
+}

@@ -20,11 +20,14 @@ func Register(r *server.Hertz) {
 	{
 		_api := root.Group("/api", _apiMw()...)
 		_api.GET("/multiLedger", append(_getmultiledgerlistMw(), multiledger.GetMultiLedgerList)...)
-		_api.DELETE("/multiLedger", append(_delmultiledgerMw(), multiledger.DelMultiLedger)...)
-		_api.POST("/multiLedger", append(_createmultiledgerMw(), multiledger.CreateMultiledger)...)
 		_multiledger := _api.Group("/multiLedger", _multiledgerMw()...)
-		_multiledger.POST("/consumption", append(_insertmlconsumptionMw(), multiledger.InsertMlConsumption)...)
-		_multiledger.GET("/consumption", append(_getmulconsumptionMw(), multiledger.GetMulConsumption)...)
-		_multiledger.POST("/join", append(_joinmultiledgerMw(), multiledger.JoinMultiledger)...)
+		_multiledger.DELETE("/consumption", append(_delmulconsumptionMw(), multiledger.DelMulConsumption)...)
+		_api.DELETE("/multiLedger", append(_delmultiledgerMw(), multiledger.DelMultiLedger)...)
+		_api.PUT("/multiLedger", append(_putmultiledgerMw(), multiledger.PutMultiLedger)...)
+		_api.POST("/multiLedger", append(_createmultiledgerMw(), multiledger.CreateMultiledger)...)
+		_multiledger0 := _api.Group("/multiLedger", _multiledger0Mw()...)
+		_multiledger0.POST("/consumption", append(_insertmlconsumptionMw(), multiledger.InsertMlConsumption)...)
+		_multiledger0.GET("/consumption", append(_getmulconsumptionMw(), multiledger.GetMulConsumption)...)
+		_multiledger0.POST("/join", append(_joinmultiledgerMw(), multiledger.JoinMultiledger)...)
 	}
 }

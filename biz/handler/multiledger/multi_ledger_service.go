@@ -126,3 +126,39 @@ func DelMultiLedger(ctx context.Context, c *app.RequestContext) {
 	pack.PackBase(resp, code, msg)
 	c.JSON(consts.StatusOK, resp)
 }
+
+// PutMultiLedger .
+// @router /api/multiLedger [PUT]
+func PutMultiLedger(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req multiledger.PutMultiLedgerReq
+	resp := new(base.BaseResponse)
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		pack.PackBase(resp, errno.ParamError.ErrorCode, errno.ParamError.ErrorMsg)
+		c.JSON(consts.StatusOK, resp)
+		return
+	}
+
+	code, msg := service.NewMultiLedgerService().PutMultiLedger(claim.UserId, &req)
+	pack.PackBase(resp, code, msg)
+	c.JSON(consts.StatusOK, resp)
+}
+
+// DelMulConsumption .
+// @router /api/multiLedger/consumption [DELETE]
+func DelMulConsumption(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req multiledger.DelMulConsumptionReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(multiledger.BaseResponse)
+
+	c.JSON(consts.StatusOK, resp)
+}
