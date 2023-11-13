@@ -152,3 +152,12 @@ func (l *LedgerService) DeleteLedgerConsumption(ledgerId int32, consumptionId in
 	}
 	return errno.StatusSuccessCode, errno.StatusSuccessMsg
 }
+
+func (l *LedgerService) GetLedgerBalance(ledgerId int32) (balance float64, code int64, msg string) {
+	balance, err := db.GetLedgerBalance(ledgerId)
+	if err != nil {
+		klog.Info("[ledger_consumption] get error:", err.Error())
+		return 0, errno.GetErrorCode, errno.GetError.ErrorMsg
+	}
+	return balance, errno.StatusSuccessCode, errno.StatusSuccessMsg
+}

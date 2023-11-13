@@ -23,3 +23,10 @@ func PackConsumptionList(resp *ledger.LedgerConsumptionListResponse, code int64,
 	resp.Data = make(map[string][]*ledger.ConsumptionModel)
 	resp.Data["list"] = list
 }
+
+func PackLedgerBalanceResponse(resp *ledger.LedgerBalanceResponse, balance float64, code int64, msg string) {
+	resp.Code = code
+	resp.Msg = msg
+	resp.Data = make(map[string]float64)
+	resp.Data["balance"] = balance
+}
