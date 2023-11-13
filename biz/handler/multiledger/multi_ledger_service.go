@@ -152,13 +152,16 @@ func PutMultiLedger(ctx context.Context, c *app.RequestContext) {
 func DelMulConsumption(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req multiledger.DelMulConsumptionReq
+	resp := new(base.BaseResponse)
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.PackBase(resp, errno.ParamError.ErrorCode, errno.ParamError.ErrorMsg)
+		c.JSON(consts.StatusOK, resp)
 		return
 	}
-
-	resp := new(multiledger.BaseResponse)
-
+	code, msg := service.NewMultiLedgerService().DelMulConsumption(claim.UserId, &req)
+	pack.PackBase(resp, code, msg)
 	c.JSON(consts.StatusOK, resp)
 }

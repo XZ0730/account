@@ -155,3 +155,19 @@ func (m *MultiLedgerService) PutMultiLedger(uid int64, req *multiledger.PutMulti
 
 	return errno.StatusSuccessCode, errno.StatusSuccessMsg
 }
+
+func (m *MultiLedgerService) DelMulConsumption(uid int64, req *multiledger.DelMulConsumptionReq) (code int64, msg string) {
+
+	err := db.JudgeM_consumption(req.GetMultiLedgerId(), uid, req.GetConsId())
+	if err != nil {
+		klog.Error("[multi_ledger]error:", err.Error())
+		return errno.NotExistError.ErrorCode, errno.NotExistError.ErrorMsg
+	}
+	err = db.DelSpecialConsumption(uid, req.GetMultiLedgerId(), req.GetConsId())
+	if err != nil {
+		klog.Error("[multi_ledger]error:", err.Error())
+		return errno.DelError.ErrorCode, errno.DelError.ErrorMsg
+	}
+
+	return errno.StatusSuccessCode, errno.StatusSuccessMsg
+}

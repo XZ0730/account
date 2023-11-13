@@ -2,6 +2,8 @@ package db
 
 import (
 	"time"
+
+	"github.com/cloudwego/kitex/pkg/klog"
 )
 
 type MultiLedger struct {
@@ -106,4 +108,20 @@ func DelMultiLedgerConsumption(mid int64) error {
 
 func UpdateMultiLedger(ml *MultiLedger) error {
 	return DB.Table("t_multi_ledger").Where("multi_ledger_id=?", ml.MultiLedgerId).Updates(&ml).Error
+}
+
+func DelSpecialConsumption(uid, mid, cid int64) error {
+	m := NewM_Consumption(mid, uid, cid)
+	err := DB.Table("t_multi_ledger_consumption").Where("multi_ledger_id=? AND consumption_id=?", mid, cid).Unscoped().Delete(&m).Error
+	if err != nil {
+		klog.Error("[multi_db]error:", err.Error)
+		return err
+	}
+
+	err = DB.Table("t_consumption").Where("consumption_id=?", cid).Delete(&Consumption{}).Error
+	if err != nil {
+		klog.Error("[multi_db]error:", err.Error)
+		return err
+	}
+	return nil
 }
