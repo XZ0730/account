@@ -84,3 +84,13 @@ func _multiledger0Mw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _getmultibalanceMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _createmulconsumptionMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

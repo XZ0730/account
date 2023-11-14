@@ -125,3 +125,22 @@ func DelSpecialConsumption(uid, mid, cid int64) error {
 	}
 	return nil
 }
+
+func GetMultiLedgerBalance(ledgerId int64) (float64, error) {
+	balance := 0.0
+	consumptions := make([]*Consumption, 0)
+	err := DB.Table("t_consumption").
+		Joins("JOIN t_multi_ledger_consumption ON "+
+			"t_multi_ledger_consumption.consumption_id=t_consumption.consumption_id "+
+			"AND t_multi_ledger_consumption.multi_ledger_id=?", ledgerId).
+		Find(&consumptions).Error
+
+	if err != nil {
+		return 0, err
+	}
+
+	for _, c := range consumptions {
+		balance += c.Amount
+	}
+	return balance, err
+}

@@ -165,3 +165,39 @@ func DelMulConsumption(ctx context.Context, c *app.RequestContext) {
 	pack.PackBase(resp, code, msg)
 	c.JSON(consts.StatusOK, resp)
 }
+
+// GetMultiBalance .
+// @router /api/multiLedger/balance [GET]
+func GetMultiBalance(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req multiledger.GetMultiBalanceReq
+	resp := new(multiledger.GetMultiBalanceResp)
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		pack.PackML_Balance(resp, errno.ParamError.ErrorCode, errno.ParamError.ErrorMsg, -1)
+		c.JSON(consts.StatusOK, resp)
+		return
+	}
+
+	balance, code, msg := service.NewMultiLedgerService().GetMultiLedgerBalance(claim.UserId, req.GetMultiledgerId())
+	pack.PackML_Balance(resp, code, msg, balance)
+	c.JSON(consts.StatusOK, resp)
+}
+
+// CreateMulConsumption .
+// @router /api/multiLedger/consumption [POST]
+func CreateMulConsumption(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req multiledger.CreateMulConsumptionReq
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(multiledger.BaseResponse)
+
+	c.JSON(consts.StatusOK, resp)
+}

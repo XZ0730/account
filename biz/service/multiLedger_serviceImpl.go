@@ -171,3 +171,18 @@ func (m *MultiLedgerService) DelMulConsumption(uid int64, req *multiledger.DelMu
 
 	return errno.StatusSuccessCode, errno.StatusSuccessMsg
 }
+
+func (m *MultiLedgerService) GetMultiLedgerBalance(uid, mid int64) (float64, int64, string) {
+
+	if err := db.JudgeM_user(mid, uid); err != nil {
+		klog.Error("[multi_ledger]error:", err.Error())
+		return -1, errno.NotExistError.ErrorCode, errno.NotExistError.ErrorMsg
+	}
+
+	balance, err := db.GetMultiLedgerBalance(mid)
+	if err != nil {
+		klog.Error("[multi_ledger]error:", err.Error())
+		return -1, errno.GetError.ErrorCode, errno.GetError.ErrorMsg
+	}
+	return balance, errno.StatusSuccessCode, errno.StatusSuccessMsg
+}

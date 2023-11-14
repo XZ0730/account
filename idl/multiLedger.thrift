@@ -76,6 +76,20 @@ struct DelMulConsumptionReq{
     2: i64 multiLedgerId
 }
 
+struct GetMultiBalanceReq{
+    1: i64 multiledgerId
+}
+
+struct GetMultiBalanceResp{
+    1: BaseResponse base
+    2: double balance
+}
+
+struct CreateMulConsumptionReq{
+    1: i64 consId
+    2: i64 multiLedgerId
+}
+
 service MultiLedgerService{
     BaseResponse CreateMultiledger(1:CreateMLRequest req)(api.post="/api/multiLedger")
     BaseResponse JoinMultiledger(1:JoinMLRequest req)(api.post="/api/multiLedger/join") 
@@ -87,4 +101,7 @@ service MultiLedgerService{
     BaseResponse DelMultiLedger(1:DelMultiLedgerReq req)(api.delete="/api/multiLedger")
     BaseResponse PutMultiLedger(1:PutMultiLedgerReq req)(api.put="/api/multiLedger")
     BaseResponse DelMulConsumption(1:DelMulConsumptionReq req)(api.delete="/api/multiLedger/consumption")
+    BaseResponse CreateMulConsumption(1:CreateMulConsumptionReq req)(api.post="/api/multiLedger/consumption")
+
+    GetMultiBalanceResp GetMultiBalance(1:GetMultiBalanceReq req)(api.get="/api/multiLedger/balance")
 }

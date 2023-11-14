@@ -17,3 +17,10 @@ func PackML_GetMLlist(resp *multiledger.GetMultiLedgerListResp, code int64, msg 
 	resp.Data = make(map[string][]*multiledger.MultiledgerModel)
 	resp.Data["list"] = list
 }
+
+func PackML_Balance(resp *multiledger.GetMultiBalanceResp, code int64, msg string, balance float64) {
+	resp.Base = multiledger.NewBaseResponse()
+	resp.Base.Code = code
+	resp.Base.Message = msg
+	resp.Balance = balance
+}
