@@ -94,3 +94,8 @@ func _createmulconsumptionMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _getmulusersMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

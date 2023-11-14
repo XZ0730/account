@@ -186,3 +186,17 @@ func (m *MultiLedgerService) GetMultiLedgerBalance(uid, mid int64) (float64, int
 	}
 	return balance, errno.StatusSuccessCode, errno.StatusSuccessMsg
 }
+
+func (m *MultiLedgerService) GetMultiLedgerUsers(uid, mid int64) ([]*multiledger.UserModel, int64, string) {
+	err := db.JudgeM_user(mid, uid)
+	if err != nil {
+		klog.Error("[multi_ledger]error:", err.Error())
+		return nil, errno.NotExistError.ErrorCode, errno.NotExistError.ErrorMsg
+	}
+	um, err := db.GetML_Users(mid)
+	if err != nil {
+		klog.Error("[multi_ledger]error:", err.Error())
+		return nil, errno.GetError.ErrorCode, errno.GetError.ErrorMsg
+	}
+	return um, errno.StatusSuccessCode, errno.StatusSuccessMsg
+}

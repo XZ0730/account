@@ -181,23 +181,25 @@ func GetMultiBalance(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	balance, code, msg := service.NewMultiLedgerService().GetMultiLedgerBalance(claim.UserId, req.GetMultiledgerId())
+	balance, code, msg := service.NewMultiLedgerService().GetMultiLedgerBalance(claim.UserId, req.GetMultiLedgerId())
 	pack.PackML_Balance(resp, code, msg, balance)
 	c.JSON(consts.StatusOK, resp)
 }
 
-// CreateMulConsumption .
-// @router /api/multiLedger/consumption [POST]
-func CreateMulConsumption(ctx context.Context, c *app.RequestContext) {
+// GetMulUsers .
+// @router /api/multiLedger/user [POST]
+func GetMulUsers(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req multiledger.CreateMulConsumptionReq
+	var req multiledger.GetMultiUserReq
+	resp := new(multiledger.GetMultiUsersResp)
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.PackML_Users(resp, errno.ParamError.ErrorCode, errno.ParamError.ErrorMsg, nil)
 		return
 	}
-
-	resp := new(multiledger.BaseResponse)
-
+	um, code, msg := service.NewMultiLedgerService().GetMultiLedgerUsers(claim.UserId, req.GetMultiLedgerId())
+	pack.PackML_Users(resp, code, msg, um)
 	c.JSON(consts.StatusOK, resp)
 }

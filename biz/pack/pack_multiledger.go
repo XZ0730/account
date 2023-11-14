@@ -24,3 +24,11 @@ func PackML_Balance(resp *multiledger.GetMultiBalanceResp, code int64, msg strin
 	resp.Base.Message = msg
 	resp.Balance = balance
 }
+
+func PackML_Users(resp *multiledger.GetMultiUsersResp, code int64, msg string, data []*multiledger.UserModel) {
+	resp.Base = multiledger.NewBaseResponse()
+	resp.Base.Code = code
+	resp.Base.Message = msg
+	resp.Data = make(map[string][]*multiledger.UserModel)
+	resp.Data["list"] = data
+}

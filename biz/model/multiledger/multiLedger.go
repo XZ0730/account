@@ -1295,11 +1295,6 @@ func (p *ConsumptionModel) String() string {
 	return fmt.Sprintf("ConsumptionModel(%+v)", *p)
 }
 
-// MultiLedgerId
-// MultiLedgerName
-// Description
-// Password
-// ModifyTime
 type MultiledgerModel struct {
 	MultiLedgerId   int64  `thrift:"multiLedgerId,1" form:"multiLedgerId" json:"multiLedgerId" query:"multiLedgerId"`
 	MultiLedgerName string `thrift:"multiLedgerName,2" form:"multiLedgerName" json:"multiLedgerName" query:"multiLedgerName"`
@@ -1619,6 +1614,235 @@ func (p *MultiledgerModel) String() string {
 		return "<nil>"
 	}
 	return fmt.Sprintf("MultiledgerModel(%+v)", *p)
+}
+
+type UserModel struct {
+	UserId   int64  `thrift:"userId,1" form:"userId" json:"userId" query:"userId"`
+	Username string `thrift:"username,2" form:"username" json:"username" query:"username"`
+	Nickname string `thrift:"nickname,3" form:"nickname" json:"nickname" query:"nickname"`
+}
+
+func NewUserModel() *UserModel {
+	return &UserModel{}
+}
+
+func (p *UserModel) GetUserId() (v int64) {
+	return p.UserId
+}
+
+func (p *UserModel) GetUsername() (v string) {
+	return p.Username
+}
+
+func (p *UserModel) GetNickname() (v string) {
+	return p.Nickname
+}
+
+var fieldIDToName_UserModel = map[int16]string{
+	1: "userId",
+	2: "username",
+	3: "nickname",
+}
+
+func (p *UserModel) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 3:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField3(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UserModel[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *UserModel) ReadField1(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.UserId = v
+	}
+	return nil
+}
+
+func (p *UserModel) ReadField2(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.Username = v
+	}
+	return nil
+}
+
+func (p *UserModel) ReadField3(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.Nickname = v
+	}
+	return nil
+}
+
+func (p *UserModel) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("UserModel"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
+			goto WriteFieldError
+		}
+		if err = p.writeField3(oprot); err != nil {
+			fieldId = 3
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *UserModel) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("userId", thrift.I64, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.UserId); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *UserModel) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("username", thrift.STRING, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.Username); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
+func (p *UserModel) writeField3(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("nickname", thrift.STRING, 3); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.Nickname); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
+}
+
+func (p *UserModel) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("UserModel(%+v)", *p)
 }
 
 type GetMulConsumptionReq struct {
@@ -2838,19 +3062,19 @@ func (p *DelMulConsumptionReq) String() string {
 }
 
 type GetMultiBalanceReq struct {
-	MultiledgerId int64 `thrift:"multiledgerId,1" form:"multiledgerId" json:"multiledgerId" query:"multiledgerId"`
+	MultiLedgerId int64 `thrift:"multiLedgerId,1" form:"multiLedgerId" json:"multiLedgerId" query:"multiLedgerId"`
 }
 
 func NewGetMultiBalanceReq() *GetMultiBalanceReq {
 	return &GetMultiBalanceReq{}
 }
 
-func (p *GetMultiBalanceReq) GetMultiledgerId() (v int64) {
-	return p.MultiledgerId
+func (p *GetMultiBalanceReq) GetMultiLedgerId() (v int64) {
+	return p.MultiLedgerId
 }
 
 var fieldIDToName_GetMultiBalanceReq = map[int16]string{
-	1: "multiledgerId",
+	1: "multiLedgerId",
 }
 
 func (p *GetMultiBalanceReq) Read(iprot thrift.TProtocol) (err error) {
@@ -2916,7 +3140,7 @@ func (p *GetMultiBalanceReq) ReadField1(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		p.MultiledgerId = v
+		p.MultiLedgerId = v
 	}
 	return nil
 }
@@ -2951,10 +3175,10 @@ WriteStructEndError:
 }
 
 func (p *GetMultiBalanceReq) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("multiledgerId", thrift.I64, 1); err != nil {
+	if err = oprot.WriteFieldBegin("multiLedgerId", thrift.I64, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.MultiledgerId); err != nil {
+	if err := oprot.WriteI64(p.MultiLedgerId); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -3165,29 +3389,23 @@ func (p *GetMultiBalanceResp) String() string {
 	return fmt.Sprintf("GetMultiBalanceResp(%+v)", *p)
 }
 
-type CreateMulConsumptionReq struct {
-	ConsId        int64 `thrift:"consId,1" form:"consId" json:"consId" query:"consId"`
-	MultiLedgerId int64 `thrift:"multiLedgerId,2" form:"multiLedgerId" json:"multiLedgerId" query:"multiLedgerId"`
+type GetMultiUserReq struct {
+	MultiLedgerId int64 `thrift:"multiLedgerId,1" form:"multiLedgerId" json:"multiLedgerId" query:"multiLedgerId"`
 }
 
-func NewCreateMulConsumptionReq() *CreateMulConsumptionReq {
-	return &CreateMulConsumptionReq{}
+func NewGetMultiUserReq() *GetMultiUserReq {
+	return &GetMultiUserReq{}
 }
 
-func (p *CreateMulConsumptionReq) GetConsId() (v int64) {
-	return p.ConsId
-}
-
-func (p *CreateMulConsumptionReq) GetMultiLedgerId() (v int64) {
+func (p *GetMultiUserReq) GetMultiLedgerId() (v int64) {
 	return p.MultiLedgerId
 }
 
-var fieldIDToName_CreateMulConsumptionReq = map[int16]string{
-	1: "consId",
-	2: "multiLedgerId",
+var fieldIDToName_GetMultiUserReq = map[int16]string{
+	1: "multiLedgerId",
 }
 
-func (p *CreateMulConsumptionReq) Read(iprot thrift.TProtocol) (err error) {
+func (p *GetMultiUserReq) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -3216,8 +3434,160 @@ func (p *CreateMulConsumptionReq) Read(iprot thrift.TProtocol) (err error) {
 					goto SkipFieldError
 				}
 			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetMultiUserReq[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *GetMultiUserReq) ReadField1(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.MultiLedgerId = v
+	}
+	return nil
+}
+
+func (p *GetMultiUserReq) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GetMultiUserReq"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *GetMultiUserReq) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("multiLedgerId", thrift.I64, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.MultiLedgerId); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *GetMultiUserReq) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("GetMultiUserReq(%+v)", *p)
+}
+
+type GetMultiUsersResp struct {
+	Base *BaseResponse           `thrift:"base,1" form:"base" json:"base" query:"base"`
+	Data map[string][]*UserModel `thrift:"data,2" form:"data" json:"data" query:"data"`
+}
+
+func NewGetMultiUsersResp() *GetMultiUsersResp {
+	return &GetMultiUsersResp{}
+}
+
+var GetMultiUsersResp_Base_DEFAULT *BaseResponse
+
+func (p *GetMultiUsersResp) GetBase() (v *BaseResponse) {
+	if !p.IsSetBase() {
+		return GetMultiUsersResp_Base_DEFAULT
+	}
+	return p.Base
+}
+
+func (p *GetMultiUsersResp) GetData() (v map[string][]*UserModel) {
+	return p.Data
+}
+
+var fieldIDToName_GetMultiUsersResp = map[int16]string{
+	1: "base",
+	2: "data",
+}
+
+func (p *GetMultiUsersResp) IsSetBase() bool {
+	return p.Base != nil
+}
+
+func (p *GetMultiUsersResp) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
 		case 2:
-			if fieldTypeId == thrift.I64 {
+			if fieldTypeId == thrift.MAP {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -3246,7 +3616,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_CreateMulConsumptionReq[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetMultiUsersResp[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -3256,27 +3626,56 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *CreateMulConsumptionReq) ReadField1(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
+func (p *GetMultiUsersResp) ReadField1(iprot thrift.TProtocol) error {
+	p.Base = NewBaseResponse()
+	if err := p.Base.Read(iprot); err != nil {
 		return err
-	} else {
-		p.ConsId = v
 	}
 	return nil
 }
 
-func (p *CreateMulConsumptionReq) ReadField2(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
+func (p *GetMultiUsersResp) ReadField2(iprot thrift.TProtocol) error {
+	_, _, size, err := iprot.ReadMapBegin()
+	if err != nil {
 		return err
-	} else {
-		p.MultiLedgerId = v
+	}
+	p.Data = make(map[string][]*UserModel, size)
+	for i := 0; i < size; i++ {
+		var _key string
+		if v, err := iprot.ReadString(); err != nil {
+			return err
+		} else {
+			_key = v
+		}
+
+		_, size, err := iprot.ReadListBegin()
+		if err != nil {
+			return err
+		}
+		_val := make([]*UserModel, 0, size)
+		for i := 0; i < size; i++ {
+			_elem := NewUserModel()
+			if err := _elem.Read(iprot); err != nil {
+				return err
+			}
+
+			_val = append(_val, _elem)
+		}
+		if err := iprot.ReadListEnd(); err != nil {
+			return err
+		}
+
+		p.Data[_key] = _val
+	}
+	if err := iprot.ReadMapEnd(); err != nil {
+		return err
 	}
 	return nil
 }
 
-func (p *CreateMulConsumptionReq) Write(oprot thrift.TProtocol) (err error) {
+func (p *GetMultiUsersResp) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("CreateMulConsumptionReq"); err != nil {
+	if err = oprot.WriteStructBegin("GetMultiUsersResp"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -3307,11 +3706,11 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *CreateMulConsumptionReq) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("consId", thrift.I64, 1); err != nil {
+func (p *GetMultiUsersResp) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("base", thrift.STRUCT, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.ConsId); err != nil {
+	if err := p.Base.Write(oprot); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -3324,11 +3723,32 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *CreateMulConsumptionReq) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("multiLedgerId", thrift.I64, 2); err != nil {
+func (p *GetMultiUsersResp) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("data", thrift.MAP, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.MultiLedgerId); err != nil {
+	if err := oprot.WriteMapBegin(thrift.STRING, thrift.LIST, len(p.Data)); err != nil {
+		return err
+	}
+	for k, v := range p.Data {
+
+		if err := oprot.WriteString(k); err != nil {
+			return err
+		}
+
+		if err := oprot.WriteListBegin(thrift.STRUCT, len(v)); err != nil {
+			return err
+		}
+		for _, v := range v {
+			if err := v.Write(oprot); err != nil {
+				return err
+			}
+		}
+		if err := oprot.WriteListEnd(); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteMapEnd(); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -3341,11 +3761,11 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
 }
 
-func (p *CreateMulConsumptionReq) String() string {
+func (p *GetMultiUsersResp) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("CreateMulConsumptionReq(%+v)", *p)
+	return fmt.Sprintf("GetMultiUsersResp(%+v)", *p)
 }
 
 type MultiLedgerService interface {
@@ -3365,7 +3785,7 @@ type MultiLedgerService interface {
 
 	DelMulConsumption(ctx context.Context, req *DelMulConsumptionReq) (r *BaseResponse, err error)
 
-	CreateMulConsumption(ctx context.Context, req *CreateMulConsumptionReq) (r *BaseResponse, err error)
+	GetMulUsers(ctx context.Context, req *GetMultiUserReq) (r *GetMultiUsersResp, err error)
 
 	GetMultiBalance(ctx context.Context, req *GetMultiBalanceReq) (r *GetMultiBalanceResp, err error)
 }
@@ -3468,11 +3888,11 @@ func (p *MultiLedgerServiceClient) DelMulConsumption(ctx context.Context, req *D
 	}
 	return _result.GetSuccess(), nil
 }
-func (p *MultiLedgerServiceClient) CreateMulConsumption(ctx context.Context, req *CreateMulConsumptionReq) (r *BaseResponse, err error) {
-	var _args MultiLedgerServiceCreateMulConsumptionArgs
+func (p *MultiLedgerServiceClient) GetMulUsers(ctx context.Context, req *GetMultiUserReq) (r *GetMultiUsersResp, err error) {
+	var _args MultiLedgerServiceGetMulUsersArgs
 	_args.Req = req
-	var _result MultiLedgerServiceCreateMulConsumptionResult
-	if err = p.Client_().Call(ctx, "CreateMulConsumption", &_args, &_result); err != nil {
+	var _result MultiLedgerServiceGetMulUsersResult
+	if err = p.Client_().Call(ctx, "GetMulUsers", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
@@ -3515,7 +3935,7 @@ func NewMultiLedgerServiceProcessor(handler MultiLedgerService) *MultiLedgerServ
 	self.AddToProcessorMap("DelMultiLedger", &multiLedgerServiceProcessorDelMultiLedger{handler: handler})
 	self.AddToProcessorMap("PutMultiLedger", &multiLedgerServiceProcessorPutMultiLedger{handler: handler})
 	self.AddToProcessorMap("DelMulConsumption", &multiLedgerServiceProcessorDelMulConsumption{handler: handler})
-	self.AddToProcessorMap("CreateMulConsumption", &multiLedgerServiceProcessorCreateMulConsumption{handler: handler})
+	self.AddToProcessorMap("GetMulUsers", &multiLedgerServiceProcessorGetMulUsers{handler: handler})
 	self.AddToProcessorMap("GetMultiBalance", &multiLedgerServiceProcessorGetMultiBalance{handler: handler})
 	return self
 }
@@ -3921,16 +4341,16 @@ func (p *multiLedgerServiceProcessorDelMulConsumption) Process(ctx context.Conte
 	return true, err
 }
 
-type multiLedgerServiceProcessorCreateMulConsumption struct {
+type multiLedgerServiceProcessorGetMulUsers struct {
 	handler MultiLedgerService
 }
 
-func (p *multiLedgerServiceProcessorCreateMulConsumption) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
-	args := MultiLedgerServiceCreateMulConsumptionArgs{}
+func (p *multiLedgerServiceProcessorGetMulUsers) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := MultiLedgerServiceGetMulUsersArgs{}
 	if err = args.Read(iprot); err != nil {
 		iprot.ReadMessageEnd()
 		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
-		oprot.WriteMessageBegin("CreateMulConsumption", thrift.EXCEPTION, seqId)
+		oprot.WriteMessageBegin("GetMulUsers", thrift.EXCEPTION, seqId)
 		x.Write(oprot)
 		oprot.WriteMessageEnd()
 		oprot.Flush(ctx)
@@ -3939,11 +4359,11 @@ func (p *multiLedgerServiceProcessorCreateMulConsumption) Process(ctx context.Co
 
 	iprot.ReadMessageEnd()
 	var err2 error
-	result := MultiLedgerServiceCreateMulConsumptionResult{}
-	var retval *BaseResponse
-	if retval, err2 = p.handler.CreateMulConsumption(ctx, args.Req); err2 != nil {
-		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing CreateMulConsumption: "+err2.Error())
-		oprot.WriteMessageBegin("CreateMulConsumption", thrift.EXCEPTION, seqId)
+	result := MultiLedgerServiceGetMulUsersResult{}
+	var retval *GetMultiUsersResp
+	if retval, err2 = p.handler.GetMulUsers(ctx, args.Req); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing GetMulUsers: "+err2.Error())
+		oprot.WriteMessageBegin("GetMulUsers", thrift.EXCEPTION, seqId)
 		x.Write(oprot)
 		oprot.WriteMessageEnd()
 		oprot.Flush(ctx)
@@ -3951,7 +4371,7 @@ func (p *multiLedgerServiceProcessorCreateMulConsumption) Process(ctx context.Co
 	} else {
 		result.Success = retval
 	}
-	if err2 = oprot.WriteMessageBegin("CreateMulConsumption", thrift.REPLY, seqId); err2 != nil {
+	if err2 = oprot.WriteMessageBegin("GetMulUsers", thrift.REPLY, seqId); err2 != nil {
 		err = err2
 	}
 	if err2 = result.Write(oprot); err == nil && err2 != nil {
@@ -6353,32 +6773,32 @@ func (p *MultiLedgerServiceDelMulConsumptionResult) String() string {
 	return fmt.Sprintf("MultiLedgerServiceDelMulConsumptionResult(%+v)", *p)
 }
 
-type MultiLedgerServiceCreateMulConsumptionArgs struct {
-	Req *CreateMulConsumptionReq `thrift:"req,1"`
+type MultiLedgerServiceGetMulUsersArgs struct {
+	Req *GetMultiUserReq `thrift:"req,1"`
 }
 
-func NewMultiLedgerServiceCreateMulConsumptionArgs() *MultiLedgerServiceCreateMulConsumptionArgs {
-	return &MultiLedgerServiceCreateMulConsumptionArgs{}
+func NewMultiLedgerServiceGetMulUsersArgs() *MultiLedgerServiceGetMulUsersArgs {
+	return &MultiLedgerServiceGetMulUsersArgs{}
 }
 
-var MultiLedgerServiceCreateMulConsumptionArgs_Req_DEFAULT *CreateMulConsumptionReq
+var MultiLedgerServiceGetMulUsersArgs_Req_DEFAULT *GetMultiUserReq
 
-func (p *MultiLedgerServiceCreateMulConsumptionArgs) GetReq() (v *CreateMulConsumptionReq) {
+func (p *MultiLedgerServiceGetMulUsersArgs) GetReq() (v *GetMultiUserReq) {
 	if !p.IsSetReq() {
-		return MultiLedgerServiceCreateMulConsumptionArgs_Req_DEFAULT
+		return MultiLedgerServiceGetMulUsersArgs_Req_DEFAULT
 	}
 	return p.Req
 }
 
-var fieldIDToName_MultiLedgerServiceCreateMulConsumptionArgs = map[int16]string{
+var fieldIDToName_MultiLedgerServiceGetMulUsersArgs = map[int16]string{
 	1: "req",
 }
 
-func (p *MultiLedgerServiceCreateMulConsumptionArgs) IsSetReq() bool {
+func (p *MultiLedgerServiceGetMulUsersArgs) IsSetReq() bool {
 	return p.Req != nil
 }
 
-func (p *MultiLedgerServiceCreateMulConsumptionArgs) Read(iprot thrift.TProtocol) (err error) {
+func (p *MultiLedgerServiceGetMulUsersArgs) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -6427,7 +6847,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_MultiLedgerServiceCreateMulConsumptionArgs[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_MultiLedgerServiceGetMulUsersArgs[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -6437,17 +6857,17 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *MultiLedgerServiceCreateMulConsumptionArgs) ReadField1(iprot thrift.TProtocol) error {
-	p.Req = NewCreateMulConsumptionReq()
+func (p *MultiLedgerServiceGetMulUsersArgs) ReadField1(iprot thrift.TProtocol) error {
+	p.Req = NewGetMultiUserReq()
 	if err := p.Req.Read(iprot); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (p *MultiLedgerServiceCreateMulConsumptionArgs) Write(oprot thrift.TProtocol) (err error) {
+func (p *MultiLedgerServiceGetMulUsersArgs) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("CreateMulConsumption_args"); err != nil {
+	if err = oprot.WriteStructBegin("GetMulUsers_args"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -6474,7 +6894,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *MultiLedgerServiceCreateMulConsumptionArgs) writeField1(oprot thrift.TProtocol) (err error) {
+func (p *MultiLedgerServiceGetMulUsersArgs) writeField1(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -6491,39 +6911,39 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *MultiLedgerServiceCreateMulConsumptionArgs) String() string {
+func (p *MultiLedgerServiceGetMulUsersArgs) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("MultiLedgerServiceCreateMulConsumptionArgs(%+v)", *p)
+	return fmt.Sprintf("MultiLedgerServiceGetMulUsersArgs(%+v)", *p)
 }
 
-type MultiLedgerServiceCreateMulConsumptionResult struct {
-	Success *BaseResponse `thrift:"success,0,optional"`
+type MultiLedgerServiceGetMulUsersResult struct {
+	Success *GetMultiUsersResp `thrift:"success,0,optional"`
 }
 
-func NewMultiLedgerServiceCreateMulConsumptionResult() *MultiLedgerServiceCreateMulConsumptionResult {
-	return &MultiLedgerServiceCreateMulConsumptionResult{}
+func NewMultiLedgerServiceGetMulUsersResult() *MultiLedgerServiceGetMulUsersResult {
+	return &MultiLedgerServiceGetMulUsersResult{}
 }
 
-var MultiLedgerServiceCreateMulConsumptionResult_Success_DEFAULT *BaseResponse
+var MultiLedgerServiceGetMulUsersResult_Success_DEFAULT *GetMultiUsersResp
 
-func (p *MultiLedgerServiceCreateMulConsumptionResult) GetSuccess() (v *BaseResponse) {
+func (p *MultiLedgerServiceGetMulUsersResult) GetSuccess() (v *GetMultiUsersResp) {
 	if !p.IsSetSuccess() {
-		return MultiLedgerServiceCreateMulConsumptionResult_Success_DEFAULT
+		return MultiLedgerServiceGetMulUsersResult_Success_DEFAULT
 	}
 	return p.Success
 }
 
-var fieldIDToName_MultiLedgerServiceCreateMulConsumptionResult = map[int16]string{
+var fieldIDToName_MultiLedgerServiceGetMulUsersResult = map[int16]string{
 	0: "success",
 }
 
-func (p *MultiLedgerServiceCreateMulConsumptionResult) IsSetSuccess() bool {
+func (p *MultiLedgerServiceGetMulUsersResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
-func (p *MultiLedgerServiceCreateMulConsumptionResult) Read(iprot thrift.TProtocol) (err error) {
+func (p *MultiLedgerServiceGetMulUsersResult) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -6572,7 +6992,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_MultiLedgerServiceCreateMulConsumptionResult[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_MultiLedgerServiceGetMulUsersResult[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -6582,17 +7002,17 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *MultiLedgerServiceCreateMulConsumptionResult) ReadField0(iprot thrift.TProtocol) error {
-	p.Success = NewBaseResponse()
+func (p *MultiLedgerServiceGetMulUsersResult) ReadField0(iprot thrift.TProtocol) error {
+	p.Success = NewGetMultiUsersResp()
 	if err := p.Success.Read(iprot); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (p *MultiLedgerServiceCreateMulConsumptionResult) Write(oprot thrift.TProtocol) (err error) {
+func (p *MultiLedgerServiceGetMulUsersResult) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("CreateMulConsumption_result"); err != nil {
+	if err = oprot.WriteStructBegin("GetMulUsers_result"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -6619,7 +7039,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *MultiLedgerServiceCreateMulConsumptionResult) writeField0(oprot thrift.TProtocol) (err error) {
+func (p *MultiLedgerServiceGetMulUsersResult) writeField0(oprot thrift.TProtocol) (err error) {
 	if p.IsSetSuccess() {
 		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
 			goto WriteFieldBeginError
@@ -6638,11 +7058,11 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
 }
 
-func (p *MultiLedgerServiceCreateMulConsumptionResult) String() string {
+func (p *MultiLedgerServiceGetMulUsersResult) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("MultiLedgerServiceCreateMulConsumptionResult(%+v)", *p)
+	return fmt.Sprintf("MultiLedgerServiceGetMulUsersResult(%+v)", *p)
 }
 
 type MultiLedgerServiceGetMultiBalanceArgs struct {

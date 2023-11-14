@@ -3,6 +3,7 @@ package db
 import (
 	"time"
 
+	"github.com/XZ0730/runFzu/biz/model/multiledger"
 	"github.com/cloudwego/kitex/pkg/klog"
 )
 
@@ -143,4 +144,15 @@ func GetMultiLedgerBalance(ledgerId int64) (float64, error) {
 		balance += c.Amount
 	}
 	return balance, err
+}
+
+func CreateMl_Consumption(uid, mid, cid int64) error {
+	mlc := NewM_Consumption(mid, uid, cid)
+	return DB.Table("t_multi_ledger_consumption").Create(&mlc).Error
+}
+
+func GetML_Users(mid int64) ([]*multiledger.UserModel, error) {
+	um := make([]*multiledger.UserModel, 0)
+	err := DB.Table("t_user").Joins("JOIN t_multi_ledger_user ON t_multi_ledger_user.user_id=t_user.user_id AND t_multi_ledger_user.multi_ledger_id=?", mid).Find(&um).Error
+	return um, err
 }

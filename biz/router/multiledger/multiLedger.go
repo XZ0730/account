@@ -23,7 +23,7 @@ func Register(r *server.Hertz) {
 		_multiledger := _api.Group("/multiLedger", _multiledgerMw()...)
 		_multiledger.GET("/balance", append(_getmultibalanceMw(), multiledger.GetMultiBalance)...)
 		_multiledger.DELETE("/consumption", append(_delmulconsumptionMw(), multiledger.DelMulConsumption)...)
-		_multiledger.POST("/consumption", append(_createmulconsumptionMw(), multiledger.CreateMulConsumption)...)
+		_multiledger.GET("/user", append(_getmulusersMw(), multiledger.GetMulUsers)...)
 		_api.DELETE("/multiLedger", append(_delmultiledgerMw(), multiledger.DelMultiLedger)...)
 		_api.PUT("/multiLedger", append(_putmultiledgerMw(), multiledger.PutMultiLedger)...)
 		_api.POST("/multiLedger", append(_createmultiledgerMw(), multiledger.CreateMultiledger)...)

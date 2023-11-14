@@ -33,17 +33,19 @@ struct ConsumptionModel{
     7: string consumeTime
     8: string credential
 }
-# MultiLedgerId
-# MultiLedgerName
-# Description
-# Password
-# ModifyTime
+
 struct MultiledgerModel{
     1: i64 multiLedgerId
     2: string multiLedgerName
     3: string description
     4: string password
     5: string modifyTime
+}
+
+struct UserModel{
+    1: i64 userId
+    2: string username
+    3: string nickname
 }
 
 struct GetMulConsumptionReq{
@@ -77,7 +79,7 @@ struct DelMulConsumptionReq{
 }
 
 struct GetMultiBalanceReq{
-    1: i64 multiledgerId
+    1: i64 multiLedgerId
 }
 
 struct GetMultiBalanceResp{
@@ -85,9 +87,13 @@ struct GetMultiBalanceResp{
     2: double balance
 }
 
-struct CreateMulConsumptionReq{
-    1: i64 consId
-    2: i64 multiLedgerId
+struct GetMultiUserReq{
+    1: i64 multiLedgerId
+}
+
+struct GetMultiUsersResp{
+    1: BaseResponse base
+    2: map<string,list<UserModel>> data
 }
 
 service MultiLedgerService{
@@ -101,7 +107,7 @@ service MultiLedgerService{
     BaseResponse DelMultiLedger(1:DelMultiLedgerReq req)(api.delete="/api/multiLedger")
     BaseResponse PutMultiLedger(1:PutMultiLedgerReq req)(api.put="/api/multiLedger")
     BaseResponse DelMulConsumption(1:DelMulConsumptionReq req)(api.delete="/api/multiLedger/consumption")
-    BaseResponse CreateMulConsumption(1:CreateMulConsumptionReq req)(api.post="/api/multiLedger/consumption")
+    GetMultiUsersResp GetMulUsers(1:GetMultiUserReq req)(api.get="/api/multiLedger/user")
 
     GetMultiBalanceResp GetMultiBalance(1:GetMultiBalanceReq req)(api.get="/api/multiLedger/balance")
 }
