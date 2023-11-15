@@ -27,4 +27,5 @@ const (
 	UpdateErrorCode   = 23005
 	NotExistErrorCode = 23006
 	ExistErrorCode    = 23007
+	FileErrorCode     = 23008
 )

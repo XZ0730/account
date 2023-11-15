@@ -17,6 +17,7 @@ gen:
 	hz update -idl ./idl/api.thrift
 	hz update -idl ./idl/multiLedger.thrift
 	hz update -idl ./idl/ledger.thrift
+	hz update -idl ./idl/asr.thrift
 
 .PHONY: server
 server:
