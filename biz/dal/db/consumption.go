@@ -1,6 +1,8 @@
 package db
 
-import "time"
+import (
+	"time"
+)
 
 type Consumption struct {
 	ConsumptionId   int64 `gorm:"primary key"`
@@ -27,4 +29,8 @@ func JudgeConsumption(cid int64) error {
 
 func CreateConsumption(consumption *Consumption) error {
 	return DB.Table("t_consumption").Create(&consumption).Error
+}
+
+func UpdateConsumption(consumption *Consumption) error {
+	return DB.Table("t_consumption").Where("consumption_id = ?", consumption.ConsumptionId).Save(&consumption).Error
 }

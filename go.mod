@@ -10,13 +10,10 @@ require (
 	github.com/hertz-contrib/gzip v0.0.1
 	github.com/hertz-contrib/opensergo v0.0.1
 	github.com/spf13/viper v1.17.0
-	github.com/tencentcloud/tencentcloud-speech-sdk-go v1.0.13
 	gorm.io/driver/mysql v1.5.2
 	gorm.io/gorm v1.25.5
 	gorm.io/plugin/opentracing v0.0.0-20211220013347-7d2b2af23560
 )
-
-require github.com/gorilla/websocket v1.4.2 // indirect
 
 require (
 	cloud.google.com/go v0.110.7 // indirect

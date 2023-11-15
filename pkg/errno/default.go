@@ -24,7 +24,4 @@ var (
 	//
 	NotExistError = NewErrNo(NotExistErrorCode, "record not exist")
 	ExistError    = NewErrNo(ExistErrorCode, "record have existed")
-
-	//
-	FileError = NewErrNo(FileErrorCode, "file error")
 )
