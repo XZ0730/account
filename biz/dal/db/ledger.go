@@ -88,3 +88,9 @@ func JudgeUserHaveLedger(ledgerId int64, userId int64) error {
 	return DB.Table("t_ledger").Where("ledger_id = ? and user_id = ?", ledgerId, userId).
 		First(&ledger).Error
 }
+
+func GetLedgersByUserId(userId int64) []*int64 {
+	ids := make([]*int64, 0)
+	DB.Table("t_ledger").Where("user_id = ?", userId).Pluck("ledger_id", &ids)
+	return ids
+}

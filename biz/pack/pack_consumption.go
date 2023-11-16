@@ -10,3 +10,13 @@ func PackUpdateConsumptionResp(resp *consumption.ConsumptionUpdateResponse, req 
 	resp.Code = code
 	resp.Msg = msg
 }
+
+func PackConsumptionByRangeResp(resp *consumption.GetConsumptionByRangeResponse, code int64, msg string, cons []*consumption.ConsumptionModel) {
+	resp.Data = make(map[string]*consumption.TimeKeyConArray)
+	timeKeyConArray := new(consumption.TimeKeyConArray)
+	timeKeyConArray.Tmap = make(map[string][]*consumption.ConsumptionModel)
+	for _, val := range cons {
+		timeKeyConArray.Tmap[val.ConsumeTime[0:10]] = append(timeKeyConArray.Tmap[val.ConsumeTime], val)
+	}
+	resp.Data["data"] = timeKeyConArray
+}

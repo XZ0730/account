@@ -25,3 +25,23 @@ func _updateconsumptionMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _consumptionMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _rangeMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getsumbyrangeMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getconsumptionbyrangeMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

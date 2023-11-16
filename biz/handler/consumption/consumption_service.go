@@ -34,3 +34,33 @@ func UpdateConsumption(ctx context.Context, c *app.RequestContext) {
 	pack.PackUpdateConsumptionResp(resp, &req, code, msg)
 	c.JSON(consts.StatusOK, resp)
 }
+
+// GetSumByRange .
+// @router /api/consumption/range/in [GET]
+func GetSumByRange(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req consumption.BaseRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(consumption.GetSumByRangeResponse)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetConsumptionByRange .
+// @router /api/consumption/range/map [GET]
+func GetConsumptionByRange(ctx context.Context, c *app.RequestContext) {
+	start := c.Query("start")
+	end := c.Query("end")
+
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	consumptions, code, msg := service.NewConsumptionService().GetConsumptionsByRange(start, end, claim.UserId)
+	resp := new(consumption.GetConsumptionByRangeResponse)
+	pack.PackConsumptionByRangeResp(resp, code, msg, consumptions)
+	c.JSON(consts.StatusOK, resp)
+}
