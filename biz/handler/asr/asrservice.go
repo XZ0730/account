@@ -8,6 +8,7 @@ import (
 	asr "github.com/XZ0730/runFzu/biz/model/asr"
 	"github.com/XZ0730/runFzu/biz/pack"
 	"github.com/XZ0730/runFzu/biz/service"
+	"github.com/XZ0730/runFzu/pkg/utils"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 )
@@ -24,5 +25,23 @@ func ASRtoText(ctx context.Context, c *app.RequestContext) {
 	resp := new(asr.ASRResponse)
 	data, code, msg := service.NewASRService().ASRtoText(fh)
 	pack.PackASRResponse(resp, code, msg, data)
+	c.JSON(consts.StatusOK, resp)
+}
+
+// FileUpload .
+// @router /api/file [POST]
+func FileUpload(ctx context.Context, c *app.RequestContext) {
+	var err error
+	resp := new(asr.FileUploadResponse)
+	fileform, err := c.MultipartForm()
+	fhs := fileform.File["multipartFiles"]
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	data, code, msg := service.NewASRService().FileUpload(claim.UserId, fhs)
+	pack.PackFilesUrl(resp, code, msg, data)
 	c.JSON(consts.StatusOK, resp)
 }

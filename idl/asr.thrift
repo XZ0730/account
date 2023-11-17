@@ -13,6 +13,12 @@ struct ASRResponse{
     2: string data
 }
 
+struct FileUploadResponse{
+    1: BaseResponse base
+    2: map<string,list<string>> data
+}
+
 service ASRService{
     ASRResponse ASRtoText(1:BaseRequest req)(api.post="/api/speech_recog")
+    FileUploadResponse FileUpload(1:BaseRequest req)(api.post="/api/file")
 }

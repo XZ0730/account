@@ -19,6 +19,7 @@ func Register(r *server.Hertz) {
 	root := r.Group("/", rootMw()...)
 	{
 		_api := root.Group("/api", _apiMw()...)
+		_api.POST("/file", append(_fileuploadMw(), asr.FileUpload)...)
 		_api.POST("/speech_recog", append(_asrtotextMw(), asr.ASRtoText)...)
 	}
 }
