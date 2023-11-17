@@ -12,3 +12,10 @@ func NewLedgerConsumptionRel(ledgerId int32, consumptionId int64) *LedgerConsump
 func CreateLedgerConsumptionRel(rel *LedgerConsumptionRel) error {
 	return DB.Table("t_ledger_consumption").Create(&rel).Error
 }
+
+func GetLedgerIdByConsumption(cId int64) (int64, error) {
+	ledgerId := 0
+	err := DB.Table("t_ledger_consumption").Where("consumption_Id = ?", cId).
+		Pluck("ledger_id", &ledgerId).Error
+	return int64(ledgerId), err
+}
