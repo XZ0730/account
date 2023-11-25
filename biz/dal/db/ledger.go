@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -28,6 +29,7 @@ func ListLedgers(userId int64) ([]Ledger, error) {
 	ledgers := make([]Ledger, 0)
 	err := DB.Table("t_ledger").Where("user_id=?", userId).Find(&ledgers).Error
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 	return ledgers, nil

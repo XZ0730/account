@@ -1,0 +1,18 @@
+{
+    "sourceFile": "biz/dal/db/ledger.go",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1700926682033,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1700926682033,
+            "name": "Commit-0",
+            "content": "package db\r\n\r\nimport (\r\n\t\"fmt\"\r\n\t\"time\"\r\n)\r\n\r\ntype Ledger struct {\r\n\tLedgerId   int32\r\n\tUserId     int64\r\n\tLedgerName string\r\n\tCoverMsg   string\r\n\tCreateTime time.Time\r\n\tUpdateTime time.Time\r\n}\r\n\r\nfunc NewLedger(ledgerId int32, userId int64, ledgerName string, cover string, createTime time.Time, updateTime time.Time) *Ledger {\r\n\treturn &Ledger{LedgerId: ledgerId, UserId: userId, LedgerName: ledgerName, CoverMsg: cover, CreateTime: createTime, UpdateTime: updateTime}\r\n}\r\n\r\nfunc CreateLedger(ledger *Ledger) error {\r\n\treturn DB.Table(\"t_ledger\").Create(&ledger).Error\r\n}\r\n\r\nfunc DeleteLedger(ledger *Ledger) error {\r\n\treturn DB.Table(\"t_ledger\").Where(\"user_id = ? and ledger_id = ?\", ledger.UserId, ledger.LedgerId).Delete(&ledger).Error\r\n}\r\nfunc ListLedgers(userId int64) ([]Ledger, error) {\r\n\tledgers := make([]Ledger, 0)\r\n\terr := DB.Table(\"t_ledger\").Where(\"user_id=?\", userId).Find(&ledgers).Error\r\n\tif err != nil {\r\n\t\tfmt.Println(err)\r\n\t\treturn nil, err\r\n\t}\r\n\treturn ledgers, nil\r\n}\r\n\r\nfunc UpdateLedger(ledger *Ledger) error {\r\n\treturn DB.Table(\"t_ledger\").Where(\"ledger_id=? AND user_id=?\", ledger.LedgerId, ledger.UserId).\r\n\t\tUpdates(&Ledger{LedgerName: ledger.LedgerName, CreateTime: ledger.CreateTime, UpdateTime: ledger.UpdateTime,\r\n\t\t\tCoverMsg: ledger.CoverMsg}).Error\r\n}\r\n\r\nfunc CheckUserLedger(userId int64, ledgerId int64) bool {\r\n\tledger := Ledger{}\r\n\terr := DB.Table(\"t_ledger\").Where(\"user_id = ? and ledger_id = ?\", userId, ledgerId).\r\n\t\tFirst(&ledger).Error\r\n\r\n\treturn err == nil\r\n}\r\n\r\nfunc ConsumptionList(ledgerId int32) ([]*Consumption, error) {\r\n\tconsumptions := make([]*Consumption, 0)\r\n\terr := DB.Table(\"t_consumption\").\r\n\t\tJoins(\"JOIN t_ledger_consumption ON t_ledger_consumption.consumption_id=t_consumption.consumption_id AND t_ledger_consumption.ledger_id=?\", ledgerId).\r\n\t\tFind(&consumptions).\r\n\t\tError\r\n\r\n\treturn consumptions, err\r\n}\r\n\r\nfunc DeleteLedgerConsumption(ledgerId int32, consumptionId int64) error {\r\n\treturn DB.Table(\"t_ledger_consumption\").\r\n\t\tWhere(\"ledger_id = ? and consumption_id = ?\", ledgerId, consumptionId).\r\n\t\tDelete(&Ledger{}).\r\n\t\tError\r\n}\r\n\r\nfunc GetLedgerBalance(ledgerId int32) (float64, error) {\r\n\tbalance := 0.0\r\n\tconsumptions := make([]*Consumption, 0)\r\n\terr := DB.Table(\"t_consumption\").\r\n\t\tJoins(\"JOIN t_ledger_consumption ON \"+\r\n\t\t\t\"t_ledger_consumption.consumption_id=t_consumption.consumption_id \"+\r\n\t\t\t\"AND t_ledger_consumption.ledger_id=?\", ledgerId).\r\n\t\tFind(&consumptions).Error\r\n\r\n\tif err != nil {\r\n\t\treturn 0, err\r\n\t}\r\n\r\n\tfor _, c := range consumptions {\r\n\t\tbalance += c.Amount\r\n\t}\r\n\treturn balance, err\r\n}\r\n\r\nfunc JudgeUserHaveLedger(ledgerId int64, userId int64) error {\r\n\tledger := Ledger{}\r\n\treturn DB.Table(\"t_ledger\").Where(\"ledger_id = ? and user_id = ?\", ledgerId, userId).\r\n\t\tFirst(&ledger).Error\r\n}\r\n\r\nfunc GetLedgersByUserId(userId int64) []*int64 {\r\n\tids := make([]*int64, 0)\r\n\tDB.Table(\"t_ledger\").Where(\"user_id = ?\", userId).Pluck(\"ledger_id\", &ids)\r\n\treturn ids\r\n}\r\n"
+        }
+    ]
+}
