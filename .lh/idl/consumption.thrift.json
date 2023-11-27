@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 7,
+            "activePatchIndex": 8,
             "patches": [
                 {
                     "date": 1701049769840,
@@ -36,6 +36,10 @@
                 {
                     "date": 1701050148132,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -40,12 +40,17 @@\n     2: string msg\n     3: map<string, double> data\n }\n \n-struct GetSumByRange\n+struct GetOutByRangeResponse{\n+    1: i64 code\n+    2: string msg\n+    3: map<string, double> data\n+}\n \n service ConsumptionService{\n-    GetSumByRangeResponse GetSumByRange(1:BaseRequest req)(api.get = \"/api/consumption/range/in\")\n+    GetOutByRangeResponse GetOutByRange(1:BaseRequest req)(api.get = \"api/consumption/range/out\")\n+    GetInByRangeResponse GetInByRange(1:BaseRequest req)(api.get = \"/api/consumption/range/in\")\n     GetConsumptionByRangeResponse GetConsumptionByRange(1: BaseRequest req)(api.get = \"/api/consumption/range/map\")\n     ConsumptionUpdateResponse UpdateConsumption(1:ConsumptionModel req)(api.put = \"/api/consumption\")\n \n     GetConsumptionByRangeResponse GetConsumptionByDate(1:BaseRequest req)(api.get=\"/api/consumption/date\")\n"
+                },
+                {
+                    "date": 1701090093388,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -34,23 +34,18 @@\n     2: string msg\n     3: map<string, TimeKeyConArray> data\n }\n \n-struct GetInByRangeResponse{\n+struct GetSumByRangeResponse{\n     1: i64 code\n     2: string msg\n     3: map<string, double> data\n }\n \n-struct GetOutByRangeResponse{\n-    1: i64 code\n-    2: string msg\n-    3: map<string, double> data\n-}\n \n service ConsumptionService{\n-    GetOutByRangeResponse GetOutByRange(1:BaseRequest req)(api.get = \"api/consumption/range/out\")\n-    GetInByRangeResponse GetInByRange(1:BaseRequest req)(api.get = \"/api/consumption/range/in\")\n+    GetSumByRangeResponse GetOutByRange(1:BaseRequest req)(api.get = \"api/consumption/range/out\")\n+    GetSumByRangeResponse GetInByRange(1:BaseRequest req)(api.get = \"/api/consumption/range/in\")\n     GetConsumptionByRangeResponse GetConsumptionByRange(1: BaseRequest req)(api.get = \"/api/consumption/range/map\")\n     ConsumptionUpdateResponse UpdateConsumption(1:ConsumptionModel req)(api.put = \"/api/consumption\")\n \n     GetConsumptionByRangeResponse GetConsumptionByDate(1:BaseRequest req)(api.get=\"/api/consumption/date\")\n"
                 }
             ],
             "date": 1701049769840,

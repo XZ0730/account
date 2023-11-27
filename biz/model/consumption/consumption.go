@@ -1452,35 +1452,35 @@ func (p *GetConsumptionByRangeResponse) String() string {
 	return fmt.Sprintf("GetConsumptionByRangeResponse(%+v)", *p)
 }
 
-type GetInByRangeResponse struct {
+type GetSumByRangeResponse struct {
 	Code int64              `thrift:"code,1" form:"code" json:"code" query:"code"`
 	Msg  string             `thrift:"msg,2" form:"msg" json:"msg" query:"msg"`
 	Data map[string]float64 `thrift:"data,3" form:"data" json:"data" query:"data"`
 }
 
-func NewGetInByRangeResponse() *GetInByRangeResponse {
-	return &GetInByRangeResponse{}
+func NewGetSumByRangeResponse() *GetSumByRangeResponse {
+	return &GetSumByRangeResponse{}
 }
 
-func (p *GetInByRangeResponse) GetCode() (v int64) {
+func (p *GetSumByRangeResponse) GetCode() (v int64) {
 	return p.Code
 }
 
-func (p *GetInByRangeResponse) GetMsg() (v string) {
+func (p *GetSumByRangeResponse) GetMsg() (v string) {
 	return p.Msg
 }
 
-func (p *GetInByRangeResponse) GetData() (v map[string]float64) {
+func (p *GetSumByRangeResponse) GetData() (v map[string]float64) {
 	return p.Data
 }
 
-var fieldIDToName_GetInByRangeResponse = map[int16]string{
+var fieldIDToName_GetSumByRangeResponse = map[int16]string{
 	1: "code",
 	2: "msg",
 	3: "data",
 }
 
-func (p *GetInByRangeResponse) Read(iprot thrift.TProtocol) (err error) {
+func (p *GetSumByRangeResponse) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -1549,7 +1549,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetInByRangeResponse[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetSumByRangeResponse[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -1559,7 +1559,7 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *GetInByRangeResponse) ReadField1(iprot thrift.TProtocol) error {
+func (p *GetSumByRangeResponse) ReadField1(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
@@ -1568,7 +1568,7 @@ func (p *GetInByRangeResponse) ReadField1(iprot thrift.TProtocol) error {
 	return nil
 }
 
-func (p *GetInByRangeResponse) ReadField2(iprot thrift.TProtocol) error {
+func (p *GetSumByRangeResponse) ReadField2(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
@@ -1577,7 +1577,7 @@ func (p *GetInByRangeResponse) ReadField2(iprot thrift.TProtocol) error {
 	return nil
 }
 
-func (p *GetInByRangeResponse) ReadField3(iprot thrift.TProtocol) error {
+func (p *GetSumByRangeResponse) ReadField3(iprot thrift.TProtocol) error {
 	_, _, size, err := iprot.ReadMapBegin()
 	if err != nil {
 		return err
@@ -1606,9 +1606,9 @@ func (p *GetInByRangeResponse) ReadField3(iprot thrift.TProtocol) error {
 	return nil
 }
 
-func (p *GetInByRangeResponse) Write(oprot thrift.TProtocol) (err error) {
+func (p *GetSumByRangeResponse) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("GetInByRangeResponse"); err != nil {
+	if err = oprot.WriteStructBegin("GetSumByRangeResponse"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -1643,7 +1643,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *GetInByRangeResponse) writeField1(oprot thrift.TProtocol) (err error) {
+func (p *GetSumByRangeResponse) writeField1(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("code", thrift.I64, 1); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -1660,7 +1660,7 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *GetInByRangeResponse) writeField2(oprot thrift.TProtocol) (err error) {
+func (p *GetSumByRangeResponse) writeField2(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("msg", thrift.STRING, 2); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -1677,7 +1677,7 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
 }
 
-func (p *GetInByRangeResponse) writeField3(oprot thrift.TProtocol) (err error) {
+func (p *GetSumByRangeResponse) writeField3(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("data", thrift.MAP, 3); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -1707,279 +1707,17 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
 }
 
-func (p *GetInByRangeResponse) String() string {
+func (p *GetSumByRangeResponse) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("GetInByRangeResponse(%+v)", *p)
-}
-
-type GetOutByRangeResponse struct {
-	Code int64              `thrift:"code,1" form:"code" json:"code" query:"code"`
-	Msg  string             `thrift:"msg,2" form:"msg" json:"msg" query:"msg"`
-	Data map[string]float64 `thrift:"data,3" form:"data" json:"data" query:"data"`
-}
-
-func NewGetOutByRangeResponse() *GetOutByRangeResponse {
-	return &GetOutByRangeResponse{}
-}
-
-func (p *GetOutByRangeResponse) GetCode() (v int64) {
-	return p.Code
-}
-
-func (p *GetOutByRangeResponse) GetMsg() (v string) {
-	return p.Msg
-}
-
-func (p *GetOutByRangeResponse) GetData() (v map[string]float64) {
-	return p.Data
-}
-
-var fieldIDToName_GetOutByRangeResponse = map[int16]string{
-	1: "code",
-	2: "msg",
-	3: "data",
-}
-
-func (p *GetOutByRangeResponse) Read(iprot thrift.TProtocol) (err error) {
-
-	var fieldTypeId thrift.TType
-	var fieldId int16
-
-	if _, err = iprot.ReadStructBegin(); err != nil {
-		goto ReadStructBeginError
-	}
-
-	for {
-		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
-		if err != nil {
-			goto ReadFieldBeginError
-		}
-		if fieldTypeId == thrift.STOP {
-			break
-		}
-
-		switch fieldId {
-		case 1:
-			if fieldTypeId == thrift.I64 {
-				if err = p.ReadField1(iprot); err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				if err = iprot.Skip(fieldTypeId); err != nil {
-					goto SkipFieldError
-				}
-			}
-		case 2:
-			if fieldTypeId == thrift.STRING {
-				if err = p.ReadField2(iprot); err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				if err = iprot.Skip(fieldTypeId); err != nil {
-					goto SkipFieldError
-				}
-			}
-		case 3:
-			if fieldTypeId == thrift.MAP {
-				if err = p.ReadField3(iprot); err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				if err = iprot.Skip(fieldTypeId); err != nil {
-					goto SkipFieldError
-				}
-			}
-		default:
-			if err = iprot.Skip(fieldTypeId); err != nil {
-				goto SkipFieldError
-			}
-		}
-
-		if err = iprot.ReadFieldEnd(); err != nil {
-			goto ReadFieldEndError
-		}
-	}
-	if err = iprot.ReadStructEnd(); err != nil {
-		goto ReadStructEndError
-	}
-
-	return nil
-ReadStructBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
-ReadFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
-ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetOutByRangeResponse[fieldId]), err)
-SkipFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
-
-ReadFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
-ReadStructEndError:
-	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-}
-
-func (p *GetOutByRangeResponse) ReadField1(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
-		return err
-	} else {
-		p.Code = v
-	}
-	return nil
-}
-
-func (p *GetOutByRangeResponse) ReadField2(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadString(); err != nil {
-		return err
-	} else {
-		p.Msg = v
-	}
-	return nil
-}
-
-func (p *GetOutByRangeResponse) ReadField3(iprot thrift.TProtocol) error {
-	_, _, size, err := iprot.ReadMapBegin()
-	if err != nil {
-		return err
-	}
-	p.Data = make(map[string]float64, size)
-	for i := 0; i < size; i++ {
-		var _key string
-		if v, err := iprot.ReadString(); err != nil {
-			return err
-		} else {
-			_key = v
-		}
-
-		var _val float64
-		if v, err := iprot.ReadDouble(); err != nil {
-			return err
-		} else {
-			_val = v
-		}
-
-		p.Data[_key] = _val
-	}
-	if err := iprot.ReadMapEnd(); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (p *GetOutByRangeResponse) Write(oprot thrift.TProtocol) (err error) {
-	var fieldId int16
-	if err = oprot.WriteStructBegin("GetOutByRangeResponse"); err != nil {
-		goto WriteStructBeginError
-	}
-	if p != nil {
-		if err = p.writeField1(oprot); err != nil {
-			fieldId = 1
-			goto WriteFieldError
-		}
-		if err = p.writeField2(oprot); err != nil {
-			fieldId = 2
-			goto WriteFieldError
-		}
-		if err = p.writeField3(oprot); err != nil {
-			fieldId = 3
-			goto WriteFieldError
-		}
-
-	}
-	if err = oprot.WriteFieldStop(); err != nil {
-		goto WriteFieldStopError
-	}
-	if err = oprot.WriteStructEnd(); err != nil {
-		goto WriteStructEndError
-	}
-	return nil
-WriteStructBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
-WriteFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
-WriteFieldStopError:
-	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
-WriteStructEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
-}
-
-func (p *GetOutByRangeResponse) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("code", thrift.I64, 1); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteI64(p.Code); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
-}
-
-func (p *GetOutByRangeResponse) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("msg", thrift.STRING, 2); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteString(p.Msg); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
-}
-
-func (p *GetOutByRangeResponse) writeField3(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("data", thrift.MAP, 3); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteMapBegin(thrift.STRING, thrift.DOUBLE, len(p.Data)); err != nil {
-		return err
-	}
-	for k, v := range p.Data {
-
-		if err := oprot.WriteString(k); err != nil {
-			return err
-		}
-
-		if err := oprot.WriteDouble(v); err != nil {
-			return err
-		}
-	}
-	if err := oprot.WriteMapEnd(); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 3 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
-}
-
-func (p *GetOutByRangeResponse) String() string {
-	if p == nil {
-		return "<nil>"
-	}
-	return fmt.Sprintf("GetOutByRangeResponse(%+v)", *p)
+	return fmt.Sprintf("GetSumByRangeResponse(%+v)", *p)
 }
 
 type ConsumptionService interface {
-	GetOutByRange(ctx context.Context, req *BaseRequest) (r *GetOutByRangeResponse, err error)
+	GetOutByRange(ctx context.Context, req *BaseRequest) (r *GetSumByRangeResponse, err error)
 
-	GetInByRange(ctx context.Context, req *BaseRequest) (r *GetInByRangeResponse, err error)
+	GetInByRange(ctx context.Context, req *BaseRequest) (r *GetSumByRangeResponse, err error)
 
 	GetConsumptionByRange(ctx context.Context, req *BaseRequest) (r *GetConsumptionByRangeResponse, err error)
 
@@ -2014,7 +1752,7 @@ func (p *ConsumptionServiceClient) Client_() thrift.TClient {
 	return p.c
 }
 
-func (p *ConsumptionServiceClient) GetOutByRange(ctx context.Context, req *BaseRequest) (r *GetOutByRangeResponse, err error) {
+func (p *ConsumptionServiceClient) GetOutByRange(ctx context.Context, req *BaseRequest) (r *GetSumByRangeResponse, err error) {
 	var _args ConsumptionServiceGetOutByRangeArgs
 	_args.Req = req
 	var _result ConsumptionServiceGetOutByRangeResult
@@ -2023,7 +1761,7 @@ func (p *ConsumptionServiceClient) GetOutByRange(ctx context.Context, req *BaseR
 	}
 	return _result.GetSuccess(), nil
 }
-func (p *ConsumptionServiceClient) GetInByRange(ctx context.Context, req *BaseRequest) (r *GetInByRangeResponse, err error) {
+func (p *ConsumptionServiceClient) GetInByRange(ctx context.Context, req *BaseRequest) (r *GetSumByRangeResponse, err error) {
 	var _args ConsumptionServiceGetInByRangeArgs
 	_args.Req = req
 	var _result ConsumptionServiceGetInByRangeResult
@@ -2124,7 +1862,7 @@ func (p *consumptionServiceProcessorGetOutByRange) Process(ctx context.Context, 
 	iprot.ReadMessageEnd()
 	var err2 error
 	result := ConsumptionServiceGetOutByRangeResult{}
-	var retval *GetOutByRangeResponse
+	var retval *GetSumByRangeResponse
 	if retval, err2 = p.handler.GetOutByRange(ctx, args.Req); err2 != nil {
 		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing GetOutByRange: "+err2.Error())
 		oprot.WriteMessageBegin("GetOutByRange", thrift.EXCEPTION, seqId)
@@ -2172,7 +1910,7 @@ func (p *consumptionServiceProcessorGetInByRange) Process(ctx context.Context, s
 	iprot.ReadMessageEnd()
 	var err2 error
 	result := ConsumptionServiceGetInByRangeResult{}
-	var retval *GetInByRangeResponse
+	var retval *GetSumByRangeResponse
 	if retval, err2 = p.handler.GetInByRange(ctx, args.Req); err2 != nil {
 		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing GetInByRange: "+err2.Error())
 		oprot.WriteMessageBegin("GetInByRange", thrift.EXCEPTION, seqId)
@@ -2491,16 +2229,16 @@ func (p *ConsumptionServiceGetOutByRangeArgs) String() string {
 }
 
 type ConsumptionServiceGetOutByRangeResult struct {
-	Success *GetOutByRangeResponse `thrift:"success,0,optional"`
+	Success *GetSumByRangeResponse `thrift:"success,0,optional"`
 }
 
 func NewConsumptionServiceGetOutByRangeResult() *ConsumptionServiceGetOutByRangeResult {
 	return &ConsumptionServiceGetOutByRangeResult{}
 }
 
-var ConsumptionServiceGetOutByRangeResult_Success_DEFAULT *GetOutByRangeResponse
+var ConsumptionServiceGetOutByRangeResult_Success_DEFAULT *GetSumByRangeResponse
 
-func (p *ConsumptionServiceGetOutByRangeResult) GetSuccess() (v *GetOutByRangeResponse) {
+func (p *ConsumptionServiceGetOutByRangeResult) GetSuccess() (v *GetSumByRangeResponse) {
 	if !p.IsSetSuccess() {
 		return ConsumptionServiceGetOutByRangeResult_Success_DEFAULT
 	}
@@ -2575,7 +2313,7 @@ ReadStructEndError:
 }
 
 func (p *ConsumptionServiceGetOutByRangeResult) ReadField0(iprot thrift.TProtocol) error {
-	p.Success = NewGetOutByRangeResponse()
+	p.Success = NewGetSumByRangeResponse()
 	if err := p.Success.Read(iprot); err != nil {
 		return err
 	}
@@ -2783,16 +2521,16 @@ func (p *ConsumptionServiceGetInByRangeArgs) String() string {
 }
 
 type ConsumptionServiceGetInByRangeResult struct {
-	Success *GetInByRangeResponse `thrift:"success,0,optional"`
+	Success *GetSumByRangeResponse `thrift:"success,0,optional"`
 }
 
 func NewConsumptionServiceGetInByRangeResult() *ConsumptionServiceGetInByRangeResult {
 	return &ConsumptionServiceGetInByRangeResult{}
 }
 
-var ConsumptionServiceGetInByRangeResult_Success_DEFAULT *GetInByRangeResponse
+var ConsumptionServiceGetInByRangeResult_Success_DEFAULT *GetSumByRangeResponse
 
-func (p *ConsumptionServiceGetInByRangeResult) GetSuccess() (v *GetInByRangeResponse) {
+func (p *ConsumptionServiceGetInByRangeResult) GetSuccess() (v *GetSumByRangeResponse) {
 	if !p.IsSetSuccess() {
 		return ConsumptionServiceGetInByRangeResult_Success_DEFAULT
 	}
@@ -2867,7 +2605,7 @@ ReadStructEndError:
 }
 
 func (p *ConsumptionServiceGetInByRangeResult) ReadField0(iprot thrift.TProtocol) error {
-	p.Success = NewGetInByRangeResponse()
+	p.Success = NewGetSumByRangeResponse()
 	if err := p.Success.Read(iprot); err != nil {
 		return err
 	}

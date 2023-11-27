@@ -20,3 +20,10 @@ func PackConsumptionByRangeResp(resp *consumption.GetConsumptionByRangeResponse,
 	}
 	resp.Data["data"] = timeKeyConArray
 }
+
+func PackSumRangeResp(resp *consumption.GetSumByRangeResponse, code int64, msg string, sum float64) {
+	resp.Data = make(map[string]float64)
+	resp.Data["sum"] = sum
+	resp.Code = code
+	resp.Msg = msg
+}

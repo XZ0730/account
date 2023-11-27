@@ -3,11 +3,55 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 0,
+            "activePatchIndex": 11,
             "patches": [
                 {
                     "date": 1701050211614,
                     "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1701050278809,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -37,23 +37,8 @@\n \tpack.PackUpdateConsumptionResp(resp, &req, code, msg)\n \tc.JSON(consts.StatusOK, resp)\n }\n \n-// GetSumByRange .\n-// @router /api/consumption/range/in [GET]\n-func GetSumByRange(ctx context.Context, c *app.RequestContext) {\n-\tvar err error\n-\tvar req consumption.BaseRequest\n-\terr = c.BindAndValidate(&req)\n-\tif err != nil {\n-\t\tc.String(consts.StatusBadRequest, err.Error())\n-\t\treturn\n-\t}\n-\n-\tresp := new(consumption.GetInByRangeResponse)\n-\tc.JSON(consts.StatusOK, resp)\n-}\n-\n // GetConsumptionByRange .\n // @router /api/consumption/range/map [GET]\n func GetConsumptionByRange(ctx context.Context, c *app.RequestContext) {\n \tstart := c.Query(\"start\")\n"
+                },
+                {
+                    "date": 1701050356927,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -81,17 +81,13 @@\n // GetOutByRange .\n // @router api/consumption/range/out [GET]\n func GetOutByRange(ctx context.Context, c *app.RequestContext) {\n \tvar err error\n-\tvar req consumption.BaseRequest\n-\terr = c.BindAndValidate(&req)\n-\tif err != nil {\n-\t\tc.String(consts.StatusBadRequest, err.Error())\n-\t\treturn\n-\t}\n+\ttoken_byte := c.GetHeader(\"token\")\n+\tclaim, _ := utils.CheckToken(string(token_byte))\n+\tuserId := claim.UserId\n \n \tresp := new(consumption.GetOutByRangeResponse)\n-\n \tc.JSON(consts.StatusOK, resp)\n }\n \n // GetInByRange .\n"
+                },
+                {
+                    "date": 1701090063225,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -101,7 +101,8 @@\n \t\treturn\n \t}\n \n \tresp := new(consumption.GetInByRangeResponse)\n-\n+\tcode, msg, sum := service.NewConsumptionService().GetSumByRange(-1)\n+\tpack.PackGetInResp(code, msg, sum)\n \tc.JSON(consts.StatusOK, resp)\n }\n"
+                },
+                {
+                    "date": 1701090116740,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -85,9 +85,9 @@\n \ttoken_byte := c.GetHeader(\"token\")\n \tclaim, _ := utils.CheckToken(string(token_byte))\n \tuserId := claim.UserId\n \n-\tresp := new(consumption.GetOutByRangeResponse)\n+\tresp := new(consumption.GetSumByRangeResponse)\n \tc.JSON(consts.StatusOK, resp)\n }\n \n // GetInByRange .\n@@ -100,9 +100,9 @@\n \t\tc.String(consts.StatusBadRequest, err.Error())\n \t\treturn\n \t}\n \n-\tresp := new(consumption.GetInByRangeResponse)\n+\tresp := new(consumption.GetSumByRangeResponse)\n \tcode, msg, sum := service.NewConsumptionService().GetSumByRange(-1)\n-\tpack.PackGetInResp(code, msg, sum)\n+\tpack.PackSumInResp(code, msg, sum)\n \tc.JSON(consts.StatusOK, resp)\n }\n"
+                },
+                {
+                    "date": 1701090395143,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -81,13 +81,16 @@\n // GetOutByRange .\n // @router api/consumption/range/out [GET]\n func GetOutByRange(ctx context.Context, c *app.RequestContext) {\n \tvar err error\n+\tstart := c.Query(\"start\")\n+\tend := c.Query(\"end\")\n \ttoken_byte := c.GetHeader(\"token\")\n \tclaim, _ := utils.CheckToken(string(token_byte))\n-\tuserId := claim.UserId\n \n \tresp := new(consumption.GetSumByRangeResponse)\n+\tcode, msg, sum := service.NewConsumptionService().GetSumByRange(start, end, claim.UserId, 1)\n+\tpack.PackSumInResp()\n \tc.JSON(consts.StatusOK, resp)\n }\n \n // GetInByRange .\n@@ -99,10 +102,14 @@\n \tif err != nil {\n \t\tc.String(consts.StatusBadRequest, err.Error())\n \t\treturn\n \t}\n+\tstart := c.Query(\"start\")\n+\tend := c.Query(\"end\")\n+\ttoken_byte := c.GetHeader(\"token\")\n+\tclaim, _ := utils.CheckToken(string(token_byte))\n \n \tresp := new(consumption.GetSumByRangeResponse)\n-\tcode, msg, sum := service.NewConsumptionService().GetSumByRange(-1)\n-\tpack.PackSumInResp(code, msg, sum)\n+\tcode, msg, sum := service.NewConsumptionService().GetSumByRange(start, end, claim.UserId, -1)\n+\tpack.PackSumInResp(resp, code, msg, sum)\n \tc.JSON(consts.StatusOK, resp)\n }\n"
+                },
+                {
+                    "date": 1701090415850,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -88,9 +88,9 @@\n \tclaim, _ := utils.CheckToken(string(token_byte))\n \n \tresp := new(consumption.GetSumByRangeResponse)\n \tcode, msg, sum := service.NewConsumptionService().GetSumByRange(start, end, claim.UserId, 1)\n-\tpack.PackSumInResp()\n+\tpack.PackSumRangeResp()\n \tc.JSON(consts.StatusOK, resp)\n }\n \n // GetInByRange .\n@@ -109,7 +109,7 @@\n \tclaim, _ := utils.CheckToken(string(token_byte))\n \n \tresp := new(consumption.GetSumByRangeResponse)\n \tcode, msg, sum := service.NewConsumptionService().GetSumByRange(start, end, claim.UserId, -1)\n-\tpack.PackSumInResp(resp, code, msg, sum)\n+\tpack.PackSumRangeResp(resp, code, msg, sum)\n \tc.JSON(consts.StatusOK, resp)\n }\n"
+                },
+                {
+                    "date": 1701090451331,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -88,9 +88,9 @@\n \tclaim, _ := utils.CheckToken(string(token_byte))\n \n \tresp := new(consumption.GetSumByRangeResponse)\n \tcode, msg, sum := service.NewConsumptionService().GetSumByRange(start, end, claim.UserId, 1)\n-\tpack.PackSumRangeResp()\n+\tpack.PackSumRangeResp(resp, code, msg, sum)\n \tc.JSON(consts.StatusOK, resp)\n }\n \n // GetInByRange .\n"
+                },
+                {
+                    "date": 1701091027900,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -80,16 +80,15 @@\n \n // GetOutByRange .\n // @router api/consumption/range/out [GET]\n func GetOutByRange(ctx context.Context, c *app.RequestContext) {\n-\tvar err error\n \tstart := c.Query(\"start\")\n \tend := c.Query(\"end\")\n \ttoken_byte := c.GetHeader(\"token\")\n \tclaim, _ := utils.CheckToken(string(token_byte))\n \n \tresp := new(consumption.GetSumByRangeResponse)\n-\tcode, msg, sum := service.NewConsumptionService().GetSumByRange(start, end, claim.UserId, 1)\n+\tcode, msg, sum := service.NewConsumptionService().GetSumByRange(start, end, claim.UserId, -1)\n \tpack.PackSumRangeResp(resp, code, msg, sum)\n \tc.JSON(consts.StatusOK, resp)\n }\n \n@@ -108,8 +107,8 @@\n \ttoken_byte := c.GetHeader(\"token\")\n \tclaim, _ := utils.CheckToken(string(token_byte))\n \n \tresp := new(consumption.GetSumByRangeResponse)\n-\tcode, msg, sum := service.NewConsumptionService().GetSumByRange(start, end, claim.UserId, -1)\n+\tcode, msg, sum := service.NewConsumptionService().GetSumByRange(start, end, claim.UserId, 1)\n \tpack.PackSumRangeResp(resp, code, msg, sum)\n \tc.JSON(consts.StatusOK, resp)\n }\n"
+                },
+                {
+                    "date": 1701091837506,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,8 +14,9 @@\n \t\"github.com/XZ0730/runFzu/pkg/errno\"\n \t\"github.com/XZ0730/runFzu/pkg/utils\"\n \t\"github.com/cloudwego/hertz/pkg/app\"\n \t\"github.com/cloudwego/hertz/pkg/protocol/consts\"\n+\t\"github.com/cloudwego/kitex/pkg/klog\"\n )\n \n // UpdateConsumption .\n // @router /api/consumption [PUT]\n@@ -42,9 +43,10 @@\n // @router /api/consumption/range/map [GET]\n func GetConsumptionByRange(ctx context.Context, c *app.RequestContext) {\n \tstart := c.Query(\"start\")\n \tend := c.Query(\"end\")\n-\n+\tklog.Info(\"start !! \" + start)\n+\tklog.Info(\"end !!\" + end)\n \ttoken_byte := c.GetHeader(\"token\")\n \tclaim, _ := utils.CheckToken(string(token_byte))\n \tconsumptions, code, msg := service.NewConsumptionService().GetConsumptionsByRange(start, end, claim.UserId)\n \tresp := new(consumption.GetConsumptionByRangeResponse)\n"
+                },
+                {
+                    "date": 1701091951096,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -43,10 +43,8 @@\n // @router /api/consumption/range/map [GET]\n func GetConsumptionByRange(ctx context.Context, c *app.RequestContext) {\n \tstart := c.Query(\"start\")\n \tend := c.Query(\"end\")\n-\tklog.Info(\"start !! \" + start)\n-\tklog.Info(\"end !!\" + end)\n \ttoken_byte := c.GetHeader(\"token\")\n \tclaim, _ := utils.CheckToken(string(token_byte))\n \tconsumptions, code, msg := service.NewConsumptionService().GetConsumptionsByRange(start, end, claim.UserId)\n \tresp := new(consumption.GetConsumptionByRangeResponse)\n"
+                },
+                {
+                    "date": 1701092103791,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,9 +14,8 @@\n \t\"github.com/XZ0730/runFzu/pkg/errno\"\n \t\"github.com/XZ0730/runFzu/pkg/utils\"\n \t\"github.com/cloudwego/hertz/pkg/app\"\n \t\"github.com/cloudwego/hertz/pkg/protocol/consts\"\n-\t\"github.com/cloudwego/kitex/pkg/klog\"\n )\n \n // UpdateConsumption .\n // @router /api/consumption [PUT]\n"
                 }
             ],
             "date": 1701050211614,

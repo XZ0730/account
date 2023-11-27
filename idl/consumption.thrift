@@ -35,21 +35,16 @@ struct GetConsumptionByRangeResponse{
     3: map<string, TimeKeyConArray> data
 }
 
-struct GetInByRangeResponse{
+struct GetSumByRangeResponse{
     1: i64 code
     2: string msg
     3: map<string, double> data
 }
 
-struct GetOutByRangeResponse{
-    1: i64 code
-    2: string msg
-    3: map<string, double> data
-}
 
 service ConsumptionService{
-    GetOutByRangeResponse GetOutByRange(1:BaseRequest req)(api.get = "api/consumption/range/out")
-    GetInByRangeResponse GetInByRange(1:BaseRequest req)(api.get = "/api/consumption/range/in")
+    GetSumByRangeResponse GetOutByRange(1:BaseRequest req)(api.get = "api/consumption/range/out")
+    GetSumByRangeResponse GetInByRange(1:BaseRequest req)(api.get = "/api/consumption/range/in")
     GetConsumptionByRangeResponse GetConsumptionByRange(1: BaseRequest req)(api.get = "/api/consumption/range/map")
     ConsumptionUpdateResponse UpdateConsumption(1:ConsumptionModel req)(api.put = "/api/consumption")
 
