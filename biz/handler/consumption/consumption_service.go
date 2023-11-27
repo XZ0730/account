@@ -38,28 +38,11 @@ func UpdateConsumption(ctx context.Context, c *app.RequestContext) {
 	c.JSON(consts.StatusOK, resp)
 }
 
-// GetSumByRange .
-// @router /api/consumption/range/in [GET]
-func GetSumByRange(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req consumption.BaseRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
-
-	resp := new(consumption.GetSumByRangeResponse)
-
-	c.JSON(consts.StatusOK, resp)
-}
-
 // GetConsumptionByRange .
 // @router /api/consumption/range/map [GET]
 func GetConsumptionByRange(ctx context.Context, c *app.RequestContext) {
 	start := c.Query("start")
 	end := c.Query("end")
-
 	token_byte := c.GetHeader("token")
 	claim, _ := utils.CheckToken(string(token_byte))
 	consumptions, code, msg := service.NewConsumptionService().GetConsumptionsByRange(start, end, claim.UserId)
@@ -91,5 +74,40 @@ func GetConsumptionByDate(ctx context.Context, c *app.RequestContext) {
 	claim, _ := utils.CheckToken(string(token_byte))
 	code, msg, cm := service.NewConsumptionService().GetConsumptionByDate(claim.UserId, date_time, the_type)
 	pack.PackConsumptionByRangeResp(resp, code, msg, cm)
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetOutByRange .
+// @router api/consumption/range/out [GET]
+func GetOutByRange(ctx context.Context, c *app.RequestContext) {
+	start := c.Query("start")
+	end := c.Query("end")
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+
+	resp := new(consumption.GetSumByRangeResponse)
+	code, msg, sum := service.NewConsumptionService().GetSumByRange(start, end, claim.UserId, -1)
+	pack.PackSumRangeResp(resp, code, msg, sum)
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetInByRange .
+// @router /api/consumption/range/in [GET]
+func GetInByRange(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req consumption.BaseRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	start := c.Query("start")
+	end := c.Query("end")
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+
+	resp := new(consumption.GetSumByRangeResponse)
+	code, msg, sum := service.NewConsumptionService().GetSumByRange(start, end, claim.UserId, 1)
+	pack.PackSumRangeResp(resp, code, msg, sum)
 	c.JSON(consts.StatusOK, resp)
 }
