@@ -81,6 +81,9 @@ func (c *ConsumptionService) GetConsumptionByDate(uid int64, date time.Time, the
 	} else if the_type == 2 {
 		start = time.Date(date.Year(), date.Month(), 1, 0, 0, 0, 0, time.Local)
 		end = time.Date(date.Year(), date.Month()+1, 1, 0, 0, 0, 0, time.Local)
+	} else {
+		start = time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.Local)
+		end = time.Date(date.Year(), date.Month(), date.Day()+1, 0, 0, 0, 0, time.Local)
 	}
 	consumptions := db.GetConByRange(start.Format(time.DateOnly), end.Format(time.DateOnly), ledger_id)
 	var eg errgroup.Group
