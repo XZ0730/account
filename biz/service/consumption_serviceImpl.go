@@ -72,10 +72,16 @@ func (c *ConsumptionService) GetConsumptionsByRange(start string, end string, us
 
 func (c *ConsumptionService) GetConsumptionByDate(uid int64, date time.Time, the_type int64) (int64, string, []*consumption.ConsumptionModel) {
 	list := make([]*consumption.ConsumptionModel, 0)
-
+	var start time.Time
+	var end time.Time
 	ledger_id := db.GetLedgersByUserId(uid)
-	start := time.Date(date.Year(), 1, 1, 0, 0, 0, 0, time.Local)
-	end := time.Date(date.Year()+1, 1, 1, 0, 0, 0, 0, time.Local)
+	if the_type == 1 {
+		start = time.Date(date.Year(), 1, 1, 0, 0, 0, 0, time.Local)
+		end = time.Date(date.Year()+1, 1, 1, 0, 0, 0, 0, time.Local)
+	} else if the_type == 2 {
+		start = time.Date(date.Year(), date.Month(), 1, 0, 0, 0, 0, time.Local)
+		end = time.Date(date.Year(), date.Month()+1, 1, 0, 0, 0, 0, time.Local)
+	}
 	consumptions := db.GetConByRange(start.Format(time.DateOnly), end.Format(time.DateOnly), ledger_id)
 	var eg errgroup.Group
 	for _, val := range consumptions {

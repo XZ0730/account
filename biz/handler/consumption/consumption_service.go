@@ -72,10 +72,7 @@ func GetConsumptionByRange(ctx context.Context, c *app.RequestContext) {
 // @router /api/consumption/date [GET]
 func GetConsumptionByDate(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req consumption.BaseRequest
 	resp := new(consumption.GetConsumptionByRangeResponse)
-	err = c.BindAndValidate(&req)
-
 	date := c.Query("date")
 	date_time, err := time.Parse(time.DateTime, date)
 	if date == "" || err != nil {
