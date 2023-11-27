@@ -42,4 +42,7 @@ config/config.yaml
 # compose data
 /data
 
+# history
+/.lh
+
 /output
