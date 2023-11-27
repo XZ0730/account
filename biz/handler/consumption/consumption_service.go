@@ -4,6 +4,9 @@ package consumption
 
 import (
 	"context"
+	"strconv"
+	"time"
+
 	"github.com/XZ0730/runFzu/biz/model/base"
 	"github.com/XZ0730/runFzu/biz/model/consumption"
 	"github.com/XZ0730/runFzu/biz/pack"
@@ -62,5 +65,34 @@ func GetConsumptionByRange(ctx context.Context, c *app.RequestContext) {
 	consumptions, code, msg := service.NewConsumptionService().GetConsumptionsByRange(start, end, claim.UserId)
 	resp := new(consumption.GetConsumptionByRangeResponse)
 	pack.PackConsumptionByRangeResp(resp, code, msg, consumptions)
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetConsumptionByDate .
+// @router /api/consumption/date [GET]
+func GetConsumptionByDate(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req consumption.BaseRequest
+	resp := new(consumption.GetConsumptionByRangeResponse)
+	err = c.BindAndValidate(&req)
+
+	date := c.Query("date")
+	date_time, err := time.Parse(time.DateTime, date)
+	if date == "" || err != nil {
+		pack.PackConsumptionByRangeResp(resp, errno.ParamError.ErrorCode, errno.ParamError.ErrorMsg, nil)
+		c.JSON(consts.StatusOK, resp)
+		return
+	}
+	types := c.Query("type")
+	the_type, err := strconv.ParseInt(types, 10, 32)
+	if err != nil {
+		pack.PackConsumptionByRangeResp(resp, errno.ParamError.ErrorCode, errno.ParamError.ErrorMsg, nil)
+		c.JSON(consts.StatusOK, resp)
+		return
+	}
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	code, msg, cm := service.NewConsumptionService().GetConsumptionByDate(claim.UserId, date_time, the_type)
+	pack.PackConsumptionByRangeResp(resp, code, msg, cm)
 	c.JSON(consts.StatusOK, resp)
 }

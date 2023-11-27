@@ -1,12 +1,13 @@
 package service
 
 import (
+	"time"
+
 	"github.com/XZ0730/runFzu/biz/dal/db"
 	"github.com/XZ0730/runFzu/biz/model/consumption"
 	"github.com/XZ0730/runFzu/pkg/errno"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"golang.org/x/sync/errgroup"
-	"time"
 )
 
 func (c *ConsumptionService) UpdateConsumption(userId int64, model *consumption.ConsumptionModel) (int64, string) {
@@ -67,4 +68,35 @@ func (c *ConsumptionService) GetConsumptionsByRange(start string, end string, us
 		return nil, errno.GetError.ErrorCode, errno.GetError.ErrorMsg
 	}
 	return list, errno.StatusSuccessCode, errno.StatusSuccessMsg
+}
+
+func (c *ConsumptionService) GetConsumptionByDate(uid int64, date time.Time, the_type int64) (int64, string, []*consumption.ConsumptionModel) {
+	list := make([]*consumption.ConsumptionModel, 0)
+
+	ledger_id := db.GetLedgersByUserId(uid)
+	start := time.Date(date.Year(), 1, 1, 0, 0, 0, 0, time.Local)
+	end := time.Date(date.Year()+1, 1, 1, 0, 0, 0, 0, time.Local)
+	consumptions := db.GetConByRange(start.Format(time.DateOnly), end.Format(time.DateOnly), ledger_id)
+	var eg errgroup.Group
+	for _, val := range consumptions {
+		tmp := val
+		eg.Go(func() error {
+			vo_g := new(consumption.ConsumptionModel)
+			vo_g.ConsumptionId = tmp.ConsumptionId
+			vo_g.ConsumptionName = tmp.ConsumptionName
+			vo_g.Amount = tmp.Amount
+			vo_g.Description = tmp.Description
+			vo_g.TypeId = tmp.TypeId
+			vo_g.ConsumeTime = tmp.ConsumeTime.Format(time.DateTime)
+			vo_g.Store = tmp.Store
+			vo_g.Credential = tmp.Credential
+			list = append(list, vo_g)
+			return nil
+		})
+	}
+	if err := eg.Wait(); err != nil {
+		klog.Info("[consumption]get error:", err.Error())
+		return errno.GetError.ErrorCode, errno.GetError.ErrorMsg, nil
+	}
+	return errno.StatusSuccessCode, errno.StatusSuccessMsg, list
 }

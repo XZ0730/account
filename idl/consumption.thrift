@@ -45,4 +45,6 @@ service ConsumptionService{
     GetSumByRangeResponse GetSumByRange(1:BaseRequest req)(api.get = "/api/consumption/range/in")
     GetConsumptionByRangeResponse GetConsumptionByRange(1: BaseRequest req)(api.get = "/api/consumption/range/map")
     ConsumptionUpdateResponse UpdateConsumption(1:ConsumptionModel req)(api.put = "/api/consumption")
+
+    GetConsumptionByRangeResponse GetConsumptionByDate(1:BaseRequest req)(api.get="/api/consumption/date")
 }

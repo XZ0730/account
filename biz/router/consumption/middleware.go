@@ -45,3 +45,13 @@ func _getconsumptionbyrangeMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _getconsumptionbydateMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _consumption0Mw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
