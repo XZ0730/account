@@ -55,3 +55,13 @@ func _consumption0Mw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _getinbyrangeMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getoutbyrangeMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

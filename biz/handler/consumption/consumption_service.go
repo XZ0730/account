@@ -49,8 +49,7 @@ func GetSumByRange(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	resp := new(consumption.GetSumByRangeResponse)
-
+	resp := new(consumption.GetInByRangeResponse)
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -91,5 +90,37 @@ func GetConsumptionByDate(ctx context.Context, c *app.RequestContext) {
 	claim, _ := utils.CheckToken(string(token_byte))
 	code, msg, cm := service.NewConsumptionService().GetConsumptionByDate(claim.UserId, date_time, the_type)
 	pack.PackConsumptionByRangeResp(resp, code, msg, cm)
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetOutByRange .
+// @router api/consumption/range/out [GET]
+func GetOutByRange(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req consumption.BaseRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(consumption.GetOutByRangeResponse)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetInByRange .
+// @router /api/consumption/range/in [GET]
+func GetInByRange(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req consumption.BaseRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(consumption.GetInByRangeResponse)
+
 	c.JSON(consts.StatusOK, resp)
 }

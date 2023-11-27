@@ -26,8 +26,9 @@ func Register(r *server.Hertz) {
 			_consumption0 := _api.Group("/consumption", _consumption0Mw()...)
 			{
 				_range := _consumption0.Group("/range", _rangeMw()...)
-				_range.GET("/in", append(_getsumbyrangeMw(), consumption.GetSumByRange)...)
+				_range.GET("/in", append(_getinbyrangeMw(), consumption.GetInByRange)...)
 				_range.GET("/map", append(_getconsumptionbyrangeMw(), consumption.GetConsumptionByRange)...)
+				_range.GET("/out", append(_getoutbyrangeMw(), consumption.GetOutByRange)...)
 			}
 		}
 	}
