@@ -25,14 +25,11 @@ struct ConsumptionUpdateResponse{
     3: map<string, ConsumptionModel> data
 }
 
-struct TimeKeyConArray{
-    1:map<string, list<ConsumptionModel>> tmap
-}
 
 struct GetConsumptionByRangeResponse{
     1: i64 code
     2: string msg
-    3: map<string, TimeKeyConArray> data
+    3: map<string, list<ConsumptionModel>> data
 }
 
 struct GetSumByRangeResponse{
@@ -41,9 +38,16 @@ struct GetSumByRangeResponse{
     3: map<string, double> data
 }
 
+struct GetLastMonthMoneyResp{
+    1: i64 code
+    2: string msg
+    3: map<string, list<double>> data;
+}
 
 service ConsumptionService{
-    GetSumByRangeResponse GetOutByRange(1:BaseRequest req)(api.get = "api/consumption/range/out")
+    GetLastMonthMoneyResp GetLastMonthMoney(1:BaseRequest req)(api.get = "/api/consumption/last/month/analysis")
+    GetConsumptionByRangeResponse GetLocalMonthConsumption(1:BaseRequest req)(api.get = "/api/consumption/month/map")
+    GetSumByRangeResponse GetOutByRange(1:BaseRequest req)(api.get = "/api/consumption/range/out")
     GetSumByRangeResponse GetInByRange(1:BaseRequest req)(api.get = "/api/consumption/range/in")
     GetConsumptionByRangeResponse GetConsumptionByRange(1: BaseRequest req)(api.get = "/api/consumption/range/map")
     ConsumptionUpdateResponse UpdateConsumption(1:ConsumptionModel req)(api.put = "/api/consumption")

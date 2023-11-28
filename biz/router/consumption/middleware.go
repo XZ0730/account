@@ -65,3 +65,28 @@ func _getoutbyrangeMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _lastMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _monthMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getlastmonthmoneyMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _month0Mw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getlocalmonthconsumptionMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

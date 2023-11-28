@@ -44,29 +44,22 @@ func (c *ConsumptionService) GetConsumptionsByRange(start string, end string, us
 	ledgerIds := db.GetLedgersByUserId(userId)
 	consumptions := db.GetConByRange(start, end, ledgerIds)
 
-	var eg errgroup.Group
 	list := make([]*consumption.ConsumptionModel, 0)
 
 	for _, val := range consumptions {
 		tmp := val
-		eg.Go(func() error {
-			vo_g := new(consumption.ConsumptionModel)
-			vo_g.ConsumptionId = tmp.ConsumptionId
-			vo_g.ConsumptionName = tmp.ConsumptionName
-			vo_g.Amount = tmp.Amount
-			vo_g.Description = tmp.Description
-			vo_g.TypeId = tmp.TypeId
-			vo_g.ConsumeTime = tmp.ConsumeTime.Format(time.DateTime)
-			vo_g.Store = tmp.Store
-			vo_g.Credential = tmp.Credential
-			list = append(list, vo_g)
-			return nil
-		})
+		vo_g := new(consumption.ConsumptionModel)
+		vo_g.ConsumptionId = tmp.ConsumptionId
+		vo_g.ConsumptionName = tmp.ConsumptionName
+		vo_g.Amount = tmp.Amount
+		vo_g.Description = tmp.Description
+		vo_g.TypeId = tmp.TypeId
+		vo_g.ConsumeTime = tmp.ConsumeTime.Format(time.DateTime)
+		vo_g.Store = tmp.Store
+		vo_g.Credential = tmp.Credential
+		list = append(list, vo_g)
 	}
-	if err := eg.Wait(); err != nil {
-		klog.Info("[consumption]get error:", err.Error())
-		return nil, errno.GetError.ErrorCode, errno.GetError.ErrorMsg
-	}
+	klog.Info(list)
 	return list, errno.StatusSuccessCode, errno.StatusSuccessMsg
 }
 
