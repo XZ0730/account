@@ -1005,198 +1005,10 @@ func (p *ConsumptionUpdateResponse) String() string {
 	return fmt.Sprintf("ConsumptionUpdateResponse(%+v)", *p)
 }
 
-type TimeKeyConArray struct {
-	Tmap map[string][]*ConsumptionModel `thrift:"tmap,1" form:"tmap" json:"tmap" query:"tmap"`
-}
-
-func NewTimeKeyConArray() *TimeKeyConArray {
-	return &TimeKeyConArray{}
-}
-
-func (p *TimeKeyConArray) GetTmap() (v map[string][]*ConsumptionModel) {
-	return p.Tmap
-}
-
-var fieldIDToName_TimeKeyConArray = map[int16]string{
-	1: "tmap",
-}
-
-func (p *TimeKeyConArray) Read(iprot thrift.TProtocol) (err error) {
-
-	var fieldTypeId thrift.TType
-	var fieldId int16
-
-	if _, err = iprot.ReadStructBegin(); err != nil {
-		goto ReadStructBeginError
-	}
-
-	for {
-		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
-		if err != nil {
-			goto ReadFieldBeginError
-		}
-		if fieldTypeId == thrift.STOP {
-			break
-		}
-
-		switch fieldId {
-		case 1:
-			if fieldTypeId == thrift.MAP {
-				if err = p.ReadField1(iprot); err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				if err = iprot.Skip(fieldTypeId); err != nil {
-					goto SkipFieldError
-				}
-			}
-		default:
-			if err = iprot.Skip(fieldTypeId); err != nil {
-				goto SkipFieldError
-			}
-		}
-
-		if err = iprot.ReadFieldEnd(); err != nil {
-			goto ReadFieldEndError
-		}
-	}
-	if err = iprot.ReadStructEnd(); err != nil {
-		goto ReadStructEndError
-	}
-
-	return nil
-ReadStructBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
-ReadFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
-ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_TimeKeyConArray[fieldId]), err)
-SkipFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
-
-ReadFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
-ReadStructEndError:
-	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-}
-
-func (p *TimeKeyConArray) ReadField1(iprot thrift.TProtocol) error {
-	_, _, size, err := iprot.ReadMapBegin()
-	if err != nil {
-		return err
-	}
-	p.Tmap = make(map[string][]*ConsumptionModel, size)
-	for i := 0; i < size; i++ {
-		var _key string
-		if v, err := iprot.ReadString(); err != nil {
-			return err
-		} else {
-			_key = v
-		}
-
-		_, size, err := iprot.ReadListBegin()
-		if err != nil {
-			return err
-		}
-		_val := make([]*ConsumptionModel, 0, size)
-		for i := 0; i < size; i++ {
-			_elem := NewConsumptionModel()
-			if err := _elem.Read(iprot); err != nil {
-				return err
-			}
-
-			_val = append(_val, _elem)
-		}
-		if err := iprot.ReadListEnd(); err != nil {
-			return err
-		}
-
-		p.Tmap[_key] = _val
-	}
-	if err := iprot.ReadMapEnd(); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (p *TimeKeyConArray) Write(oprot thrift.TProtocol) (err error) {
-	var fieldId int16
-	if err = oprot.WriteStructBegin("TimeKeyConArray"); err != nil {
-		goto WriteStructBeginError
-	}
-	if p != nil {
-		if err = p.writeField1(oprot); err != nil {
-			fieldId = 1
-			goto WriteFieldError
-		}
-
-	}
-	if err = oprot.WriteFieldStop(); err != nil {
-		goto WriteFieldStopError
-	}
-	if err = oprot.WriteStructEnd(); err != nil {
-		goto WriteStructEndError
-	}
-	return nil
-WriteStructBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
-WriteFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
-WriteFieldStopError:
-	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
-WriteStructEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
-}
-
-func (p *TimeKeyConArray) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("tmap", thrift.MAP, 1); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteMapBegin(thrift.STRING, thrift.LIST, len(p.Tmap)); err != nil {
-		return err
-	}
-	for k, v := range p.Tmap {
-
-		if err := oprot.WriteString(k); err != nil {
-			return err
-		}
-
-		if err := oprot.WriteListBegin(thrift.STRUCT, len(v)); err != nil {
-			return err
-		}
-		for _, v := range v {
-			if err := v.Write(oprot); err != nil {
-				return err
-			}
-		}
-		if err := oprot.WriteListEnd(); err != nil {
-			return err
-		}
-	}
-	if err := oprot.WriteMapEnd(); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
-}
-
-func (p *TimeKeyConArray) String() string {
-	if p == nil {
-		return "<nil>"
-	}
-	return fmt.Sprintf("TimeKeyConArray(%+v)", *p)
-}
-
 type GetConsumptionByRangeResponse struct {
-	Code int64                       `thrift:"code,1" form:"code" json:"code" query:"code"`
-	Msg  string                      `thrift:"msg,2" form:"msg" json:"msg" query:"msg"`
-	Data map[string]*TimeKeyConArray `thrift:"data,3" form:"data" json:"data" query:"data"`
+	Code int64                          `thrift:"code,1" form:"code" json:"code" query:"code"`
+	Msg  string                         `thrift:"msg,2" form:"msg" json:"msg" query:"msg"`
+	Data map[string][]*ConsumptionModel `thrift:"data,3" form:"data" json:"data" query:"data"`
 }
 
 func NewGetConsumptionByRangeResponse() *GetConsumptionByRangeResponse {
@@ -1211,7 +1023,7 @@ func (p *GetConsumptionByRangeResponse) GetMsg() (v string) {
 	return p.Msg
 }
 
-func (p *GetConsumptionByRangeResponse) GetData() (v map[string]*TimeKeyConArray) {
+func (p *GetConsumptionByRangeResponse) GetData() (v map[string][]*ConsumptionModel) {
 	return p.Data
 }
 
@@ -1323,7 +1135,7 @@ func (p *GetConsumptionByRangeResponse) ReadField3(iprot thrift.TProtocol) error
 	if err != nil {
 		return err
 	}
-	p.Data = make(map[string]*TimeKeyConArray, size)
+	p.Data = make(map[string][]*ConsumptionModel, size)
 	for i := 0; i < size; i++ {
 		var _key string
 		if v, err := iprot.ReadString(); err != nil {
@@ -1331,8 +1143,21 @@ func (p *GetConsumptionByRangeResponse) ReadField3(iprot thrift.TProtocol) error
 		} else {
 			_key = v
 		}
-		_val := NewTimeKeyConArray()
-		if err := _val.Read(iprot); err != nil {
+
+		_, size, err := iprot.ReadListBegin()
+		if err != nil {
+			return err
+		}
+		_val := make([]*ConsumptionModel, 0, size)
+		for i := 0; i < size; i++ {
+			_elem := NewConsumptionModel()
+			if err := _elem.Read(iprot); err != nil {
+				return err
+			}
+
+			_val = append(_val, _elem)
+		}
+		if err := iprot.ReadListEnd(); err != nil {
 			return err
 		}
 
@@ -1419,7 +1244,7 @@ func (p *GetConsumptionByRangeResponse) writeField3(oprot thrift.TProtocol) (err
 	if err = oprot.WriteFieldBegin("data", thrift.MAP, 3); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteMapBegin(thrift.STRING, thrift.STRUCT, len(p.Data)); err != nil {
+	if err := oprot.WriteMapBegin(thrift.STRING, thrift.LIST, len(p.Data)); err != nil {
 		return err
 	}
 	for k, v := range p.Data {
@@ -1428,7 +1253,15 @@ func (p *GetConsumptionByRangeResponse) writeField3(oprot thrift.TProtocol) (err
 			return err
 		}
 
-		if err := v.Write(oprot); err != nil {
+		if err := oprot.WriteListBegin(thrift.STRUCT, len(v)); err != nil {
+			return err
+		}
+		for _, v := range v {
+			if err := v.Write(oprot); err != nil {
+				return err
+			}
+		}
+		if err := oprot.WriteListEnd(); err != nil {
 			return err
 		}
 	}

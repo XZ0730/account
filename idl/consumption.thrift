@@ -25,14 +25,11 @@ struct ConsumptionUpdateResponse{
     3: map<string, ConsumptionModel> data
 }
 
-struct TimeKeyConArray{
-    1:map<string, list<ConsumptionModel>> tmap
-}
 
 struct GetConsumptionByRangeResponse{
     1: i64 code
     2: string msg
-    3: map<string, TimeKeyConArray> data
+    3: map<string, list<ConsumptionModel>> data
 }
 
 struct GetSumByRangeResponse{
