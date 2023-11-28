@@ -15,6 +15,7 @@ import (
 	"github.com/XZ0730/runFzu/pkg/utils"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"github.com/cloudwego/kitex/pkg/klog"
 )
 
 // UpdateConsumption .
@@ -109,5 +110,66 @@ func GetInByRange(ctx context.Context, c *app.RequestContext) {
 	resp := new(consumption.GetSumByRangeResponse)
 	code, msg, sum := service.NewConsumptionService().GetSumByRange(start, end, claim.UserId, 1)
 	pack.PackSumRangeResp(resp, code, msg, sum)
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetLastMonthMoney .
+// @router /api/consumption/last/month/analysis [GET]
+func GetLastMonthMoney(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req consumption.BaseRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(consumption.GetLastMonthMoneyResp)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetLocalMonthConsumption .
+// @router /api/consumption/month/map [GET]
+func GetLocalMonthConsumption(ctx context.Context, c *app.RequestContext) {
+	var err error
+	resp := new(consumption.GetConsumptionByRangeResponse)
+	d := c.Query("date")
+	days := []int{0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
+	year, err := strconv.Atoi(d[0:4])
+	if err != nil {
+		pack.PackConsumptionByRangeResp(resp, errno.ParamErrorCode, "时间格式错误", nil)
+		c.JSON(consts.StatusOK, resp)
+	}
+	if year%400 == 0 || year%4 == 0 && year%100 != 0 {
+		days[2]++
+	}
+
+	x := "00:00:00"
+	y := "23:59:59"
+
+	a, err := strconv.Atoi(string(d[5]))
+	if err != nil {
+		pack.PackConsumptionByRangeResp(resp, errno.ParamErrorCode, "时间格式错误", nil)
+		c.JSON(consts.StatusOK, resp)
+	}
+	b, err := strconv.Atoi(string(d[6]))
+	if err != nil {
+		pack.PackConsumptionByRangeResp(resp, errno.ParamErrorCode, "时间格式错误", nil)
+		c.JSON(consts.StatusOK, resp)
+	}
+
+	m := 10*a + b
+	cnt := strconv.Itoa(days[m])
+
+	start := d[0:8] + "01" + " " + x
+	end := d[0:8] + cnt + " " + y
+
+	klog.Info(start)
+	klog.Info(end)
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	consumptions, code, msg := service.NewConsumptionService().GetConsumptionsByRange(start, end, claim.UserId)
+	pack.PackConsumptionByRangeResp(resp, code, msg, consumptions)
 	c.JSON(consts.StatusOK, resp)
 }
