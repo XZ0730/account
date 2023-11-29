@@ -105,3 +105,8 @@ func _getbalancebyyearMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _getuseconsumptionMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

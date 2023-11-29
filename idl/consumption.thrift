@@ -44,7 +44,14 @@ struct GetLastMonthMoneyResp{
     3: map<string, list<double>> data;
 }
 
+struct GetUserConsumptionResp{
+    1: i64 code
+    2: string msg
+    3: list<ConsumptionModel> list;
+}
+
 service ConsumptionService{
+    GetUserConsumptionResp GetUseConsumption(1:BaseRequest req)(api.get = "/api/consumption")
     GetSumByRangeResponse GetBalanceByMonth(1:BaseRequest req)(api.get = "/api/consumption/balance/month")
     GetSumByRangeResponse GetBalanceByYear(1:BaseRequest req)(api.get = "/api/consumption/balance/year")
     GetLastMonthMoneyResp GetLastMonthMoney(1:BaseRequest req)(api.get = "/api/consumption/last/month/analysis")

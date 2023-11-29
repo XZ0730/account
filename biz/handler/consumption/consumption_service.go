@@ -240,3 +240,15 @@ func GetBalanceByYear(ctx context.Context, c *app.RequestContext) {
 	pack.PackSumRangeResp(resp, code, msg, sum)
 	c.JSON(consts.StatusOK, resp)
 }
+
+// GetUseConsumption .
+// @router /api/consumption [GET]
+func GetUseConsumption(ctx context.Context, c *app.RequestContext) {
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	resp := new(consumption.GetUserConsumptionResp)
+
+	code, msg, consumptions := service.NewConsumptionService().GetConsumptionsByUserId(claim.UserId)
+	pack.PackUserConsumption(resp, code, msg, consumptions)
+	c.JSON(consts.StatusOK, resp)
+}

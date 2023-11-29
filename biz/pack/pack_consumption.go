@@ -31,3 +31,10 @@ func PackLastMonthSumResp(resp *consumption.GetLastMonthMoneyResp, code int64, m
 	resp.Data = make(map[string][]float64, 0)
 	resp.Data["sum"] = sum
 }
+
+func PackUserConsumption(resp *consumption.GetUserConsumptionResp, code int64, msg string, cons []*consumption.ConsumptionModel) {
+	resp.Code = code
+	resp.Msg = msg
+	resp.List = make([]*consumption.ConsumptionModel, 0)
+	resp.List = cons
+}

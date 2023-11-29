@@ -133,3 +133,22 @@ func (c *ConsumptionService) GetConsumptionByDate(uid int64, date time.Time, the
 	}
 	return errno.StatusSuccessCode, errno.StatusSuccessMsg, list
 }
+func (c *ConsumptionService) GetConsumptionsByUserId(userId int64) (int64, string, []*consumption.ConsumptionModel) {
+	ledgerIds := db.GetLedgersByUserId(userId)
+	consumptions := db.GetConsumptionByLedgerIds(ledgerIds)
+
+	cons := make([]*consumption.ConsumptionModel, 0)
+	for _, val := range consumptions {
+		tmp := new(consumption.ConsumptionModel)
+		tmp.ConsumptionId = val.ConsumptionId
+		tmp.Amount = val.Amount
+		tmp.ConsumeTime = val.ConsumeTime.Format(time.DateTime)
+		tmp.Description = val.Description
+		tmp.TypeId = val.TypeId
+		tmp.Store = val.Store
+		tmp.ConsumeTime = val.ConsumeTime.Format(time.DateTime)
+		tmp.Credential = val.Credential
+		cons = append(cons, tmp)
+	}
+	return errno.SuccessCode, errno.SuccessMsg, cons
+}
