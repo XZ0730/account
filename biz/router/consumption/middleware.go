@@ -135,3 +135,38 @@ func _month1Mw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _getuseconsumptionMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _balanceMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getbalancebymonthMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getbalancebyyearMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _consumption2Mw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _day0Mw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getdayoutMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
