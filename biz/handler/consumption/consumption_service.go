@@ -95,13 +95,6 @@ func GetOutByRange(ctx context.Context, c *app.RequestContext) {
 // GetInByRange .
 // @router /api/consumption/range/in [GET]
 func GetInByRange(ctx context.Context, c *app.RequestContext) {
-	var err error
-	var req consumption.BaseRequest
-	err = c.BindAndValidate(&req)
-	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
-		return
-	}
 	start := c.Query("start")
 	end := c.Query("end")
 	token_byte := c.GetHeader("token")
@@ -117,15 +110,25 @@ func GetInByRange(ctx context.Context, c *app.RequestContext) {
 // @router /api/consumption/last/month/analysis [GET]
 func GetLastMonthMoney(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req consumption.BaseRequest
-	err = c.BindAndValidate(&req)
+	resp := new(consumption.GetLastMonthMoneyResp)
+	d := c.Query("date")
+	currentTime, err := time.Parse(time.DateTime, d)
+	sum := []float64{0}
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.PackLastMonthSumResp(resp, errno.ParamErrorCode, err.Error(), sum)
+		c.JSON(consts.StatusOK, resp)
 		return
 	}
 
-	resp := new(consumption.GetLastMonthMoneyResp)
+	beforeTime := currentTime.AddDate(0, -1, 0)
+	end := currentTime.Format(time.DateTime)
+	start := beforeTime.Format(time.DateTime)
 
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+
+	code, msg, sum := service.NewConsumptionService().GetConsumptionSumListByRange(start, end, claim.UserId)
+	pack.PackLastMonthSumResp(resp, code, msg, sum)
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -140,6 +143,7 @@ func GetLocalMonthConsumption(ctx context.Context, c *app.RequestContext) {
 	if err != nil {
 		pack.PackConsumptionByRangeResp(resp, errno.ParamErrorCode, "时间格式错误", nil)
 		c.JSON(consts.StatusOK, resp)
+		return
 	}
 	if year%400 == 0 || year%4 == 0 && year%100 != 0 {
 		days[2]++

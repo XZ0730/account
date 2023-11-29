@@ -78,6 +78,18 @@ func (c *ConsumptionService) GetSumByRange(start string, end string, userId int6
 	return errno.StatusSuccessCode, errno.StatusSuccessMsg, sum
 }
 
+func (c *ConsumptionService) GetConsumptionSumListByRange(start string, end string, userId int64) (int64, string, []float64) {
+	ledgerIds := db.GetLedgersByUserId(userId)
+	consumptions := db.GetConByRange(start, end, ledgerIds)
+
+	var sum []float64
+	for _, val := range consumptions {
+		if val.Amount < 0 {
+			sum = append(sum, val.Amount)
+		}
+	}
+	return errno.SuccessCode, errno.SuccessMsg, sum
+}
 func (c *ConsumptionService) GetConsumptionByDate(uid int64, date time.Time, the_type int64) (int64, string, []*consumption.ConsumptionModel) {
 	list := make([]*consumption.ConsumptionModel, 0)
 	var start time.Time
