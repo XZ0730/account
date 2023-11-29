@@ -1830,6 +1830,10 @@ func (p *GetLastMonthMoneyResp) String() string {
 }
 
 type ConsumptionService interface {
+	GetBalanceByMonth(ctx context.Context, req *BaseRequest) (r *GetSumByRangeResponse, err error)
+
+	GetBalanceByYear(ctx context.Context, req *BaseRequest) (r *GetSumByRangeResponse, err error)
+
 	GetLastMonthMoney(ctx context.Context, req *BaseRequest) (r *GetLastMonthMoneyResp, err error)
 
 	GetLocalMonthConsumption(ctx context.Context, req *BaseRequest) (r *GetConsumptionByRangeResponse, err error)
@@ -1871,6 +1875,24 @@ func (p *ConsumptionServiceClient) Client_() thrift.TClient {
 	return p.c
 }
 
+func (p *ConsumptionServiceClient) GetBalanceByMonth(ctx context.Context, req *BaseRequest) (r *GetSumByRangeResponse, err error) {
+	var _args ConsumptionServiceGetBalanceByMonthArgs
+	_args.Req = req
+	var _result ConsumptionServiceGetBalanceByMonthResult
+	if err = p.Client_().Call(ctx, "GetBalanceByMonth", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+func (p *ConsumptionServiceClient) GetBalanceByYear(ctx context.Context, req *BaseRequest) (r *GetSumByRangeResponse, err error) {
+	var _args ConsumptionServiceGetBalanceByYearArgs
+	_args.Req = req
+	var _result ConsumptionServiceGetBalanceByYearResult
+	if err = p.Client_().Call(ctx, "GetBalanceByYear", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
 func (p *ConsumptionServiceClient) GetLastMonthMoney(ctx context.Context, req *BaseRequest) (r *GetLastMonthMoneyResp, err error) {
 	var _args ConsumptionServiceGetLastMonthMoneyArgs
 	_args.Req = req
@@ -1955,6 +1977,8 @@ func (p *ConsumptionServiceProcessor) ProcessorMap() map[string]thrift.TProcesso
 
 func NewConsumptionServiceProcessor(handler ConsumptionService) *ConsumptionServiceProcessor {
 	self := &ConsumptionServiceProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
+	self.AddToProcessorMap("GetBalanceByMonth", &consumptionServiceProcessorGetBalanceByMonth{handler: handler})
+	self.AddToProcessorMap("GetBalanceByYear", &consumptionServiceProcessorGetBalanceByYear{handler: handler})
 	self.AddToProcessorMap("GetLastMonthMoney", &consumptionServiceProcessorGetLastMonthMoney{handler: handler})
 	self.AddToProcessorMap("GetLocalMonthConsumption", &consumptionServiceProcessorGetLocalMonthConsumption{handler: handler})
 	self.AddToProcessorMap("GetOutByRange", &consumptionServiceProcessorGetOutByRange{handler: handler})
@@ -1980,6 +2004,102 @@ func (p *ConsumptionServiceProcessor) Process(ctx context.Context, iprot, oprot 
 	oprot.WriteMessageEnd()
 	oprot.Flush(ctx)
 	return false, x
+}
+
+type consumptionServiceProcessorGetBalanceByMonth struct {
+	handler ConsumptionService
+}
+
+func (p *consumptionServiceProcessorGetBalanceByMonth) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := ConsumptionServiceGetBalanceByMonthArgs{}
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("GetBalanceByMonth", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return false, err
+	}
+
+	iprot.ReadMessageEnd()
+	var err2 error
+	result := ConsumptionServiceGetBalanceByMonthResult{}
+	var retval *GetSumByRangeResponse
+	if retval, err2 = p.handler.GetBalanceByMonth(ctx, args.Req); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing GetBalanceByMonth: "+err2.Error())
+		oprot.WriteMessageBegin("GetBalanceByMonth", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return true, err2
+	} else {
+		result.Success = retval
+	}
+	if err2 = oprot.WriteMessageBegin("GetBalanceByMonth", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 = result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
+}
+
+type consumptionServiceProcessorGetBalanceByYear struct {
+	handler ConsumptionService
+}
+
+func (p *consumptionServiceProcessorGetBalanceByYear) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := ConsumptionServiceGetBalanceByYearArgs{}
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("GetBalanceByYear", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return false, err
+	}
+
+	iprot.ReadMessageEnd()
+	var err2 error
+	result := ConsumptionServiceGetBalanceByYearResult{}
+	var retval *GetSumByRangeResponse
+	if retval, err2 = p.handler.GetBalanceByYear(ctx, args.Req); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing GetBalanceByYear: "+err2.Error())
+		oprot.WriteMessageBegin("GetBalanceByYear", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return true, err2
+	} else {
+		result.Success = retval
+	}
+	if err2 = oprot.WriteMessageBegin("GetBalanceByYear", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 = result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
 }
 
 type consumptionServiceProcessorGetLastMonthMoney struct {
@@ -2316,6 +2436,590 @@ func (p *consumptionServiceProcessorGetConsumptionByDate) Process(ctx context.Co
 		return
 	}
 	return true, err
+}
+
+type ConsumptionServiceGetBalanceByMonthArgs struct {
+	Req *BaseRequest `thrift:"req,1"`
+}
+
+func NewConsumptionServiceGetBalanceByMonthArgs() *ConsumptionServiceGetBalanceByMonthArgs {
+	return &ConsumptionServiceGetBalanceByMonthArgs{}
+}
+
+var ConsumptionServiceGetBalanceByMonthArgs_Req_DEFAULT *BaseRequest
+
+func (p *ConsumptionServiceGetBalanceByMonthArgs) GetReq() (v *BaseRequest) {
+	if !p.IsSetReq() {
+		return ConsumptionServiceGetBalanceByMonthArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+var fieldIDToName_ConsumptionServiceGetBalanceByMonthArgs = map[int16]string{
+	1: "req",
+}
+
+func (p *ConsumptionServiceGetBalanceByMonthArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *ConsumptionServiceGetBalanceByMonthArgs) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_ConsumptionServiceGetBalanceByMonthArgs[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *ConsumptionServiceGetBalanceByMonthArgs) ReadField1(iprot thrift.TProtocol) error {
+	p.Req = NewBaseRequest()
+	if err := p.Req.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *ConsumptionServiceGetBalanceByMonthArgs) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GetBalanceByMonth_args"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *ConsumptionServiceGetBalanceByMonthArgs) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := p.Req.Write(oprot); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *ConsumptionServiceGetBalanceByMonthArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("ConsumptionServiceGetBalanceByMonthArgs(%+v)", *p)
+}
+
+type ConsumptionServiceGetBalanceByMonthResult struct {
+	Success *GetSumByRangeResponse `thrift:"success,0,optional"`
+}
+
+func NewConsumptionServiceGetBalanceByMonthResult() *ConsumptionServiceGetBalanceByMonthResult {
+	return &ConsumptionServiceGetBalanceByMonthResult{}
+}
+
+var ConsumptionServiceGetBalanceByMonthResult_Success_DEFAULT *GetSumByRangeResponse
+
+func (p *ConsumptionServiceGetBalanceByMonthResult) GetSuccess() (v *GetSumByRangeResponse) {
+	if !p.IsSetSuccess() {
+		return ConsumptionServiceGetBalanceByMonthResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+var fieldIDToName_ConsumptionServiceGetBalanceByMonthResult = map[int16]string{
+	0: "success",
+}
+
+func (p *ConsumptionServiceGetBalanceByMonthResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *ConsumptionServiceGetBalanceByMonthResult) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField0(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_ConsumptionServiceGetBalanceByMonthResult[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *ConsumptionServiceGetBalanceByMonthResult) ReadField0(iprot thrift.TProtocol) error {
+	p.Success = NewGetSumByRangeResponse()
+	if err := p.Success.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *ConsumptionServiceGetBalanceByMonthResult) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GetBalanceByMonth_result"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField0(oprot); err != nil {
+			fieldId = 0
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *ConsumptionServiceGetBalanceByMonthResult) writeField0(oprot thrift.TProtocol) (err error) {
+	if p.IsSetSuccess() {
+		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := p.Success.Write(oprot); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
+}
+
+func (p *ConsumptionServiceGetBalanceByMonthResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("ConsumptionServiceGetBalanceByMonthResult(%+v)", *p)
+}
+
+type ConsumptionServiceGetBalanceByYearArgs struct {
+	Req *BaseRequest `thrift:"req,1"`
+}
+
+func NewConsumptionServiceGetBalanceByYearArgs() *ConsumptionServiceGetBalanceByYearArgs {
+	return &ConsumptionServiceGetBalanceByYearArgs{}
+}
+
+var ConsumptionServiceGetBalanceByYearArgs_Req_DEFAULT *BaseRequest
+
+func (p *ConsumptionServiceGetBalanceByYearArgs) GetReq() (v *BaseRequest) {
+	if !p.IsSetReq() {
+		return ConsumptionServiceGetBalanceByYearArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+var fieldIDToName_ConsumptionServiceGetBalanceByYearArgs = map[int16]string{
+	1: "req",
+}
+
+func (p *ConsumptionServiceGetBalanceByYearArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *ConsumptionServiceGetBalanceByYearArgs) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_ConsumptionServiceGetBalanceByYearArgs[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *ConsumptionServiceGetBalanceByYearArgs) ReadField1(iprot thrift.TProtocol) error {
+	p.Req = NewBaseRequest()
+	if err := p.Req.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *ConsumptionServiceGetBalanceByYearArgs) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GetBalanceByYear_args"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *ConsumptionServiceGetBalanceByYearArgs) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := p.Req.Write(oprot); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *ConsumptionServiceGetBalanceByYearArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("ConsumptionServiceGetBalanceByYearArgs(%+v)", *p)
+}
+
+type ConsumptionServiceGetBalanceByYearResult struct {
+	Success *GetSumByRangeResponse `thrift:"success,0,optional"`
+}
+
+func NewConsumptionServiceGetBalanceByYearResult() *ConsumptionServiceGetBalanceByYearResult {
+	return &ConsumptionServiceGetBalanceByYearResult{}
+}
+
+var ConsumptionServiceGetBalanceByYearResult_Success_DEFAULT *GetSumByRangeResponse
+
+func (p *ConsumptionServiceGetBalanceByYearResult) GetSuccess() (v *GetSumByRangeResponse) {
+	if !p.IsSetSuccess() {
+		return ConsumptionServiceGetBalanceByYearResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+var fieldIDToName_ConsumptionServiceGetBalanceByYearResult = map[int16]string{
+	0: "success",
+}
+
+func (p *ConsumptionServiceGetBalanceByYearResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *ConsumptionServiceGetBalanceByYearResult) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField0(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_ConsumptionServiceGetBalanceByYearResult[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *ConsumptionServiceGetBalanceByYearResult) ReadField0(iprot thrift.TProtocol) error {
+	p.Success = NewGetSumByRangeResponse()
+	if err := p.Success.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *ConsumptionServiceGetBalanceByYearResult) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GetBalanceByYear_result"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField0(oprot); err != nil {
+			fieldId = 0
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *ConsumptionServiceGetBalanceByYearResult) writeField0(oprot thrift.TProtocol) (err error) {
+	if p.IsSetSuccess() {
+		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := p.Success.Write(oprot); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
+}
+
+func (p *ConsumptionServiceGetBalanceByYearResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("ConsumptionServiceGetBalanceByYearResult(%+v)", *p)
 }
 
 type ConsumptionServiceGetLastMonthMoneyArgs struct {

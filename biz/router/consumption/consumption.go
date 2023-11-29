@@ -25,6 +25,11 @@ func Register(r *server.Hertz) {
 		{
 			_consumption0 := _api.Group("/consumption", _consumption0Mw()...)
 			{
+				_balance := _consumption0.Group("/balance", _balanceMw()...)
+				_balance.GET("/month", append(_getbalancebymonthMw(), consumption.GetBalanceByMonth)...)
+				_balance.GET("/year", append(_getbalancebyyearMw(), consumption.GetBalanceByYear)...)
+			}
+			{
 				_last := _consumption0.Group("/last", _lastMw()...)
 				{
 					_month := _last.Group("/month", _monthMw()...)

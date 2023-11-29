@@ -70,7 +70,11 @@ func (c *ConsumptionService) GetSumByRange(start string, end string, userId int6
 	sum := 0.0
 	for _, val := range consumptions {
 		x := val.Amount
-		if x*op > 0 {
+		if op > 0 && x > 0 {
+			sum += x
+		} else if op < 0 && x < 0 {
+			sum += x
+		} else {
 			sum += x
 		}
 	}

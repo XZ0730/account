@@ -45,6 +45,8 @@ struct GetLastMonthMoneyResp{
 }
 
 service ConsumptionService{
+    GetSumByRangeResponse GetBalanceByMonth(1:BaseRequest req)(api.get = "/api/consumption/balance/month")
+    GetSumByRangeResponse GetBalanceByYear(1:BaseRequest req)(api.get = "/api/consumption/balance/year")
     GetLastMonthMoneyResp GetLastMonthMoney(1:BaseRequest req)(api.get = "/api/consumption/last/month/analysis")
     GetConsumptionByRangeResponse GetLocalMonthConsumption(1:BaseRequest req)(api.get = "/api/consumption/month/map")
     GetSumByRangeResponse GetOutByRange(1:BaseRequest req)(api.get = "/api/consumption/range/out")

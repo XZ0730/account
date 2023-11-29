@@ -90,3 +90,18 @@ func _getlocalmonthconsumptionMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _balanceMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getbalancebymonthMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getbalancebyyearMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

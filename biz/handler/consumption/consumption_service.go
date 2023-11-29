@@ -177,3 +177,66 @@ func GetLocalMonthConsumption(ctx context.Context, c *app.RequestContext) {
 	pack.PackConsumptionByRangeResp(resp, code, msg, consumptions)
 	c.JSON(consts.StatusOK, resp)
 }
+
+// GetBalanceByMonth .
+// @router /api/consumption/balance/month [GET]
+func GetBalanceByMonth(ctx context.Context, c *app.RequestContext) {
+	var err error
+	resp := new(consumption.GetSumByRangeResponse)
+	d := c.Query("date")
+	currentTime, err := time.Parse(time.DateTime, d)
+
+	if err != nil {
+		pack.PackSumRangeResp(resp, errno.ParamErrorCode, "时间格式错误", 0)
+		c.JSON(consts.StatusOK, resp)
+		return
+	}
+
+	// 获取月初和月末
+	monthStart := time.Date(currentTime.Year(), currentTime.Month(), 1, 0, 0, 0, 0, time.Local)
+	monthEnd := monthStart.AddDate(0, 1, 0).Add(-time.Nanosecond)
+
+	klog.Info(monthStart)
+	klog.Info(monthEnd)
+
+	start := monthStart.Format(time.DateTime)
+	end := monthEnd.Format(time.DateTime)
+
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	code, msg, sum := service.NewConsumptionService().GetSumByRange(start, end, claim.UserId, 0.0)
+
+	pack.PackSumRangeResp(resp, code, msg, sum)
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetBalanceByYear .
+// @router /api/consumption/balance/year [GET]
+func GetBalanceByYear(ctx context.Context, c *app.RequestContext) {
+	var err error
+	resp := new(consumption.GetSumByRangeResponse)
+	d := c.Query("date")
+	currentTime, err := time.Parse(time.DateTime, d)
+
+	if err != nil {
+		pack.PackSumRangeResp(resp, errno.ParamErrorCode, "时间格式错误", 0)
+		c.JSON(consts.StatusOK, resp)
+		return
+	}
+
+	// 获取年初和年末
+	yearStart := time.Date(currentTime.Year(), 1, 1, 0, 0, 0, 0, time.Local)
+	yearEnd := time.Date(currentTime.Year(), 12, 31, 23, 59, 59, 59, time.Local)
+	klog.Info(yearStart)
+	klog.Info(yearEnd)
+
+	start := yearStart.Format(time.DateTime)
+	end := yearEnd.Format(time.DateTime)
+
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	code, msg, sum := service.NewConsumptionService().GetSumByRange(start, end, claim.UserId, 0.0)
+
+	pack.PackSumRangeResp(resp, code, msg, sum)
+	c.JSON(consts.StatusOK, resp)
+}
