@@ -117,15 +117,25 @@ func GetInByRange(ctx context.Context, c *app.RequestContext) {
 // @router /api/consumption/last/month/analysis [GET]
 func GetLastMonthMoney(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req consumption.BaseRequest
-	err = c.BindAndValidate(&req)
+	resp := new(consumption.GetLastMonthMoneyResp)
+	d := c.Query("date")
+	currentTime, err := time.Parse(time.DateTime, d)
+	sum := []float64{0}
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		pack.PackLastMonthSumResp(resp, errno.ParamErrorCode, err.Error(), sum)
+		c.JSON(consts.StatusOK, resp)
 		return
 	}
 
-	resp := new(consumption.GetLastMonthMoneyResp)
+	beforeTime := currentTime.AddDate(0, -1, 0)
+	end := currentTime.Format(time.DateTime)
+	start := beforeTime.Format(time.DateTime)
 
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+
+	code, msg, sum := service.NewConsumptionService().GetConsumptionSumListByRange(start, end, claim.UserId)
+	pack.PackLastMonthSumResp(resp, code, msg, sum)
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -278,5 +288,104 @@ func GetOutMonth(ctx context.Context, c *app.RequestContext) {
 		pack.PackSumRangeResp(resp, code, msg, data)
 	}
 
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetDayOut .
+// @router /api/consumption/day/out [GET]
+func GetDayOut(ctx context.Context, c *app.RequestContext) {
+	var err error
+	resp := new(consumption.GetSumByRangeResponse)
+	d := c.Query("date")
+	currentTime, err := time.Parse(time.DateTime, d)
+
+	if err != nil {
+		pack.PackSumRangeResp(resp, errno.ParamErrorCode, "时间格式错误", 0)
+		c.JSON(consts.StatusOK, resp)
+		return
+	}
+
+	// 获取日初和日末
+	monthStart := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 0, 0, 0, 0, time.Local)
+	monthEnd := monthStart.AddDate(0, 1, 0).Add(-time.Nanosecond)
+
+	start := monthStart.Format(time.DateTime)
+	end := monthEnd.Format(time.DateTime)
+
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	code, msg, sum := service.NewConsumptionService().GetSumByRange(start, end, claim.UserId, -1)
+
+	pack.PackSumRangeResp(resp, code, msg, sum)
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetUseConsumption .
+// @router /api/consumption [GET]
+func GetUseConsumption(ctx context.Context, c *app.RequestContext) {
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	resp := new(consumption.GetUserConsumptionResp)
+
+	code, msg, consumptions := service.NewConsumptionService().GetConsumptionsByUserId(claim.UserId)
+	pack.PackUserConsumption(resp, code, msg, consumptions)
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetBalanceByMonth .
+// @router /api/consumption/balance/month [GET]
+func GetBalanceByMonth(ctx context.Context, c *app.RequestContext) {
+	var err error
+	resp := new(consumption.GetSumByRangeResponse)
+	d := c.Query("date")
+	currentTime, err := time.Parse(time.DateTime, d)
+
+	if err != nil {
+		pack.PackSumRangeResp(resp, errno.ParamErrorCode, "时间格式错误", 0)
+		c.JSON(consts.StatusOK, resp)
+		return
+	}
+
+	// 获取月初和月末
+	monthStart := time.Date(currentTime.Year(), currentTime.Month(), 1, 0, 0, 0, 0, time.Local)
+	monthEnd := monthStart.AddDate(0, 1, 0).Add(-time.Nanosecond)
+
+	start := monthStart.Format(time.DateTime)
+	end := monthEnd.Format(time.DateTime)
+
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	code, msg, sum := service.NewConsumptionService().GetSumByRange(start, end, claim.UserId, 0.0)
+
+	pack.PackSumRangeResp(resp, code, msg, sum)
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetBalanceByYear .
+// @router /api/consumption/balance/year [GET]
+func GetBalanceByYear(ctx context.Context, c *app.RequestContext) {
+	var err error
+	resp := new(consumption.GetSumByRangeResponse)
+	d := c.Query("date")
+	currentTime, err := time.Parse(time.DateTime, d)
+
+	if err != nil {
+		pack.PackSumRangeResp(resp, errno.ParamErrorCode, "时间格式错误", 0)
+		c.JSON(consts.StatusOK, resp)
+		return
+	}
+
+	// 获取年初和年末
+	yearStart := time.Date(currentTime.Year(), 1, 1, 0, 0, 0, 0, time.Local)
+	yearEnd := time.Date(currentTime.Year(), 12, 31, 23, 59, 59, 59, time.Local)
+
+	start := yearStart.Format(time.DateTime)
+	end := yearEnd.Format(time.DateTime)
+
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	code, msg, sum := service.NewConsumptionService().GetSumByRange(start, end, claim.UserId, 0.0)
+
+	pack.PackSumRangeResp(resp, code, msg, sum)
 	c.JSON(consts.StatusOK, resp)
 }

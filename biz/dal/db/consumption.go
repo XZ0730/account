@@ -55,3 +55,14 @@ func GetConSumByRange(ledgerId []*int64) []*Consumption {
 		Find(&consumptions)
 	return consumptions
 }
+
+func GetConsumptionByLedgerIds(ledgerIds []*int64) []*Consumption {
+	consumptions := make([]*Consumption, 0)
+	DB.Table("t_consumption").
+		Joins("JOIN t_ledger_consumption ON "+
+			"t_ledger_consumption.consumption_id=t_consumption.consumption_id "+
+			"AND t_ledger_consumption.ledger_id IN ?", ledgerIds).
+		Find(&consumptions)
+
+	return consumptions
+}
