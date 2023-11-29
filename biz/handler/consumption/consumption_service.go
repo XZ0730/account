@@ -227,8 +227,6 @@ func GetBalanceByYear(ctx context.Context, c *app.RequestContext) {
 	// 获取年初和年末
 	yearStart := time.Date(currentTime.Year(), 1, 1, 0, 0, 0, 0, time.Local)
 	yearEnd := time.Date(currentTime.Year(), 12, 31, 23, 59, 59, 59, time.Local)
-	klog.Info(yearStart)
-	klog.Info(yearEnd)
 
 	start := yearStart.Format(time.DateTime)
 	end := yearEnd.Format(time.DateTime)
@@ -250,5 +248,34 @@ func GetUseConsumption(ctx context.Context, c *app.RequestContext) {
 
 	code, msg, consumptions := service.NewConsumptionService().GetConsumptionsByUserId(claim.UserId)
 	pack.PackUserConsumption(resp, code, msg, consumptions)
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetDayOut .
+// @router /api/consumption/day/out [GET]
+func GetDayOut(ctx context.Context, c *app.RequestContext) {
+	var err error
+	resp := new(consumption.GetSumByRangeResponse)
+	d := c.Query("date")
+	currentTime, err := time.Parse(time.DateTime, d)
+
+	if err != nil {
+		pack.PackSumRangeResp(resp, errno.ParamErrorCode, "时间格式错误", 0)
+		c.JSON(consts.StatusOK, resp)
+		return
+	}
+
+	// 获取日初和日末
+	monthStart := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 0, 0, 0, 0, time.Local)
+	monthEnd := monthStart.AddDate(0, 1, 0).Add(-time.Nanosecond)
+
+	start := monthStart.Format(time.DateTime)
+	end := monthEnd.Format(time.DateTime)
+
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	code, msg, sum := service.NewConsumptionService().GetSumByRange(start, end, claim.UserId, -1)
+
+	pack.PackSumRangeResp(resp, code, msg, sum)
 	c.JSON(consts.StatusOK, resp)
 }

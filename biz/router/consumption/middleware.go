@@ -110,3 +110,18 @@ func _getuseconsumptionMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _consumption1Mw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _dayMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getdayoutMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

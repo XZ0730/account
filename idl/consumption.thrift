@@ -51,6 +51,7 @@ struct GetUserConsumptionResp{
 }
 
 service ConsumptionService{
+    GetSumByRangeResponse GetDayOut(1:BaseRequest req)(api.get = "/api/consumption/day/out")
     GetUserConsumptionResp GetUseConsumption(1:BaseRequest req)(api.get = "/api/consumption")
     GetSumByRangeResponse GetBalanceByMonth(1:BaseRequest req)(api.get = "/api/consumption/balance/month")
     GetSumByRangeResponse GetBalanceByYear(1:BaseRequest req)(api.get = "/api/consumption/balance/year")
