@@ -70,11 +70,7 @@ func (c *ConsumptionService) GetSumByRange(start string, end string, userId int6
 	sum := 0.0
 	for _, val := range consumptions {
 		x := val.Amount
-		if op > 0 && x > 0 {
-			sum += x
-		} else if op < 0 && x < 0 {
-			sum += x
-		} else {
+		if x*op > 0 {
 			sum += x
 		}
 	}
@@ -82,18 +78,6 @@ func (c *ConsumptionService) GetSumByRange(start string, end string, userId int6
 	return errno.StatusSuccessCode, errno.StatusSuccessMsg, sum
 }
 
-func (c *ConsumptionService) GetConsumptionSumListByRange(start string, end string, userId int64) (int64, string, []float64) {
-	ledgerIds := db.GetLedgersByUserId(userId)
-	consumptions := db.GetConByRange(start, end, ledgerIds)
-
-	var sum []float64
-	for _, val := range consumptions {
-		if val.Amount < 0 {
-			sum = append(sum, val.Amount)
-		}
-	}
-	return errno.SuccessCode, errno.SuccessMsg, sum
-}
 func (c *ConsumptionService) GetConsumptionByDate(uid int64, date time.Time, the_type int64) (int64, string, []*consumption.ConsumptionModel) {
 	list := make([]*consumption.ConsumptionModel, 0)
 	var start time.Time
@@ -133,26 +117,6 @@ func (c *ConsumptionService) GetConsumptionByDate(uid int64, date time.Time, the
 	}
 	return errno.StatusSuccessCode, errno.StatusSuccessMsg, list
 }
-
-func (c *ConsumptionService) GetConsumptionsByUserId(userId int64) (int64, string, []*consumption.ConsumptionModel) {
-	ledgerIds := db.GetLedgersByUserId(userId)
-	consumptions := db.GetConsumptionByLedgerIds(ledgerIds)
-
-	cons := make([]*consumption.ConsumptionModel, 0)
-	for _, val := range consumptions {
-		tmp := new(consumption.ConsumptionModel)
-		tmp.ConsumptionId = val.ConsumptionId
-		tmp.Amount = val.Amount
-		tmp.ConsumeTime = val.ConsumeTime.Format(time.DateTime)
-		tmp.Description = val.Description
-		tmp.TypeId = val.TypeId
-		tmp.Store = val.Store
-		tmp.ConsumeTime = val.ConsumeTime.Format(time.DateTime)
-		tmp.Credential = val.Credential
-		cons = append(cons, tmp)
-	}
-	return errno.SuccessCode, errno.SuccessMsg, cons
-
 
 func (c *ConsumptionService) CreateConsumption(req *consumption.CreateConsumptionReq) (int64, string) {
 
