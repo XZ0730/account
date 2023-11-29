@@ -44,10 +44,21 @@ struct GetLastMonthMoneyResp{
     3: map<string, list<double>> data;
 }
 
+
 struct GetUserConsumptionResp{
     1: i64 code
     2: string msg
     3: list<ConsumptionModel> list;
+
+struct CreateConsumptionReq{
+    1: required string consumptionName
+    2: required string description
+    3: required double amount
+    4: required i8 typeId
+    5: required string store
+    6: required string consumeTime
+    7: required string credential
+
 }
 
 service ConsumptionService{
@@ -63,4 +74,11 @@ service ConsumptionService{
     ConsumptionUpdateResponse UpdateConsumption(1:ConsumptionModel req)(api.put = "/api/consumption")
 
     GetConsumptionByRangeResponse GetConsumptionByDate(1:BaseRequest req)(api.get="/api/consumption/date")
+    BaseResponse CreateConsumption(1:CreateConsumptionReq req)(api.post="/api/consumption")
+    GetSumByRangeResponse GetSum(1:BaseRequest req)(api.get="/api/consumption/sum")
+
+    GetSumByRangeResponse GetSumBalance(1:BaseRequest req)(api.get="/api/consumption/sum/balance")
+    GetSumByRangeResponse GetDayBalance(1: BaseRequest req)(api.get="/api/consumption/day/balance")
+
+    GetSumByRangeResponse GetOutMonth(1:BaseRequest req)(api.get = "/api/consumption/inout")
 }

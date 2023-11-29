@@ -133,6 +133,7 @@ func (c *ConsumptionService) GetConsumptionByDate(uid int64, date time.Time, the
 	}
 	return errno.StatusSuccessCode, errno.StatusSuccessMsg, list
 }
+
 func (c *ConsumptionService) GetConsumptionsByUserId(userId int64) (int64, string, []*consumption.ConsumptionModel) {
 	ledgerIds := db.GetLedgersByUserId(userId)
 	consumptions := db.GetConsumptionByLedgerIds(ledgerIds)
@@ -151,4 +152,68 @@ func (c *ConsumptionService) GetConsumptionsByUserId(userId int64) (int64, strin
 		cons = append(cons, tmp)
 	}
 	return errno.SuccessCode, errno.SuccessMsg, cons
+
+
+func (c *ConsumptionService) CreateConsumption(req *consumption.CreateConsumptionReq) (int64, string) {
+
+	con_time, err := time.Parse(time.DateTime, req.GetConsumeTime())
+	if err != nil {
+		klog.Error("[consumption]create:", err.Error())
+		return errno.TimeError.ErrorCode, errno.TimeError.ErrorMsg
+	}
+	consumption := db.NewConsumption()
+	consumption.Amount = req.GetAmount()
+	consumption.ConsumptionName = req.GetConsumptionName()
+	consumption.Credential = req.GetCredential()
+	consumption.Store = req.GetStore()
+	consumption.Description = req.GetDescription()
+	consumption.TypeId = req.GetTypeId()
+	consumption.ConsumeTime = con_time
+	err = db.CreateConsumption(consumption)
+	if err != nil {
+		klog.Error("[consumption]create:", err.Error())
+		return errno.CreateError.ErrorCode, errno.CreateError.ErrorMsg
+	}
+
+	return errno.StatusSuccessCode, errno.StatusSuccessMsg
+}
+
+func (c *ConsumptionService) GetSumBalance(userId int64) (int64, string, float64) {
+	ledgerIds := db.GetLedgersByUserId(userId)
+	consumptions := db.GetConSumByRange(ledgerIds)
+
+	sum := 0.0
+	for _, val := range consumptions {
+		sum += val.Amount
+	}
+
+	return errno.StatusSuccessCode, errno.StatusSuccessMsg, sum
+}
+
+// 获取所有的支出/收入
+func (c *ConsumptionService) GetSum(userId int64, op float64) (int64, string, float64) {
+	ledgerIds := db.GetLedgersByUserId(userId)
+	consumptions := db.GetConSumByRange(ledgerIds)
+
+	sum := 0.0
+	for _, val := range consumptions {
+		x := val.Amount
+		if x*op > 0 {
+			sum += x
+		}
+	}
+
+	return errno.StatusSuccessCode, errno.StatusSuccessMsg, sum
+}
+
+func (c *ConsumptionService) GetDayBalance(start string, end string, userId int64) (int64, string, float64) {
+	ledgerIds := db.GetLedgersByUserId(userId)
+	consumptions := db.GetConByRange(start, end, ledgerIds)
+
+	sum := 0.0
+	for _, val := range consumptions {
+		sum += val.Amount
+	}
+
+	return errno.StatusSuccessCode, errno.StatusSuccessMsg, sum
 }

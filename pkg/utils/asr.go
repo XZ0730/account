@@ -39,8 +39,8 @@ func (listener *MySpeechRecognitionListener) OnRecognitionResultChange(response 
 // OnSentenceEnd implementation of SpeechRecognitionListener
 func (listener *MySpeechRecognitionListener) OnSentenceEnd(response *asr.SpeechRecognitionResponse) {
 	fmt.Printf("%s|%s|OnSentenceEnd: %v\n", time.Now().Format("2006-01-02 15:04:05"), response.Result.VoiceTextStr, response)
-	Mx.Lock()
-	Data = response.Result.VoiceTextStr
+
+	Data += response.Result.VoiceTextStr
 }
 
 // OnRecognitionComplete implementation of SpeechRecognitionListener
@@ -79,7 +79,7 @@ func Process(id int, file multipart.File) error {
 	credential := common.NewCredential(constants.SecretID, constants.SecretKey)
 	recognizer := asr.NewSpeechRecognizer(constants.AppID, credential, constants.EngineModelType, listener)
 	recognizer.ProxyURL = ProxyURL
-	recognizer.VoiceFormat = asr.AudioFormatMp3
+	recognizer.VoiceFormat = asr.AudioFormatAAC
 	err := recognizer.Start()
 	if err != nil {
 		fmt.Printf("%s|recognizer start failed, error: %v\n", time.Now().Format("2006-01-02 15:04:05"), err)

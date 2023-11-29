@@ -45,6 +45,7 @@ func GetConByRange(start string, end string, ledgerId []*int64) []*Consumption {
 	return consumptions
 }
 
+
 func GetConsumptionByLedgerIds(ledgerIds []*int64) []*Consumption {
 	consumptions := make([]*Consumption, 0)
 	DB.Table("t_consumption").
@@ -55,6 +56,7 @@ func GetConsumptionByLedgerIds(ledgerIds []*int64) []*Consumption {
 
 	return consumptions
 }
+
 
 // 获取所有的账单
 func GetConSumByRange(ledgerId []*int64) []*Consumption {
