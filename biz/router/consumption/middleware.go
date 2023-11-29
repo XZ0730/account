@@ -90,3 +90,48 @@ func _getlocalmonthconsumptionMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _createconsumptionMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getsumMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _consumption1Mw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _sumMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getsumbalanceMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _dayMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getdaybalanceMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getoutmonthMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _month1Mw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

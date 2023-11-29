@@ -173,3 +173,110 @@ func GetLocalMonthConsumption(ctx context.Context, c *app.RequestContext) {
 	pack.PackConsumptionByRangeResp(resp, code, msg, consumptions)
 	c.JSON(consts.StatusOK, resp)
 }
+
+// CreateConsumption .
+// @router /api/consumption [POST]
+func CreateConsumption(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req consumption.CreateConsumptionReq
+	resp := new(base.BaseResponse)
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		pack.PackBase(resp, errno.ParamError.ErrorCode, errno.ParamError.ErrorMsg)
+		c.JSON(consts.StatusOK, resp)
+		return
+	}
+	code, msg := service.NewConsumptionService().CreateConsumption(&req)
+	pack.PackBase(resp, code, msg)
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetSum .
+// @router /api/consumption/sum [GET]
+func GetSum(ctx context.Context, c *app.RequestContext) {
+	resp := new(consumption.GetSumByRangeResponse)
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	the_type := c.Query("type")
+
+	switch the_type {
+	case "0": // 获取所有支出
+		code, msg, data := service.NewConsumptionService().GetSum(claim.UserId, -1)
+		pack.PackSumRangeResp(resp, code, msg, data)
+	case "1": // 获取所有收入
+
+		code, msg, data := service.NewConsumptionService().GetSum(claim.UserId, 1)
+		pack.PackSumRangeResp(resp, code, msg, data)
+	default:
+		pack.PackSumRangeResp(resp, errno.ParamError.ErrorCode, errno.ParamError.ErrorMsg, 0)
+	}
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetSumBalance .
+// @router /api/consumption/sum/balance [GET]
+func GetSumBalance(ctx context.Context, c *app.RequestContext) {
+	resp := new(consumption.GetSumByRangeResponse)
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	code, msg, data := service.NewConsumptionService().GetSumBalance(claim.UserId)
+	pack.PackSumRangeResp(resp, code, msg, data)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetDayBalance .
+// @router /api/consumption/day/balance [GET]
+func GetDayBalance(ctx context.Context, c *app.RequestContext) {
+	var err error
+	resp := new(consumption.GetSumByRangeResponse)
+	date := c.Query("date")
+	date_time, err := time.Parse(time.DateTime, date)
+	if err != nil {
+		pack.PackSumRangeResp(resp, errno.ParamError.ErrorCode, errno.ParamError.ErrorMsg, 0)
+		c.JSON(consts.StatusOK, resp)
+		return
+	}
+	start := time.Date(date_time.Year(), date_time.Month(), date_time.Day(), 0, 0, 0, 0, time.Local)
+	end := time.Date(date_time.Year(), date_time.Month(), date_time.Day()+1, 0, 0, 0, 0, time.Local)
+
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	code, msg, data := service.NewConsumptionService().GetDayBalance(start.Format(time.DateOnly), end.Format(time.DateOnly), claim.UserId)
+	pack.PackSumRangeResp(resp, code, msg, data)
+
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetOutMonth .
+// @router /api/consumption/inout [GET]
+func GetOutMonth(ctx context.Context, c *app.RequestContext) {
+	var err error
+	resp := new(consumption.GetSumByRangeResponse)
+	token_byte := c.GetHeader("token")
+	claim, _ := utils.CheckToken(string(token_byte))
+	date := c.Query("date")
+	date_time, err := time.Parse(time.DateTime, date)
+	var start time.Time
+	var end time.Time
+	if err != nil {
+		pack.PackSumRangeResp(resp, errno.ParamError.ErrorCode, errno.ParamError.ErrorMsg, 0)
+		c.JSON(consts.StatusOK, resp)
+		return
+	}
+	the_type := c.Query("type")
+	if the_type == "0" { // 获取当月支出
+		start = time.Date(date_time.Year(), date_time.Month(), 1, 0, 0, 0, 0, time.Local)
+		end = time.Date(date_time.Year(), date_time.Month()+1, 1, 0, 0, 0, 0, time.Local)
+		code, msg, data := service.NewConsumptionService().GetSumByRange(start.Format(time.DateOnly), end.Format(time.DateOnly), claim.UserId, -1)
+		pack.PackSumRangeResp(resp, code, msg, data)
+	} else if the_type == "1" { // 获取当日收入
+		start = time.Date(date_time.Year(), date_time.Month(), date_time.Day(), 0, 0, 0, 0, time.Local)
+		end = time.Date(date_time.Year(), date_time.Month(), date_time.Day()+1, 0, 0, 0, 0, time.Local)
+		code, msg, data := service.NewConsumptionService().GetSumByRange(start.Format(time.DateOnly), end.Format(time.DateOnly), claim.UserId, 1)
+		pack.PackSumRangeResp(resp, code, msg, data)
+	}
+
+	c.JSON(consts.StatusOK, resp)
+}

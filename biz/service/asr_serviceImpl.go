@@ -18,6 +18,7 @@ func (a *ASRService) ASRtoText(file *multipart.FileHeader) (data string, code in
 	if err != nil {
 		return "", errno.FileError.ErrorCode, errno.FileError.ErrorMsg
 	}
+	utils.Mx.Lock()
 	var wg sync.WaitGroup
 	utils.ProxyURL = ""
 	for i := 0; i < 1; i++ {
@@ -28,7 +29,9 @@ func (a *ASRService) ASRtoText(file *multipart.FileHeader) (data string, code in
 
 	fmt.Println("Main: Waiting for workers to finish")
 	wg.Wait()
+
 	data = utils.Data
+	utils.Data = ""
 	utils.Mx.Unlock()
 	return data, errno.StatusSuccessCode, errno.StatusSuccessMsg
 }

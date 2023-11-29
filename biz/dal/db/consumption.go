@@ -44,3 +44,14 @@ func GetConByRange(start string, end string, ledgerId []*int64) []*Consumption {
 		Find(&consumptions)
 	return consumptions
 }
+
+// 获取所有的账单
+func GetConSumByRange(ledgerId []*int64) []*Consumption {
+	consumptions := make([]*Consumption, 0)
+	DB.Table("t_consumption").
+		Joins("JOIN t_ledger_consumption ON "+
+			"t_ledger_consumption.consumption_id=t_consumption.consumption_id "+
+			"AND t_ledger_consumption.ledger_id IN ?", ledgerId).
+		Find(&consumptions)
+	return consumptions
+}

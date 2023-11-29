@@ -19,24 +19,34 @@ func Register(r *server.Hertz) {
 	root := r.Group("/", rootMw()...)
 	{
 		_api := root.Group("/api", _apiMw()...)
-		_api.PUT("/consumption", append(_updateconsumptionMw(), consumption.UpdateConsumption)...)
+		_api.POST("/consumption", append(_createconsumptionMw(), consumption.CreateConsumption)...)
 		_consumption := _api.Group("/consumption", _consumptionMw()...)
-		_consumption.GET("/date", append(_getconsumptionbydateMw(), consumption.GetConsumptionByDate)...)
+		_consumption.GET("/inout", append(_getoutmonthMw(), consumption.GetOutMonth)...)
 		{
-			_consumption0 := _api.Group("/consumption", _consumption0Mw()...)
+			_day := _consumption.Group("/day", _dayMw()...)
+			_day.GET("/balance", append(_getdaybalanceMw(), consumption.GetDayBalance)...)
+		}
+		_consumption.GET("/sum", append(_getsumMw(), consumption.GetSum)...)
+		_sum := _consumption.Group("/sum", _sumMw()...)
+		_sum.GET("/balance", append(_getsumbalanceMw(), consumption.GetSumBalance)...)
+		_api.PUT("/consumption", append(_updateconsumptionMw(), consumption.UpdateConsumption)...)
+		_consumption0 := _api.Group("/consumption", _consumption0Mw()...)
+		_consumption0.GET("/date", append(_getconsumptionbydateMw(), consumption.GetConsumptionByDate)...)
+		{
+			_consumption1 := _api.Group("/consumption", _consumption1Mw()...)
 			{
-				_last := _consumption0.Group("/last", _lastMw()...)
+				_last := _consumption1.Group("/last", _lastMw()...)
 				{
 					_month := _last.Group("/month", _monthMw()...)
 					_month.GET("/analysis", append(_getlastmonthmoneyMw(), consumption.GetLastMonthMoney)...)
 				}
 			}
 			{
-				_month0 := _consumption0.Group("/month", _month0Mw()...)
+				_month0 := _consumption1.Group("/month", _month0Mw()...)
 				_month0.GET("/map", append(_getlocalmonthconsumptionMw(), consumption.GetLocalMonthConsumption)...)
 			}
 			{
-				_range := _consumption0.Group("/range", _rangeMw()...)
+				_range := _consumption1.Group("/range", _rangeMw()...)
 				_range.GET("/in", append(_getinbyrangeMw(), consumption.GetInByRange)...)
 				_range.GET("/map", append(_getconsumptionbyrangeMw(), consumption.GetConsumptionByRange)...)
 				_range.GET("/out", append(_getoutbyrangeMw(), consumption.GetOutByRange)...)
