@@ -23,4 +23,4 @@ gen:
 .PHONY: server
 server:
 	make build
-	cd output && bootstrap.sh
+	cd output && sh bootstrap.sh

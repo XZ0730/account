@@ -24,12 +24,12 @@ import (
 
 func main() {
 
-	path := flag.String("config", "./config", "config path")
+	path := flag.String("config", "../config", "config path")
 	klog.Info(*path)
 	config.Init(*path, "config.yaml", "runnerFzu")
 	dal.Init()
 	r := server.New(
-		server.WithHostPorts("0.0.0.0:8087"),
+		server.WithHostPorts("0.0.0.0:8088"),
 		server.WithHandleMethodNotAllowed(true),
 		server.WithMaxRequestBodySize(1<<31),
 	)
