@@ -170,3 +170,23 @@ func _getdayoutMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _inMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getsuminMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _outMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _gettotaloutMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
