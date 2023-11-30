@@ -24,7 +24,7 @@ import (
 
 func main() {
 
-	path := flag.String("config", "../config", "config path")
+	path := flag.String("config", "./config", "config path")
 	klog.Info(*path)
 	config.Init(*path, "config.yaml", "runnerFzu")
 	dal.Init()
