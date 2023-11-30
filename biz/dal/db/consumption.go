@@ -15,6 +15,12 @@ type Consumption struct {
 	Credential      string
 }
 
+type MultiLedgerConsumptionRel struct {
+	MultiLedgerId int64
+	ConsumptionId int64
+	UserId        int64
+}
+
 func NewConsumptionAllParams(consumptionId int64, amount float64, consumptionName, description string, typeId int8, store string, consumeTime time.Time, credential string) *Consumption {
 	return &Consumption{ConsumptionId: consumptionId, Amount: amount, ConsumptionName: consumptionName, Description: description, TypeId: typeId, Store: store, ConsumeTime: consumeTime, Credential: credential}
 }
@@ -77,3 +83,23 @@ func GetConsumptionByLedgerIds(ledgerIds []*int64) []*Consumption {
 
 	return consumptions
 }
+
+
+func GetConsumptionsIdsOfMultiledgerByUserId(userId int64) []*int64 {
+	ids := make([]*int64, 0)
+	DB.Table("t_multi_ledger_consumption").Where("user_id = ?", userId).Pluck("consumption_id", ids)
+	return ids
+}
+
+func GetConsumptionsOfMultiledgerByConIds(ids []*int64) []*Consumption {
+	cons := make([]*Consumption, 0)
+	DB.Table("t_consumption").Where("consumption_id IN ?", ids).First(cons)
+	return cons
+}
+
+func GetConsumptionsOfMultiledgerByRangeAndConIds(start string, end string, ids []*int64) []*Consumption {
+	cons := make([]*Consumption, 0)
+	DB.Table("t_consumption").Where("consumption_id IN ? AND consume_time between ? and ?", ids, start, end).First(cons)
+	return cons
+}
+
