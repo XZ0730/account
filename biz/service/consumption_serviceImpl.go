@@ -14,6 +14,9 @@ func (c *ConsumptionService) GetConsumptionsByUserId(userId int64) (int64, strin
 	ledgerIds := db.GetLedgersByUserId(userId)
 	consumptions := db.GetConsumptionByLedgerIds(ledgerIds)
 
+	ids := db.GetConsumptionsIdsOfMultiledgerByUserId(userId)
+	con2 := db.GetConsumptionsOfMultiledgerByConIds(ids)
+
 	cons := make([]*consumption.ConsumptionModel, 0)
 	for _, val := range consumptions {
 		tmp := new(consumption.ConsumptionModel)
@@ -26,6 +29,20 @@ func (c *ConsumptionService) GetConsumptionsByUserId(userId int64) (int64, strin
 		tmp.ConsumeTime = val.ConsumeTime.Format(time.DateTime)
 		tmp.Credential = val.Credential
 		cons = append(cons, tmp)
+	}
+
+	for _, val := range con2 {
+		tmp := val
+		vo_g := new(consumption.ConsumptionModel)
+		vo_g.ConsumptionId = tmp.ConsumptionId
+		vo_g.ConsumptionName = tmp.ConsumptionName
+		vo_g.Amount = tmp.Amount
+		vo_g.Description = tmp.Description
+		vo_g.TypeId = tmp.TypeId
+		vo_g.ConsumeTime = tmp.ConsumeTime.Format(time.DateTime)
+		vo_g.Store = tmp.Store
+		vo_g.Credential = tmp.Credential
+		cons = append(cons, vo_g)
 	}
 	return errno.SuccessCode, errno.SuccessMsg, cons
 }
@@ -64,6 +81,9 @@ func (c *ConsumptionService) GetConsumptionsByRange(start string, end string, us
 	ledgerIds := db.GetLedgersByUserId(userId)
 	consumptions := db.GetConByRange(start, end, ledgerIds)
 
+	ids := db.GetConsumptionsIdsOfMultiledgerByUserId(userId)
+	con2 := db.GetConsumptionsOfMultiledgerByRangeAndConIds(start, end, ids)
+
 	list := make([]*consumption.ConsumptionModel, 0)
 
 	for _, val := range consumptions {
@@ -79,7 +99,20 @@ func (c *ConsumptionService) GetConsumptionsByRange(start string, end string, us
 		vo_g.Credential = tmp.Credential
 		list = append(list, vo_g)
 	}
-	klog.Info(list)
+
+	for _, val := range con2 {
+		tmp := val
+		vo_g := new(consumption.ConsumptionModel)
+		vo_g.ConsumptionId = tmp.ConsumptionId
+		vo_g.ConsumptionName = tmp.ConsumptionName
+		vo_g.Amount = tmp.Amount
+		vo_g.Description = tmp.Description
+		vo_g.TypeId = tmp.TypeId
+		vo_g.ConsumeTime = tmp.ConsumeTime.Format(time.DateTime)
+		vo_g.Store = tmp.Store
+		vo_g.Credential = tmp.Credential
+		list = append(list, vo_g)
+	}
 	return list, errno.StatusSuccessCode, errno.StatusSuccessMsg
 }
 
@@ -87,8 +120,22 @@ func (c *ConsumptionService) GetSumByRange(start string, end string, userId int6
 	ledgerIds := db.GetLedgersByUserId(userId)
 	consumptions := db.GetConByRange(start, end, ledgerIds)
 
+	ids := db.GetConsumptionsIdsOfMultiledgerByUserId(userId)
+	con2 := db.GetConsumptionsOfMultiledgerByRangeAndConIds(start, end, ids)
+
 	sum := 0.0
 	for _, val := range consumptions {
+		x := val.Amount
+		if op > 0 && x > 0 {
+			sum += x
+		} else if op < 0 && x < 0 {
+			sum += x
+		} else {
+			sum += x
+		}
+	}
+
+	for _, val := range con2 {
 		x := val.Amount
 		if op > 0 && x > 0 {
 			sum += x
@@ -106,8 +153,17 @@ func (c *ConsumptionService) GetConsumptionSumListByRange(start string, end stri
 	ledgerIds := db.GetLedgersByUserId(userId)
 	consumptions := db.GetConByRange(start, end, ledgerIds)
 
+	ids := db.GetConsumptionsIdsOfMultiledgerByUserId(userId)
+	con2 := db.GetConsumptionsOfMultiledgerByRangeAndConIds(start, end, ids)
+
 	var sum []float64
 	for _, val := range consumptions {
+		if val.Amount < 0 {
+			sum = append(sum, val.Amount)
+		}
+	}
+
+	for _, val := range con2 {
 		if val.Amount < 0 {
 			sum = append(sum, val.Amount)
 		}
@@ -183,8 +239,15 @@ func (c *ConsumptionService) GetSumBalance(userId int64) (int64, string, float64
 	ledgerIds := db.GetLedgersByUserId(userId)
 	consumptions := db.GetConSumByRange(ledgerIds)
 
+	ids := db.GetConsumptionsIdsOfMultiledgerByUserId(userId)
+	con2 := db.GetConsumptionsOfMultiledgerByConIds(ids)
+
 	sum := 0.0
 	for _, val := range consumptions {
+		sum += val.Amount
+	}
+
+	for _, val := range con2 {
 		sum += val.Amount
 	}
 
@@ -196,8 +259,17 @@ func (c *ConsumptionService) GetSum(userId int64, op float64) (int64, string, fl
 	ledgerIds := db.GetLedgersByUserId(userId)
 	consumptions := db.GetConSumByRange(ledgerIds)
 
+	ids := db.GetConsumptionsIdsOfMultiledgerByUserId(userId)
+	con2 := db.GetConsumptionsOfMultiledgerByConIds(ids)
 	sum := 0.0
 	for _, val := range consumptions {
+		x := val.Amount
+		if x*op > 0 {
+			sum += x
+		}
+	}
+
+	for _, val := range con2 {
 		x := val.Amount
 		if x*op > 0 {
 			sum += x
@@ -211,10 +283,16 @@ func (c *ConsumptionService) GetDayBalance(start string, end string, userId int6
 	ledgerIds := db.GetLedgersByUserId(userId)
 	consumptions := db.GetConByRange(start, end, ledgerIds)
 
+	ids := db.GetConsumptionsIdsOfMultiledgerByUserId(userId)
+	con2 := db.GetConsumptionsOfMultiledgerByConIds(ids)
+
 	sum := 0.0
 	for _, val := range consumptions {
 		sum += val.Amount
 	}
 
+	for _, val := range con2 {
+		sum += val.Amount
+	}
 	return errno.StatusSuccessCode, errno.StatusSuccessMsg, sum
 }
