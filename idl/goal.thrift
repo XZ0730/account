@@ -14,7 +14,8 @@ struct GoalModel {
     3: i64 userId
     4: double money
     5: string createDate
-    6: string deadline 
+    6: string deadline
+    7: double saved_money
 }
 
 struct GoalCreateRequest{

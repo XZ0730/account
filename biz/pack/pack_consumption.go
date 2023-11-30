@@ -38,3 +38,9 @@ func PackUserConsumption(resp *consumption.GetUserConsumptionResp, code int64, m
 	resp.List = make([]*consumption.ConsumptionModel, 0)
 	resp.List = cons
 }
+
+func PackCreateConsumption(resp *consumption.CreateConsumptionResp, code int64, msg string, id int64) {
+	resp.Code = code
+	resp.Msg = msg
+	resp.ConsumptionID = id
+}

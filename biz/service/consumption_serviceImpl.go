@@ -155,12 +155,12 @@ func (c *ConsumptionService) GetConsumptionByDate(uid int64, date time.Time, the
 	return errno.StatusSuccessCode, errno.StatusSuccessMsg, list
 }
 
-func (c *ConsumptionService) CreateConsumption(req *consumption.CreateConsumptionReq) (int64, string) {
+func (c *ConsumptionService) CreateConsumption(req *consumption.CreateConsumptionReq) (int64, int64, string) {
 
 	con_time, err := time.Parse(time.DateTime, req.GetConsumeTime())
 	if err != nil {
 		klog.Error("[consumption]create:", err.Error())
-		return errno.TimeError.ErrorCode, errno.TimeError.ErrorMsg
+		return -1, errno.TimeError.ErrorCode, errno.TimeError.ErrorMsg
 	}
 	consumption := db.NewConsumption()
 	consumption.Amount = req.GetAmount()
@@ -170,13 +170,13 @@ func (c *ConsumptionService) CreateConsumption(req *consumption.CreateConsumptio
 	consumption.Description = req.GetDescription()
 	consumption.TypeId = req.GetTypeId()
 	consumption.ConsumeTime = con_time
-	err = db.CreateConsumption(consumption)
+	id, err := db.CreateConsumption(consumption)
 	if err != nil {
 		klog.Error("[consumption]create:", err.Error())
-		return errno.CreateError.ErrorCode, errno.CreateError.ErrorMsg
+		return -1, errno.CreateError.ErrorCode, errno.CreateError.ErrorMsg
 	}
 
-	return errno.StatusSuccessCode, errno.StatusSuccessMsg
+	return id, errno.StatusSuccessCode, errno.StatusSuccessMsg
 }
 
 func (c *ConsumptionService) GetSumBalance(userId int64) (int64, string, float64) {

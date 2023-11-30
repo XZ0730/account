@@ -5,7 +5,7 @@ import (
 )
 
 type Consumption struct {
-	ConsumptionId   int64 `gorm:"primary key"`
+	ConsumptionId   int64 `gorm:"primaryKey"`
 	Amount          float64
 	ConsumptionName string
 	Description     string
@@ -27,8 +27,19 @@ func JudgeConsumption(cid int64) error {
 	return DB.Table("t_consumption").Where("consumption_id=?", cid).First(NewConsumption()).Error
 }
 
-func CreateConsumption(consumption *Consumption) error {
-	return DB.Table("t_consumption").Create(&consumption).Error
+func CreateConsumption(consumption *Consumption) (int64, error) {
+	cons := &Consumption{
+		Amount:          consumption.Amount,
+		ConsumptionId:   consumption.ConsumptionId,
+		ConsumptionName: consumption.ConsumptionName,
+		Description:     consumption.Description,
+		TypeId:          consumption.TypeId,
+		Store:           consumption.Store,
+		ConsumeTime:     consumption.ConsumeTime,
+		Credential:      consumption.Credential,
+	}
+	err := DB.Table("t_consumption").Create(cons).Error
+	return cons.ConsumptionId, err
 }
 
 func UpdateConsumption(consumption *Consumption) error {

@@ -60,6 +60,12 @@ struct GetUserConsumptionResp{
     3: list<ConsumptionModel> list;
 }
 
+struct CreateConsumptionResp{
+    1: i64 code
+    2: string msg
+    3: i64 consumption_id
+}
+
 service ConsumptionService{
     GetSumByRangeResponse GetDayOut(1:BaseRequest req)(api.get = "/api/consumption/day/out")
     GetUserConsumptionResp GetUseConsumption(1:BaseRequest req)(api.get = "/api/consumption")
@@ -73,7 +79,7 @@ service ConsumptionService{
     ConsumptionUpdateResponse UpdateConsumption(1:ConsumptionModel req)(api.put = "/api/consumption")
 
     GetConsumptionByRangeResponse GetConsumptionByDate(1:BaseRequest req)(api.get="/api/consumption/date")
-    BaseResponse CreateConsumption(1:CreateConsumptionReq req)(api.post="/api/consumption")
+    CreateConsumptionResp CreateConsumption(1:CreateConsumptionReq req)(api.post="/api/consumption")
     GetSumByRangeResponse GetSum(1:BaseRequest req)(api.get="/api/consumption/sum")
 
     GetSumByRangeResponse GetSumBalance(1:BaseRequest req)(api.get="/api/consumption/sum/balance")

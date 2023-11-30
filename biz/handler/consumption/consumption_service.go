@@ -189,15 +189,15 @@ func GetLocalMonthConsumption(ctx context.Context, c *app.RequestContext) {
 func CreateConsumption(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req consumption.CreateConsumptionReq
-	resp := new(base.BaseResponse)
+	resp := new(consumption.CreateConsumptionResp)
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		pack.PackBase(resp, errno.ParamError.ErrorCode, errno.ParamError.ErrorMsg)
+		pack.PackCreateConsumption(resp, errno.ParamError.ErrorCode, errno.ParamError.ErrorMsg, -1)
 		c.JSON(consts.StatusOK, resp)
 		return
 	}
-	code, msg := service.NewConsumptionService().CreateConsumption(&req)
-	pack.PackBase(resp, code, msg)
+	id, code, msg := service.NewConsumptionService().CreateConsumption(&req)
+	pack.PackCreateConsumption(resp, code, msg, id)
 	c.JSON(consts.StatusOK, resp)
 }
 

@@ -294,6 +294,7 @@ type GoalModel struct {
 	Money      float64 `thrift:"money,4" form:"money" json:"money" query:"money"`
 	CreateDate string  `thrift:"createDate,5" form:"createDate" json:"createDate" query:"createDate"`
 	Deadline   string  `thrift:"deadline,6" form:"deadline" json:"deadline" query:"deadline"`
+	SavedMoney float64 `thrift:"saved_money,7" form:"saved_money" json:"saved_money" query:"saved_money"`
 }
 
 func NewGoalModel() *GoalModel {
@@ -324,6 +325,10 @@ func (p *GoalModel) GetDeadline() (v string) {
 	return p.Deadline
 }
 
+func (p *GoalModel) GetSavedMoney() (v float64) {
+	return p.SavedMoney
+}
+
 var fieldIDToName_GoalModel = map[int16]string{
 	1: "goalId",
 	2: "goalName",
@@ -331,6 +336,7 @@ var fieldIDToName_GoalModel = map[int16]string{
 	4: "money",
 	5: "createDate",
 	6: "deadline",
+	7: "saved_money",
 }
 
 func (p *GoalModel) Read(iprot thrift.TProtocol) (err error) {
@@ -405,6 +411,16 @@ func (p *GoalModel) Read(iprot thrift.TProtocol) (err error) {
 		case 6:
 			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField6(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 7:
+			if fieldTypeId == thrift.DOUBLE {
+				if err = p.ReadField7(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else {
@@ -496,6 +512,15 @@ func (p *GoalModel) ReadField6(iprot thrift.TProtocol) error {
 	return nil
 }
 
+func (p *GoalModel) ReadField7(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadDouble(); err != nil {
+		return err
+	} else {
+		p.SavedMoney = v
+	}
+	return nil
+}
+
 func (p *GoalModel) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("GoalModel"); err != nil {
@@ -524,6 +549,10 @@ func (p *GoalModel) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField6(oprot); err != nil {
 			fieldId = 6
+			goto WriteFieldError
+		}
+		if err = p.writeField7(oprot); err != nil {
+			fieldId = 7
 			goto WriteFieldError
 		}
 
@@ -645,6 +674,23 @@ WriteFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 6 begin error: ", p), err)
 WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 6 end error: ", p), err)
+}
+
+func (p *GoalModel) writeField7(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("saved_money", thrift.DOUBLE, 7); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteDouble(p.SavedMoney); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 7 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 7 end error: ", p), err)
 }
 
 func (p *GoalModel) String() string {
