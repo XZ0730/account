@@ -62,6 +62,17 @@ func Register(r *server.Hertz) {
 				_day0 := _consumption2.Group("/day", _day0Mw()...)
 				_day0.GET("/out", append(_getdayoutMw(), consumption.GetDayOut)...)
 			}
+			{
+				_in := _consumption2.Group("/in", _inMw()...)
+				{
+					_month1 := _in.Group("/month", _month1Mw()...)
+					_month1.GET("/sum", append(_getsuminMw(), consumption.GetSumIn)...)
+				}
+			}
+			{
+				_out := _consumption2.Group("/out", _outMw()...)
+				_out.GET("/sum", append(_gettotaloutMw(), consumption.GetTotalOut)...)
+			}
 		}
 	}
 }
