@@ -31,6 +31,13 @@ func (g *GoalService) CreateGoal(user_id int64, req *goal.GoalCreateRequest) (co
 }
 
 func (g *GoalService) GetGoals(user_id int64) (goal_list []*goal.GoalModel, code int64, msg string) {
+	ledgerId := db.GetLedgersByUserId(user_id)
+	var sum float64
+	for _, id := range ledgerId {
+		balance, _ := db.GetLedgerBalance(int32(*id))
+		sum += balance
+	}
+
 	goals, err := db.GetGoalList(user_id)
 	if err != nil {
 		klog.Info("[goal]get error:", err.Error())
@@ -48,6 +55,7 @@ func (g *GoalService) GetGoals(user_id int64) (goal_list []*goal.GoalModel, code
 			vo_g.UserId = tmp.UserId
 			vo_g.CreateDate = tmp.CreateDate.Format(time.DateTime)
 			vo_g.Deadline = tmp.Deadline.Format(time.DateTime)
+			vo_g.SavedMoney = sum
 			list = append(list, vo_g)
 			return nil
 		})
