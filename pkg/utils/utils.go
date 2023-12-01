@@ -1,6 +1,9 @@
 package utils
 
 import (
+	"encoding/base64"
+	"fmt"
+	"os"
 	"strings"
 
 	"github.com/XZ0730/runFzu/config"
@@ -15,6 +18,15 @@ func GetMysqlDSN() string {
 	dsn := strings.Join([]string{config.Mysql.Username, ":", config.Mysql.Password, "@tcp(", config.Mysql.Addr, ")/", config.Mysql.Database, "?charset=" + config.Mysql.Charset + "&parseTime=true"}, "")
 
 	return dsn
+}
+
+func GetFileContentAsBase64(path string) string {
+	srcByte, err := os.ReadFile(path)
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+	return base64.StdEncoding.EncodeToString(srcByte)
 }
 
 // func GetMQUrl() string {
