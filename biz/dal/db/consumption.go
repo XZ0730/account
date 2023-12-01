@@ -98,6 +98,6 @@ func GetConsumptionsOfMultiledgerByConIds(ids []*int64) []*Consumption {
 
 func GetConsumptionsOfMultiledgerByRangeAndConIds(start string, end string, ids []*int64) []*Consumption {
 	cons := make([]*Consumption, 0)
-	DB.Table("t_consumption").Where("consumption_id IN ? AND consume_time between ? and ?", ids, start, end).First(cons)
+	DB.Table("t_consumption").Where("consumption_id IN ? AND consume_time between ? and ?", ids, start, end).First(&cons)
 	return cons
 }
